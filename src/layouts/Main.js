@@ -10,8 +10,6 @@ import FooterAdmin from "components/Footers/FooterAdmin.js";
 
 // views
 
-import Settings from "views/admin/Settings.js";
-import Tables from "views/admin/Tables.js";
 import Chat from "../views/Chat";
 
 export default function Main() {
@@ -20,13 +18,11 @@ export default function Main() {
       <Sidebar />
       <div className="relative md:ml-64 bg-blueGray-100">
         <Navbar />
-        
         {/* Header */}
         <div className="px-4 w-full" style={{paddingTop: "50px"}}>
           <Switch>
-            <Route path="/" exact component={Chat} />
-            <Route path="/settings" exact component={Settings} />
-            <Route path="/tables" exact component={Tables} />
+            <Route path="/chat" exact component={Chat} />
+              <Redirect from="*" to="/chat" />
           </Switch>
         </div>
       </div>

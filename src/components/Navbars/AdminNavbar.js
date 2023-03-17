@@ -1,8 +1,9 @@
 import React from "react";
 
-import UserDropdown from "components/Dropdowns/UserDropdown.js";
+import {useStoreon} from "storeon/react";
 
 export default function Navbar() {
+  const { dispatch, contacts } = useStoreon('contacts')
   return (
     <>
       {/* Navbar */}
@@ -13,7 +14,7 @@ export default function Navbar() {
             className="text-black text-sm uppercase font-semibold"
             onClick={(e) => e.preventDefault()}
           >
-            CHAT NAME HERE
+            {contacts.list.filter(e => e.id === contacts.active)[0].name}
           </a>
           {/* Form */}
           {/* User */}

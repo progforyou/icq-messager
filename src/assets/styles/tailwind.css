@@ -555,6 +555,11 @@ video {
   border-color: #2563eb;
 }
 
+.\!text-lightBlue-500{
+  --tw-text-opacity: 1;
+  color: rgba(14, 165, 233, var(--tw-text-opacity)) !important;
+ }
+
 input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
   color: #71717a;
   opacity: 1;
@@ -1107,6 +1112,41 @@ select {
 .bg-indigo-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(99, 102, 241, var(--tw-bg-opacity));
+}
+
+.hover\:bg-blueGray-200:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(226, 232, 240, var(--tw-bg-opacity));
+}
+
+.hover\:bg-lightBlue-300:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(125, 211, 252, var(--tw-bg-opacity));
+}
+
+.hover\:bg-lightBlue-400:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(56, 189, 248, var(--tw-bg-opacity));
+}
+
+.hover\:bg-lightBlue-500:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(14, 165, 233, var(--tw-bg-opacity));
+}
+
+.hover\:bg-lightBlue-600:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(2, 132, 199, var(--tw-bg-opacity));
+}
+
+.hover\:bg-lightBlue-800:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(7, 89, 133, var(--tw-bg-opacity));
+}
+
+.hover\:bg-lightBlue-900:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(12, 74, 110, var(--tw-bg-opacity));
 }
 
 .bg-lightBlue-200 {
@@ -2210,6 +2250,10 @@ select {
 
 .bottom-auto {
   bottom: auto;
+}
+
+.m-auto{
+  margin: auto;
 }
 
 .left-auto {
