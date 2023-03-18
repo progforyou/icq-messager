@@ -56,7 +56,7 @@ export const ChatBody = (props) => {
     }, [contacts.active])
     return (
         <div style={{height: "calc(100vh - 50px - 50px)"}}>
-            <div className={"h-full w-full flex"} style={{flexDirection: "column-reverse", paddingRight: "10px"}}>
+            <div className={"h-full w-full flex text-black"} style={{flexDirection: "column-reverse", paddingRight: "10px"}}>
                 <MessageOut typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageOut"}/>
                 <MessageIn typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageIn"}/>
                 <MessageIn typeMessage={"file"} body={"qwe"}/>

@@ -52,13 +52,13 @@ export const AddFileDropdown = (props) => {
             >
                 <ul className={"flex flex-col p-1"}>
                     <li onClick={handleFileOpen} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
-                        <i className={"fa fa-file mr-2"}></i> Файл
+                        <i className={"fa fa-file mr-3"}></i> Файл
                     </li>
                     <li onClick={handlePhotoOpen} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
-                        <i className={"fa fa-photo-video mr-2"}></i> Фото или видео
+                        <i className={"fa fa-photo-video mr-1"}></i> Фото или видео
                     </li>
                     <li onClick={props.startRecord} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
-                        <i className={"fa fa-microphone mr-2"}></i> Голосовое сообщение 
+                        <i className={"fa fa-microphone mr-3"}></i> Голосовое сообщение 
                     </li>
                 </ul>
             </div>

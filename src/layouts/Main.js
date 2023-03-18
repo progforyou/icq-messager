@@ -19,7 +19,7 @@ export default function Main() {
       <div className="relative md:ml-64 bg-blueGray-100">
         <Navbar />
         {/* Header */}
-        <div className="px-4 w-full" style={{paddingTop: "50px"}}>
+        <div className="px-4 w-full">
           <Switch>
             <Route path="/chat" exact component={Chat} />
               <Redirect from="*" to="/chat" />

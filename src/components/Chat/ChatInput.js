@@ -92,6 +92,9 @@ export const ChatInput = (props) => {
     }, []);
     React.useEffect(() => {
         playAnimationRef.current = requestAnimationFrame(repeat);
+        return () => {
+            playAnimationRef.current = null
+        }
     }, [audioRef, repeat]);
     return (
         <div className={"flex h-100 items-center"} style={{height: "50px"}}>

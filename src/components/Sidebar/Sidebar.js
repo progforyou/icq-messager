@@ -48,12 +48,13 @@ const ChatItem = ({contacts, dispatch, e}) => {
   </div>
 }
 
-export default function Sidebar() {
+function Sidebar() {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
   const { dispatch, contacts } = useStoreon('contacts')
+  const classNames = ""
   return (
     <>
-      <nav className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4">
+      <nav className="hidden md:flex md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4">
         <div className="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
           {/* Brand */}
           <NavLink
@@ -134,3 +135,96 @@ export default function Sidebar() {
     </>
   );
 }
+
+function MobileSidebar() {
+  const [collapseShow, setCollapseShow] = React.useState("hidden");
+  const { dispatch, contacts } = useStoreon('contacts')
+  const classNames = ""
+  if (contacts.active !== 0){
+    return  null
+  }
+  return (
+      <>
+        <nav style={{height: "100vh", alignItems: "start"}} className="flex left-0 block fixed top-0 bottom-0 overflow-y-auto flex-row flex-nowrap overflow-hidden shadow-xl bg-white flex flex-wrap justify-between relative w-64 z-10 py-4">
+          <div className="flex-col items-stretch min-h-full flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
+            {/* Brand */}
+            <NavLink
+                className="px-3 block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
+                to="/"
+            >
+              Чаты
+            </NavLink>
+            {/* Collapse */}
+              {/* Form */}
+              <form className="mb-4 px-3">
+                <div className="pt-0">
+                  <input
+                      type="text"
+                      placeholder="Поиск"
+                      className="focus:shadow-none border-0 px-3 py-2 h-8 border border-solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
+                  />
+                </div>
+              </form>
+
+              <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none">
+
+                {contacts.list.map((e, key) => {
+                  return (
+                      <div key={key}>
+                        <ChatItem contacts={contacts} e={e} dispatch={dispatch}/>
+                      </div>
+                  )
+                })}
+              </ul>
+
+              {/* <div className={"mt-auto"}>
+              <hr className="my-2 md:min-w-full" />
+              <ul className="px-6 mt-auto md:min-w-full flex justify-between list-none">
+                <li className="items-center">
+                  <NavLink
+                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
+                      activeClassName="!text-lightBlue-500 "
+                      to="/wqe"
+                  >
+                    <i className="fas fa-fingerprint mx-auto text-xl"></i>{" "}
+                    Контакты
+                  </NavLink>
+                </li>
+
+                <li className="items-center">
+                  <NavLink
+                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
+                      activeClassName="!text-lightBlue-500 "
+                      to="/chat"
+                  >
+                    <i className="fas fa-clipboard-list mx-auto text-xl"></i>{" "}
+                    Чаты
+                  </NavLink>
+                </li>
+                <li className="items-center">
+                  <NavLink
+                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
+                      activeClassName="!text-lightBlue-500 "
+                      to="/notes"
+                  >
+                    <i className="fas mx-auto fa-cog  text-xl"></i>{" "}
+                    Заметки
+                  </NavLink>
+                </li>
+              </ul>
+            </div>*/}
+
+            </div>
+        </nav>
+      </>
+  );
+}
+
+export default (props) => {
+  const { dispatch, customize } = useStoreon('customize')
+  if (customize.isMobile) {
+    return <MobileSidebar {...props}/>
+  }
+  return <Sidebar {...props}/>
+}
+

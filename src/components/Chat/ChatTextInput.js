@@ -2,9 +2,11 @@ import React from "react";
 import {useRecorder} from "voice-recorder-react";
 import EmojiPicker from 'emoji-picker-react';
 import {AddFileDropdown} from "../Dropdowns/AddFileDropdown";
+import {useStoreon} from "storeon/react";
 
 
 export const ChatTextInput = (props) => {
+    const { dispatch, customize } = useStoreon('customize')
     const [showEmoji, setShowEmoji] = React.useState(false)
     const toggleEmoji = () => {
         setShowEmoji(t => !t)
@@ -40,7 +42,7 @@ export const ChatTextInput = (props) => {
                         <i ref={btnDropdownRef} className={"fa fa-smile my-auto cursor-pointer text-blueGray-700 hover:text-blueGray-500"} onClick={toggleEmoji}></i>
                         {showEmoji ? 
                             <div className={"absolute bottom-0 right-0 mb-5"} ref={ref}>
-                                <EmojiPicker onEmojiClick={e => {
+                                <EmojiPicker width={customize.isMobile ? "90%" : "" } onEmojiClick={e => {
                                     props.onChangeEmoji(e.emoji)
                                 }}/>
                             </div>: null}
