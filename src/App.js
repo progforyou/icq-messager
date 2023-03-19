@@ -2,8 +2,9 @@ import React from "react";
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import Main from "./layouts/Main";
 import Admin from "./views/Admin";
-import Login from "./views/Login";
+import SignIn from "./views/SignIn";
 import {useStoreon} from "storeon/react";
+import SignUp from "./views/SignUp";
 
 export default () => {
     const { dispatch, customize } = useStoreon('customize')
@@ -22,7 +23,8 @@ export default () => {
             <BrowserRouter>
                 <Switch>
                     {/* add routes with layouts */}
-                    <Route path="/login" component={Login} />
+                    <Route path="/signIn" component={SignIn} />
+                    <Route path="/signUp" component={SignUp} />
                     <Route path="/admin" component={Admin} />
                     <Route path="/" component={Main} />
                     <Redirect from="*" to="/" />

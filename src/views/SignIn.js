@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import {useHistory} from "react-router";
 
-export default function Login() {
+export default function SignIn() {
   const [state, setState] = React.useState({
     login: "",
     password: ""
