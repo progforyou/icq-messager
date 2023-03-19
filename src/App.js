@@ -2,7 +2,7 @@ import React from "react";
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import Main from "./layouts/Main";
 import Admin from "./views/Admin";
-import Login from "./views/auth/Login";
+import Login from "./views/Login";
 import {useStoreon} from "storeon/react";
 
 export default () => {

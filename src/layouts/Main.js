@@ -5,14 +5,19 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 import Navbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-import HeaderStats from "components/Headers/HeaderStats.js";
-import FooterAdmin from "components/Footers/FooterAdmin.js";
 
 // views
 
 import Chat from "../views/Chat";
+import useWebSocket from "react-use-websocket";
+const WS_URL = 'ws://127.0.0.1:8000';
 
 export default function Main() {
+    useWebSocket(WS_URL, {
+        onOpen: () => {
+            console.log('WebSocket connection established.');
+        }
+    });
   return (
     <>
       <Sidebar />
