@@ -4,13 +4,13 @@ import { createStoreon } from 'storeon'
 export let contacts = store => {
     // Initial state
     store.on('@init', () => ({ contacts: {list: [
-                {id: -1, name: "Избранное"},
-                {id: 1, name: "Николай"},
-                {id: 2, name: "Мария"},
-                {id: 3, name: "qweqeqwe"}
+                {id: -1, title: "Избранное"},
+                {id: 1, title: "Николай"},
+                {id: 2, title: "Мария"},
+                {id: 3, title: "qweqeqwe"}
             ], active: -1} }))
     // Reducers returns only changed part of the state
-    store.on('contacts/add', ({ contacts }, contact) => {
+    store.on('contacts/addChat', ({ contacts }, contact) => {
         return { contacts: {...contacts, list: contacts.list.concat([contact])} }
     })
     store.on('contacts/setActive', ({ contacts }, active) => {

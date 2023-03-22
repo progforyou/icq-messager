@@ -4,10 +4,24 @@ import Main from "./layouts/Main";
 import Admin from "./views/Admin";
 import SignIn from "./views/SignIn";
 import {useStoreon} from "storeon/react";
-import SignUp from "./views/SignUp";
+import {useCookies} from "react-cookie";
 
 export default () => {
-    const { dispatch, customize } = useStoreon('customize')
+    const { dispatch, customize, user } = useStoreon('customize', 'user')
+    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+    React.useEffect(() => {
+        console.log(cookies.access_token)
+        if (user.access_token !== cookies.access_token) {
+            dispatch("user/setAccessToken", cookies.access_token)
+        }
+        if (user.refresh_token !== cookies.refresh_token) {
+            dispatch("user/setRefreshToken", cookies.refresh_token)
+        }
+        if (user.login !== cookies.login) {
+            dispatch("user/setLogin", cookies.login)
+        }
+    }, [cookies.access_token, cookies.refresh_token, cookies.login])
+    
     function handleWindowSizeChange() {
         dispatch("customize/width", window.innerWidth)
     }
@@ -24,7 +38,6 @@ export default () => {
                 <Switch>
                     {/* add routes with layouts */}
                     <Route path="/signIn" component={SignIn} />
-                    <Route path="/signUp" component={SignUp} />
                     <Route path="/admin" component={Admin} />
                     <Route path="/" component={Main} />
                     <Redirect from="*" to="/" />

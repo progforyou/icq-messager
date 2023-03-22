@@ -1,20 +1,12 @@
+import {toast} from "react-toastify";
 import {store} from "../store";
 const axios = require('axios');
-axios.interceptors.response.use(response => {
-    return response
-}, reject => {
-    console.log(reject);
-    window.location = '/';
-})
+
 
 const instance = axios.create({
-    headers:{
-        post:{
-            'Content-Type': 'application/json;charset=utf-8'
-        }
-    },
-    baseURL: 'http://localhost:8080/api'
-})
+    baseURL: '/api/v1'
+});
+
 
 class controller {
     constructor() {
@@ -24,8 +16,57 @@ class controller {
         controller._instance = this;
     }
 
-    async getAllIdentities() {
-        //instance
+    async signIn(data) {
+        let r
+        try{
+            r = await instance.post("/user/auth/sign-in/", data)
+        } catch (e) {
+            toast.error(e.response.data.message)
+        }
+        return r
+    }
+    
+    async reloadToken(){
+        let r
+        let u = store.get("user").user
+        console.log(u)
+        try{
+            r = await instance.post("/user/token/refresh/", {
+                refresh: u.refresh_token
+            })
+        } catch (e) {
+            toast.error(e.response.data.message)
+        }
+        return r
+    }
+
+    async signOut(data) {
+        let r
+        try{
+            r = await instance.post("/user/auth/sign-out/", data)
+        } catch (e) {
+            toast.error(e.response.data.message)
+        }
+        return r
+    }
+    
+    async createChat(data){
+        let r
+        let u = store.get("user").user
+        try{
+            r = await instance.post("/chat", data, {
+                headers: {
+                    "Authorization": u.access_token
+                }
+            })
+        } catch (e) {
+            if (e.response.data.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)   
+            }
+        }
+        return r
     }
 
    

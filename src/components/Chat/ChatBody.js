@@ -2,6 +2,7 @@ import React, {createRef} from "react";
 import {useStoreon} from "storeon/react";
 import ReactDOM from "react-dom";
 import {EllipsisSpinner} from "../Spinners/Ellipsis";
+import {DeleteTimerMW} from "../Modal/DeleteTimer";
 
 const MessageFile = (props) => {
     return (<div><span className={"mr-2"}>loger.txt</span>
@@ -138,6 +139,7 @@ export const ChatBody = (props) => {
                     </div>
                 </div>
             </div>
+            {/*<DeleteTimerMW onHide={onHide}/>*/}
             {clicked && (<Menu points={points}/>
             )}
         </div>

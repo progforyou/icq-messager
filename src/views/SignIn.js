@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {useHistory} from "react-router";
+import Controller from "../controller/controller";
+import {useCookies} from "react-cookie";
 
 export default function SignIn() {
   const [state, setState] = React.useState({
@@ -8,12 +10,19 @@ export default function SignIn() {
     password: ""
   })
   let history = useHistory();
+  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
   
   const changeForm = (e) => setState({...state, [e.target.name]: e.target.value})
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     console.log(state)
-    history.push("/");
+    let r = await Controller().signIn(state)
+    setCookie('access_token', r.data.data.access_token);
+    setCookie('refresh_token', r.data.data.refresh_token);
+    setCookie('login', state.login);
+    if (r && r.status === 200){
+      history.push("/");
+    }
   }
   return (
     <>

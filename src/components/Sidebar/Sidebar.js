@@ -3,6 +3,9 @@ import React from "react";
 import {NavLink} from "react-router-dom";
 import MD5 from "crypto-js/md5";
 import {useStoreon} from "storeon/react";
+import {CreateChatMW} from "../Modal/CreateChat";
+import Controller from "../../controller/controller";
+import {useCookies} from "react-cookie";
 
 
 export const getColorIdentity = (contactName) => {
@@ -20,36 +23,37 @@ const hashCodeIdentity = (s) => {
 };
 
 const ChatItem = ({contacts, dispatch, e}) => {
-  const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.name[0]
+  const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.title[0]
   const onClick = () => {
     dispatch("contacts/setActive", e.id)
   }
   if (contacts.active === e.id){
     return <div className={"px-3 flex text-white items-center cursor-pointer uppercase py-3 font-bold block bg-lightBlue-500 hover:bg-lightBlue-600"}>
-      <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.name)}}>
+      <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.title)}}>
         <span className={"m-auto"}>
           {itemName}
         </span>
       </div>
       <div className={"text-xs"}>
-        {e.name}
+        {e.title}
       </div>
     </div>
   }
   return  <div onClick={onClick} className={"px-3 flex text-black items-center cursor-pointer uppercase py-3 font-bold block bg-transparent hover:bg-blueGray-200"}>
-    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.name)}}>
+    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.title)}}>
         <span className={"m-auto"}>
           {itemName}
         </span>
     </div>
     <div className={"text-xs"}>
-      {e.name}
+      {e.title}
     </div>
   </div>
 }
 
-function Sidebar() {
+function Sidebar(props) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
+  const [createChat, setCreateChat] = React.useState(false);
   const { dispatch, contacts } = useStoreon('contacts')
   const classNames = ""
   return (
@@ -57,12 +61,14 @@ function Sidebar() {
       <nav className="hidden md:flex md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4">
         <div className="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
           {/* Brand */}
-          <NavLink
-            className="px-3 md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
-            to="/"
-          >
-            Чаты
-          </NavLink>
+          <div className={"flex items-center justify-between"}>
+            <div className="px-3 md:flex text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0">
+              Чаты
+            </div>
+            <div>
+              <button onClick={() => setCreateChat(true)} className={"ml-auto mr-3 bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 ease-linear transition-all duration-150"}>Создать</button>
+            </div>
+          </div>
           {/* Collapse */}
           <div
             className={
@@ -132,12 +138,17 @@ function Sidebar() {
           </div>
         </div>
       </nav>
+      {createChat ? <CreateChatMW onHide={() => setCreateChat(false)} onSubmit={(data) => {
+        props.onSubmit(data);
+        setCreateChat(false)
+      }}/> : null}
     </>
   );
 }
 
-function MobileSidebar() {
+function MobileSidebar(props) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
+  const [createChat, setCreateChat] = React.useState(false);
   const { dispatch, contacts } = useStoreon('contacts')
   const classNames = ""
   if (contacts.active !== 0){
@@ -148,12 +159,14 @@ function MobileSidebar() {
         <nav style={{height: "100vh", alignItems: "start"}} className="flex left-0 block fixed top-0 bottom-0 overflow-y-auto flex-row flex-nowrap overflow-hidden shadow-xl bg-white flex flex-wrap justify-between relative w-64 z-10 py-4">
           <div className="flex-col items-stretch min-h-full flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
             {/* Brand */}
-            <NavLink
-                className="px-3 block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0"
-                to="/"
-            >
-              Чаты
-            </NavLink>
+            <div className={"flex items-center justify-between"}>
+              <div className="px-3 md:flex text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0">
+                Чаты
+              </div>
+              <div>
+                <button onClick={() => setCreateChat(true)} className={"ml-auto mr-3 bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 ease-linear transition-all duration-150"}>Создать</button>
+              </div>
+            </div>
             {/* Collapse */}
               {/* Form */}
               <form className="mb-4 px-3">
@@ -216,15 +229,34 @@ function MobileSidebar() {
 
             </div>
         </nav>
+        {createChat ? <CreateChatMW onHide={() => setCreateChat(false)} onSubmit={(data) => {
+          props.onSubmit(data);
+          setCreateChat(false)
+        }}/> : null}
       </>
   );
 }
 
 export default (props) => {
   const { dispatch, customize } = useStoreon('customize')
-  if (customize.isMobile) {
-    return <MobileSidebar {...props}/>
+  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+  const createChat = async (data) => {
+    let r = await Controller().createChat(data)
+    if (r === "reload"){
+      r = await Controller().reloadToken()
+      setCookie('access_token', r.data.access);
+      setCookie('refresh_token', r.data.refresh);
+      await Controller().createChat(data)
+    }
+    
+    if (r.status === 200){
+      dispatch("contacts/addChat", r.data.data)
+      dispatch("contacts/setActive", r.data.data.id)
+    }
   }
-  return <Sidebar {...props}/>
+  if (customize.isMobile) {
+    return <MobileSidebar onSubmit={createChat} {...props}/>
+  }
+  return <Sidebar onSubmit={createChat} {...props}/>
 }
 
