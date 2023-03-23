@@ -12,7 +12,6 @@ import Chat from "../views/Chat";
 import useWebSocket from "react-use-websocket";
 import {useCookies} from "react-cookie";
 import {useHistory} from "react-router";
-const WS_URL = 'ws://127.0.0.1:8000/chat/4/';
 
 export default function Main() {
     let history = useHistory();
@@ -22,11 +21,7 @@ export default function Main() {
             history.push("/signIn");
         }
     }, [])
-    useWebSocket(WS_URL, {
-        onOpen: () => {
-            console.log('WebSocket connection established.');
-        }
-    });
+    
   return (
     <>
       <Sidebar />
