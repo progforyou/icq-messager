@@ -1,12 +1,26 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import MD5 from "crypto-js/md5";
 
+const getText = (x) => {
+    if (x === 1){
+        return `Вы единственный подписчик канала`
+    }
+    if (x === 2 || x === 3 || x === 4 ){
+        return `${x} Пользователя`
+    }
+
+    if (x % 10 === 1 && x !== 11 ){
+        return `${x} Пользователь`
+    }
+    return `${x} Пользователей`
+}
 export const EditChatMW = (props) => {
     const ref = React.useRef(null);
-    const [state, setState] = React.useState({title: ""})
+    const [showAddUser, setShowAddUser] = React.useState(false)
     React.useEffect(() => {
         function handleClickOutside(event) {
-            if (ref.current && !ref.current.contains(event.target)) {
+            if (ref.current && !ref.current.contains(event.target) && !showAddUser) {
                 props.onHide()
             }
         }
@@ -15,12 +29,9 @@ export const EditChatMW = (props) => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [ref]);
-    const onSubmit = (e) => {
-        e.preventDefault()
-        props.onSubmit(state)
-    }
-    const changeForm = (e) => {
-        setState( {...state,[e.target.name]: e.target.value})
+    const onAddUser = async (data) =>{
+        await props.handleAddUser(data)
+        setShowAddUser(false)
     }
     return ReactDOM.createPortal(
         <>
@@ -29,7 +40,10 @@ export const EditChatMW = (props) => {
                 <div style={{maxWidth: "500px"}} className="w-full mt-48 relative my-16 mx-auto max-w-3xl">
                     <div ref={ref}
                          className="border-0 rounded-lg bg-white shadow-md relative flex flex-col w-full bg-white outline-none focus:outline-none pb-6">
-                        <div className={`flex items-start justify-between py-3 px-4 border-b border-solid border-gray-light rounded-t `}>
+                        <div className={`flex items-center justify-between py-3 px-4 border-b border-solid border-gray-light rounded-t `}>
+                            <div className={"font-bold"}>
+                                {props.data.title}
+                            </div>
                             <button
                                 className="p-1 ml-auto bg-transparent border-0 transition-all text-blueGray-600 hover:text-blueGray-500 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                                 onClick={props.onHide}
@@ -41,38 +55,73 @@ export const EditChatMW = (props) => {
                             </button>
                         </div>
                         <div className={"flex py-4 px-4 font-w w-full"}>
-                            <form onSubmit={onSubmit} className={"w-full"}>
-                                <div className="relative w-full mb-3">
-                                    <label
-                                        className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                                        htmlFor="grid-password"
-                                    >
-                                        Имя группы
-                                    </label>
-                                    <input
-                                        type="text"
-                                        name={"title"}
-                                        value={state.title}
-                                        onChange={changeForm}
-                                        className="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                                        placeholder="Имя группы"
-                                    />
+                            {showAddUser ? <AddUserMW onSubmit={onAddUser}/> : 
+                            <div className="relative w-full mb-3">
+                                <div className="block text-blueGray-600 items-center font-bold mb-2 flex justify-between">
+                                    <span className={"uppercase text-xs"}>
+                                        {getText(props.members.length)}
+                                    </span>
+                                    <span>
+                                        <i onClick={() => setShowAddUser(true)} className={"fa fa-user-plus hover:text-blueGray-500 cursor-pointer"}></i>
+                                    </span>
                                 </div>
-
-                                <div className="text-center mt-6">
-                                    <button
-                                        className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                                        type="submit"
-                                    >
-                                        Создать чат
-                                    </button>
-                                </div>
-                            </form>
+                                <ul className={"w-full"}>
+                                    {props.members.map(e => {
+                                        return (
+                                            <div className={"flex items-center"}>
+                                                <i className={"fa fa-user mr-3"}></i>
+                                                {e.user_name} {e.user_surname}
+                                            </div>
+                                        )
+                                    })}
+                                </ul>
+                            </div> }
+                                
                         </div>
                     </div>
                 </div>
             </div>
             <div className="top-0 left-0 h-screen w-full fixed inset-0 flex justify-center items-start bg-black opacity-50 text-base z-40 overflow-hidden"></div>
         </>, document.getElementById("modal")
+    )
+}
+
+const AddUserMW = (props) => {
+    const [state, setState] = React.useState({login: ""})
+    const onSubmit = (e) => {
+        e.preventDefault()
+        props.onSubmit(state)
+    }
+    const changeForm = (e) => {
+        setState( {...state,[e.target.name]: e.target.value})
+    }
+    return (
+        <form onSubmit={onSubmit} className={"w-full"}>
+            <div className="relative w-full mb-3">
+                <label
+                    className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                    htmlFor="grid-password"
+                >
+                    Логин
+                </label>
+                <input
+                    type="text"
+                    name={"login"}
+                    value={state.login}
+                    onChange={changeForm}
+                    className="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                    placeholder="Введите логин"
+                />
+            </div>
+
+            <div className="text-center mt-6">
+                <button
+                    className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                    type="submit"
+                >
+                    Добавить пользователя
+                </button>
+            </div>
+        </form>
     )
 }

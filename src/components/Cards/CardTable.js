@@ -6,6 +6,7 @@ import {CreateUserMW} from "../Modal/CreateUser";
 import Controller from "../../controller/controller";
 import {DeleteUserMW} from "../Modal/DeleteUser";
 import {EditUserMW} from "../Modal/EditUser";
+import {useStoreon} from "storeon/react";
 
 // components
 
@@ -14,6 +15,8 @@ export default function CardTable({ color }) {
   const [deleteUser, setDeleteUser] = React.useState(false)
   const [editUser, setEditUser] = React.useState(false)
   const [state, setState] = React.useState({activeUser: {}})
+  const { dispatch, admin } = useStoreon('admin')
+  console.log(admin)
   const handleEdit = (e) => {
     return () => {
       console.log(e)
@@ -93,7 +96,7 @@ export default function CardTable({ color }) {
                       : "bg-lightBlue-800 text-lightBlue-300 border-lightBlue-700")
                   }
                 >
-                  MAC
+                  Browser
                 </th>
                 <th
                   className={
@@ -116,37 +119,39 @@ export default function CardTable({ color }) {
               </tr>
             </thead>
             <tbody>
-              <tr>
+            {admin.list.map(e => {
+              return <tr>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <span
-                    className={
-                      "ml-3 font-bold " +
-                      +(color === "light" ? "text-blueGray-600" : "text-white")
-                    }
+                      className={
+                          "ml-3 font-bold " +
+                          +(color === "light" ? "text-blueGray-600" : "text-white")
+                      }
                   >
-                    nikolay35977
+                    {e.login}
                   </span>
                 </th>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                   127.0.0.1
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  00-B0-D0-63-C2-26
+                  {e.session?.client}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  10.02.2023
+                  {e.session?.online?.toString()}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
                   <i onClick={() => {
-                    setActiveUser({id: 1})
+                    setActiveUser(e)
                     setEditUser(true)
                   }}  className={"fa fa-pen mr-3 cursor-pointer"}></i>
                   <i onClick={() => {
-                    setActiveUser({id: 1})
+                    setActiveUser(e)
                     setDeleteUser(true)
                   }} className={"fa fa-trash mr-3 cursor-pointer"}></i>
                 </td>
               </tr>
+            })}
             </tbody>
           </table>
         </div>

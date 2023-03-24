@@ -29,7 +29,10 @@ export const ChatTextInput = (props) => {
             <div className={"mr-3"}>
                 <AddFileDropdown startRecord={props.startRecord}/>
             </div>
-            <form className={"w-full"}>
+            <form className={"w-full"} onSubmit={(e) => {
+                e.preventDefault();
+                if (props.state.message !== "") props.onSendMessage();
+            }}>
                 <div className="pt-0 relative">
                     <input
                         onChange={e => props.onChange(e.target.value)}
@@ -50,7 +53,7 @@ export const ChatTextInput = (props) => {
                 </div>
             </form>
             <div className={"ml-3 text-center"}>
-                {props.state.message ? <i className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> :
+                {props.state.message ? <i onClick={props.onSendMessage} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> :
                     <i onClick={props.startRecord} className={"fa fa-microphone w-5 cursor-pointer text-blueGray-700 hover:text-blueGray-500 text-xl"}></i>}
             </div>
         </>

@@ -2608,6 +2608,10 @@ select {
   z-index: 50;
 }
 
+.z-60 {
+  z-index: 60;
+}
+
 .transform {
   --tw-translate-x: 0;
   --tw-translate-y: 0;

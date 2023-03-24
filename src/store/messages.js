@@ -8,4 +8,7 @@ export let messages = store => {
     store.on('messages/add', ({ messages }, message) => {
         return { messages: messages.concat([message]) }
     })
+    store.on('messages/set', ({ messages }, messagesAll) => {
+        return { messages: messagesAll }
+    })
 }

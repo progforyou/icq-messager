@@ -6,6 +6,7 @@ import {useStoreon} from "storeon/react";
 import {CreateChatMW} from "../Modal/CreateChat";
 import Controller from "../../controller/controller";
 import {useCookies} from "react-cookie";
+import {reloadTokenController} from "../../tools/reloadToken";
 
 
 export const getColorIdentity = (contactName) => {
@@ -241,13 +242,7 @@ export default (props) => {
   const { dispatch, customize } = useStoreon('customize')
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
   const createChat = async (data) => {
-    let r = await Controller().createChat(data)
-    if (r === "reload"){
-      r = await Controller().reloadToken()
-      setCookie('access_token', r.data.access);
-      setCookie('refresh_token', r.data.refresh);
-      await Controller().createChat(data)
-    }
+    let r = await reloadTokenController(setCookie, Controller().createChat, data)
     
     if (r.status === 200){
       dispatch("contacts/addChat", r.data.data)

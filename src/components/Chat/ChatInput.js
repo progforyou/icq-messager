@@ -96,12 +96,16 @@ export const ChatInput = (props) => {
             playAnimationRef.current = null
         }
     }, [audioRef, repeat]);
+    const onSendMessage = () => {
+        props.onSend(state.message)
+        setState({...state, message: ""})
+    }
     return (
         <div className={"flex h-100 items-center"} style={{height: "50px"}}>
             <audio ref={audioRef} hidden />
             {recording || hasRecording ? <ChatRecorder currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :
-            <ChatTextInput  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={state} startRecord={startRecord}/> }
+            <ChatTextInput onSendMessage={onSendMessage}  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={state} startRecord={startRecord}/> }
         </div>
     )
 }

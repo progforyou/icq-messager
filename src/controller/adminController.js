@@ -18,33 +18,74 @@ class adminController {
 
     async createUser(data) {
         let r
+        let u = store.get("user").user
         try{
-            r = await instance.post("/user/auth/sign-up/", data)
+            r = await instance.post("/user/auth/sign-up/", data, {
+                headers: {
+                    "Authorization": u.access_token
+                }})
             toast.success(r.data.message)
+            await this.getUsers()
         } catch (e) {
             toast.error(e.response.data.message)
+        }
+        return r
+    }
+
+    async getUsers() {
+        let r
+        let u = store.get("user").user
+        try{
+            r = await instance.get("/user/", {
+                headers: {
+                    "Authorization": u.access_token
+                }})
+            store.dispatch("admin/setUsers", r.data.data.users)
+        } catch (e) {
+            if (e.response.data.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
         }
         return r
     }
 
     async updateUser(id, data) {
         let r
+        let u = store.get("user").user
         try{
-            r = await instance.put(`/user/${id}/`, data)
+            r = await instance.put(`/user/${id}`, data, {
+                headers: {
+                    "Authorization": u.access_token
+                }})
             toast.success(r.data.message)
         } catch (e) {
-            toast.error(e.response.data.message)
+            if (e.response.data.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
         }
         return r
     }
 
     async deleteUser(id) {
         let r
+        let u = store.get("user").user
         try{
-            r = await instance.delete(`/user/${id}/`)
+            r = await instance.delete(`/user/${id}`, {
+                headers: {
+                    "Authorization": u.access_token
+                }})
             toast.success(r.data.message)
+            await this.getUsers()
         } catch (e) {
-            toast.error(e.response.data.message)
+            if (e.response.data.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
         }
         return r
     }

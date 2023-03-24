@@ -3,6 +3,7 @@ import {useStoreon} from "storeon/react";
 import ReactDOM from "react-dom";
 import {EllipsisSpinner} from "../Spinners/Ellipsis";
 import {DeleteTimerMW} from "../Modal/DeleteTimer";
+import {messages} from "../../store/messages";
 
 const MessageFile = (props) => {
     return (<div><span className={"mr-2"}>loger.txt</span>
@@ -82,7 +83,7 @@ const Menu = (props) => {
 }
 
 export const ChatBody = (props) => {
-    const { dispatch, contacts } = useStoreon('contacts')
+    const { dispatch, contacts, messages } = useStoreon('contacts', 'messages')
     const [clicked, setClicked] = React.useState(false)
     const [points, setPoints] = React.useState({x: 0, y: 0})
     const ref = createRef()
@@ -118,26 +119,16 @@ export const ChatBody = (props) => {
     return (
         <div style={{height: "calc(100vh - 50px - 50px)"}}>
             <div className={"h-full w-full flex"} style={{flexDirection: "column-reverse"}}>
-                <div ref={ref} className={"w-full flex text-black overflow-y-auto"} style={{flexDirection: "column-reverse", paddingRight: "10px"}}>
-                    <Message onContextMenu={onContextMenu} messageIn  typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageOut"}/>
-                    <Message onContextMenu={onContextMenu} messageIn typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageIn"}/>
-                    <Message onContextMenu={onContextMenu} typeMessage={"file"} body={"qwe"}/>
-                    <Message onContextMenu={onContextMenu} messageIn  typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageOut"}/>
-                    <Message onContextMenu={onContextMenu} messageIn typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageIn"}/>
-                    <Message onContextMenu={onContextMenu} typeMessage={"file"} body={"qwe"}/>
-                    <Message onContextMenu={onContextMenu} messageIn  typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageOut"}/>
-                    <Message onContextMenu={onContextMenu} messageIn typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageIn"}/>
-                    <Message onContextMenu={onContextMenu} typeMessage={"file"} body={"qwe"}/>
-                    <Message onContextMenu={onContextMenu} messageIn  typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageOut"}/>
-                    <Message onContextMenu={onContextMenu} messageIn typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageIn"}/>
-                    <Message onContextMenu={onContextMenu} typeMessage={"file"} body={"qwe"}/>
-                    <Message onContextMenu={onContextMenu} messageIn  typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageOut"}/>
-                    <Message onContextMenu={onContextMenu} messageIn typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageIn"}/>
-                    <Message onContextMenu={onContextMenu} typeMessage={"file"} body={"qwe"}/>
-                    <div className={"mx-auto"}>
+                {messages && messages?.length === 0 ? <div className={"m-auto"}>
+                    Здесь пока пусто...
+                </div> : <div ref={ref} className={"w-full flex text-black overflow-y-auto"} style={{flexDirection: "column-reverse", paddingRight: "10px"}}>
+                    {messages.map(e => {
+                        return <Message onContextMenu={onContextMenu} messageIn  typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageOut"}/>
+                    })}
+                    {/*<div className={"mx-auto"}>
                         <EllipsisSpinner/>
-                    </div>
-                </div>
+                    </div>*/}
+                </div> }
             </div>
             {/*<DeleteTimerMW onHide={onHide}/>*/}
             {clicked && (<Menu points={points}/>

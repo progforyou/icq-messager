@@ -7,7 +7,8 @@ import {useCookies} from "react-cookie";
 export default function SignIn() {
   const [state, setState] = React.useState({
     login: "",
-    password: ""
+    password: "",
+    client: ""
   })
   let history = useHistory();
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
@@ -15,6 +16,7 @@ export default function SignIn() {
   const changeForm = (e) => setState({...state, [e.target.name]: e.target.value})
   const onSubmit = async (e) => {
     e.preventDefault();
+    state.client = getBrowserName()
     console.log(state)
     let r = await Controller().signIn(state)
     setCookie('access_token', r.data.data.access_token);
@@ -23,6 +25,25 @@ export default function SignIn() {
     if (r && r.status === 200){
       history.push("/");
     }
+  }
+
+  const getBrowserName = () => {
+    let browserInfo = window.navigator.userAgent;
+    let browser;
+    if (browserInfo.includes('Opera') || browserInfo.includes('Opr')) {
+      browser = 'Opera';
+    } else if (browserInfo.includes('Edg')) {
+      browser = 'Edge';
+    } else if (browserInfo.includes('Chrome')) {
+      browser = 'Chrome';
+    } else if (browserInfo.includes('Safari')) {
+      browser = 'Safari';
+    } else if (browserInfo.includes('Firefox')) {
+      browser = 'Firefox'
+    } else {
+      browser = 'unknown'
+    }
+    return browser;
   }
   return (
     <>

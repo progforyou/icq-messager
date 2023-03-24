@@ -5,6 +5,9 @@ import React from "react";
 import CardTable from "../components/Cards/CardTable.js";
 import {useCookies} from "react-cookie";
 import {useHistory} from "react-router";
+import Controller from "../controller/controller";
+import AdminController from "../controller/adminController";
+import {reloadTokenController} from "../tools/reloadToken";
 
 export default function Admin() {
     let history = useHistory();
@@ -13,6 +16,8 @@ export default function Admin() {
         if (!(cookies.access_token && cookies.refresh_token && cookies.login)){
             history.push("/signIn");
         }
+
+        reloadTokenController(setCookie, AdminController().getUsers)
     }, [])
     return (
         <>
