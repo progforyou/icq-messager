@@ -30,8 +30,7 @@ export default function Main() {
         {/* Header */}
         <div className="px-4 w-full">
           <Switch>
-            <Route path="/chat" exact component={Chat} />
-              <Redirect from="*" to="/chat" />
+                <Route path="/chat" exact component={Chat} />
           </Switch>
         </div>
       </div>

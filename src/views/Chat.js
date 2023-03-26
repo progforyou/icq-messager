@@ -14,7 +14,7 @@ import AdminController from "../controller/adminController";
 const WS_URL = 'ws://127.0.0.1:8000/chat';
 function _Chat(props) {
     const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
-    const [state, setState] = React.useState({message: "", files: [], prevMessage: ""})
+    const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})
     const [isEdit, setIsEdit] = React.useState(false)
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
     const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}/${contacts.active}/?token=${cookies.access_token}`, {
@@ -44,6 +44,9 @@ function _Chat(props) {
     const deleteFile = (id) => {
         setState({...state, files: state.files.filter((e, key) => key !== id)})
     }
+    const deleteFilePrev = (id) => {
+        setState({...state, prevFiles: state.prevFiles.filter((e, key) => key !== id)})
+    }
     
     React.useEffect(async () => {
         reloadTokenController(setCookie, Controller().getChatMembers, contacts.active)
@@ -56,17 +59,17 @@ function _Chat(props) {
 
     async function handleSendMessage() {
         if (state.files.length > 0){
-            let r = await reloadTokenController(setCookie, Controller().sendMedia, state.files)
-            let id = r.data.data.id
-            let url = r.data.data.url
+            let ids = []
+            for (let file of state.files) {
+                let r = await reloadTokenController(setCookie, Controller().sendMedia, file)
+                ids.push({id: r.data.data.id})
+            }
             //id here
             //and create message with ID
             sendJsonMessage({
                 event: 'create_message',
                 content: {
-                    media: [{
-                        id: id
-                    }],
+                    media: ids,
                     text: state.message,
                     access_token: cookies.access_token
                 }
@@ -125,20 +128,22 @@ function _Chat(props) {
     }
 
     function handleEditMessage() {
+        let media = state.prevFiles.map(e => ({id:e.id}))
         sendJsonMessage({
             event: 'edit_message',
             content: {
                 id: state.id,
+                media: media,
                 text: state.message,
                 access_token: cookies.access_token
             }
         });
         setIsEdit(false)
-        setState({...state, message: "", prevMessage: ""})
+        setState({...state, message: "", prevMessage: "", prevFiles: []})
     }
 
-    function onEditMessage(id, text) {
-        setState({...state, message: text, prevMessage: text, id: id})
+    function onEditMessage(id, text, files) {
+        setState({...state, message: text, prevMessage: text, id: id, prevFiles: files})
         setIsEdit(true)
     }
     if (contacts.active === 0 && customize.isMobile){
@@ -148,7 +153,7 @@ function _Chat(props) {
     <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
         {contacts.active === 0 ? <div className={"m-auto"}>Выберите чат</div> : <>
         <ChatBody getMessages={getMessages} handleDeleteMessage={handleDeleteMessage} handleEditMessage={onEditMessage}/>
-        <ChatInput deleteFile={deleteFile}  handleFiles={handleFiles} isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>
+        <ChatInput deleteFilePrev={deleteFilePrev} deleteFile={deleteFile}  handleFiles={handleFiles} isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>
         </> }
     </div>
   );

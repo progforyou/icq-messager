@@ -3,6 +3,7 @@ import {useRecorder} from "voice-recorder-react";
 import EmojiPicker from 'emoji-picker-react';
 import {AddFileDropdown} from "../Dropdowns/AddFileDropdown";
 import {useStoreon} from "storeon/react";
+import {getFileName} from "../../tools/other";
 
 
 export const ChatTextInput = (props) => {
@@ -30,6 +31,13 @@ export const ChatTextInput = (props) => {
                 {Array.from(props.state.files).map((file, key) => {
                     return <div id={key} onClick={() => props.deleteFile(key)} style={{maxWidth: "100px"}} className={"hover:text-blueGray-500 mr-3 cursor-pointer overflow-ellipsis whitespace-nowrap"}>
                         <i className={"fa fa-file"}></i> {file.name}
+                    </div>
+                })}
+            </div> : null}
+            {props.state.prevFiles?.length ? <div className={"text-sm flex text-blueGray-600"}>
+                {props.state.prevFiles.map((file, key) => {
+                    return <div id={key} onClick={() => props.deleteFilePrev(key)} style={{maxWidth: "100px"}} className={"hover:text-blueGray-500 mr-3 cursor-pointer overflow-ellipsis whitespace-nowrap"}>
+                        <i className={"fa fa-file"}></i> {getFileName(file.url)}
                     </div>
                 })}
             </div> : null}
@@ -61,7 +69,7 @@ export const ChatTextInput = (props) => {
                 </div>
             </form>
             <div className={"ml-3 text-center"}>
-                {props.state.message || props.state.files?.length ? <i onClick={props.onSendMessage} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> :
+                {props.state.message || props.state.files?.length || props.state.prevFiles?.length ? <i onClick={props.onSendMessage} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> :
                     <i onClick={props.startRecord} className={"fa fa-microphone w-5 cursor-pointer text-blueGray-700 hover:text-blueGray-500 text-xl"}></i>}
             </div>
         </div>

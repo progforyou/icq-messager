@@ -38,8 +38,7 @@ export default () => {
                     {/* add routes with layouts */}
                     <Route path="/signIn" component={SignIn} />
                     <Route path="/admin" component={Admin} />
-                    <Route path="/" component={Main} />
-                    <Redirect from="*" to="/" />
+                    <Route path="/chat" component={Main} />
                 </Switch>
             </BrowserRouter>
         </>

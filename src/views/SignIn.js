@@ -17,7 +17,7 @@ export default function SignIn() {
 
   React.useEffect(() => {
     if (cookies.access_token && cookies.refresh_token && cookies.login){
-      history.push("/");
+      history.push("/chat");
     }
   }, [])
   
@@ -31,7 +31,7 @@ export default function SignIn() {
     setCookie('refresh_token', r.data.data.refresh_token);
     setCookie('login', state.login);
     if (r && r.status === 200){
-      history.push("/");
+      history.push("/chat");
     }
   }
 

@@ -182,7 +182,7 @@ class controller {
         let r
         let u = store.get("user").user
         let formData = new FormData();
-        formData.append("file", data[0]);
+        formData.append("file", data);
         try{
             r = await instance.post(`/media`, formData, {
                 headers: {

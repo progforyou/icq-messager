@@ -4,6 +4,9 @@ import ReactDOM from "react-dom";
 import {EllipsisSpinner} from "../Spinners/Ellipsis";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {DeleteTimerMW} from "../Modal/DeleteTimer";
+import {useHistory} from "react-router";
+import {NavLink} from "react-router-dom";
+import {getFileName} from "../../tools/other";
 
 
 
@@ -52,9 +55,30 @@ function toDate(someDateTimeStamp) {
     }
 }
 
+const FileTyper = (props) => {
+    if (props.data.file.match(/\.(jpg|jpeg|png|gif)$/i)){
+        return (
+            <NavLink target="_blank" to={props.data.url}>
+                <img style={{maxWidth: "300px", maxHeight: "200px"}} className={props.id > 1 ? "mt-3" : ""} src={`${props.data.url}`} alt={"image"}></img>
+            </NavLink>
+        )
+    }
+    return (
+        <>
+            <span className={"mr-2"}>{getFileName(props.data.url)}</span>
+            <NavLink target="_blank" to={props.data.url}>
+                <i className={"fa fa-file text-3xl cursor-pointer"}></i>
+            </NavLink>
+        </>
+    )
+}
+
 const MessageFile = (props) => {
-    return (<div><span className={"mr-2"}>loger.txt</span>
-        <i className={"fa fa-file text-3xl cursor-pointer"}></i>
+    return (<div>
+        {props.message.media.media.map((e, key) => {
+            return <FileTyper id={key} key={key} data={e}/>
+        })}
+        {props.message.text ? props.message.text : null}
     </div>)
 }
 
@@ -168,7 +192,7 @@ export const ChatBody = (props) => {
         props.handleDeleteMessage(activeMessage)
     }
     const onEdit = () => {
-        props.handleEditMessage(activeMessage, messages.list.find(e => e.id === activeMessage).text)
+        props.handleEditMessage(activeMessage, messages.list.find(e => e.id === activeMessage).text, messages.list.find(e => e.id === activeMessage).media.media)
     }
     
     const loadMessages = async () => {

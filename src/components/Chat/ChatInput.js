@@ -108,7 +108,7 @@ export const ChatInput = (props) => {
             <audio ref={audioRef} hidden />
             {recording || hasRecording ? <ChatRecorder currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :
-            <ChatTextInput deleteFile={props.deleteFile} handleFiles={props.handleFiles} isEdit={props.isEdit} onCancelEdit={props.onCancelEdit} onSendMessage={onSendMessage}  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={props.state} startRecord={startRecord}/> }
+            <ChatTextInput deleteFilePrev={props.deleteFilePrev} deleteFile={props.deleteFile} handleFiles={props.handleFiles} isEdit={props.isEdit} onCancelEdit={props.onCancelEdit} onSendMessage={onSendMessage}  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={props.state} startRecord={startRecord}/> }
         </div>
     )
 }
