@@ -120,7 +120,6 @@ class controller {
                     "Authorization": u.access_token
                 }
             })
-            console.log(r.data.data.chats)
             store.dispatch("contacts/set", r.data.data.chats)
         } catch (e) {
             if (e.response?.data?.code === 401){

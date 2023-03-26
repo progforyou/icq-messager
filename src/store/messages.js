@@ -3,7 +3,7 @@ import { createStoreon } from 'storeon'
 // Initial state, reducers and business logic are packed in independent modules
 export let messages = store => {
     // Initial state
-    store.on('@init', () => ({ messages: {list: [], page: 0, total: 100, perPage: 15} }))
+    store.on('@init', () => ({ messages: {list: [], page: 1, total: 1, perPage: 50} }))
     store.on('messages/delete', ({ messages }, message) => {
         let newData = []
         let date = new Date().getDate()
@@ -21,6 +21,7 @@ export let messages = store => {
     })
     // Reducers returns only changed part of the state
     store.on('messages/add', ({ messages }, message) => {
+        console.log(message, messages.list, messages.list.find(e => e.id === message.id)?.id)
         if (messages.list.find(e => e.id === message.id)?.id) {
             return {messages: messages}
         }
@@ -54,7 +55,7 @@ export let messages = store => {
         return { messages: {...messages, list: newData} }
     })
     store.on('messages/clear', ({ messages }, messagesAll) => {
-        return { messages: {...messages, list: [], page: 0} }
+        return { messages: {...messages, list: [], page: 1} }
     })
     store.on('messages/addPaginate', ({ messages }) => {
         return { messages: {...messages, page: messages.page + 1} }

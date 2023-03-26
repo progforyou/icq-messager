@@ -64,9 +64,9 @@ function _Chat(props) {
             sendJsonMessage({
                 event: 'create_message',
                 content: {
-                    media: {
+                    media: [{
                         id: id
-                    },
+                    }],
                     text: state.message,
                     access_token: cookies.access_token
                 }
@@ -111,7 +111,6 @@ function _Chat(props) {
                 access_token: cookies.access_token
             }
         });
-        dispatch("messages/delete", id)
     }
 
     function handleDeleteTimerMessage(id, date) {
@@ -134,7 +133,6 @@ function _Chat(props) {
                 access_token: cookies.access_token
             }
         });
-        dispatch("messages/edit", state)
         setIsEdit(false)
         setState({...state, message: "", prevMessage: ""})
     }

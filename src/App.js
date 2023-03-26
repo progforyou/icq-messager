@@ -10,7 +10,6 @@ export default () => {
     const { dispatch, customize, user } = useStoreon('customize', 'user')
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
     React.useEffect(() => {
-        console.log(cookies.access_token)
         if (user.access_token !== cookies.access_token) {
             dispatch("user/setAccessToken", cookies.access_token)
         }
