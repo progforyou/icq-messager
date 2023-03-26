@@ -2612,6 +2612,11 @@ select {
   z-index: 60;
 }
 
+.overflow-ellipsis{
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .transform {
   --tw-translate-x: 0;
   --tw-translate-y: 0;

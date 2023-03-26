@@ -169,3 +169,9 @@ input[type="range"]:active::-moz-range-thumb {
         transform: rotate(360deg);
     }
 }
+
+@media (max-width: 450px) {
+    .sm\:max-w-150{
+        max-width: 150px;
+    }   
+}

@@ -1,5 +1,7 @@
 import {toast} from "react-toastify";
 import {store} from "../store";
+import {messages} from "../store/messages";
+import {contacts} from "../store/contacts";
 const axios = require('axios');
 
 
@@ -29,23 +31,61 @@ class controller {
     async reloadToken(){
         let r
         let u = store.get("user").user
-        console.log(u)
         try{
             r = await instance.post("/user/token/refresh/", {
                 refresh: u.refresh_token
             })
         } catch (e) {
-            toast.error(e.response.data.message)
+            if (e.response.status === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
         }
         return r
     }
 
     async signOut(data) {
         let r
+        let u = store.get("user").user
         try{
-            r = await instance.post("/user/auth/sign-out/", data)
+            r = await instance.post("/user/auth/sign-out/", data, {
+                headers: {
+                    "Authorization": u.access_token
+                }
+            })
         } catch (e) {
-            toast.error(e.response.data.message)
+            if (e.response.data.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
+        }
+        return r
+    }
+    
+    async getChatMessages(){
+        let r
+        let u = store.get("user").user
+        let page = store.get("messages").messages.page
+        let chatId = store.get("contacts").contacts.active
+        if (chatId === 0){
+            return 
+        }
+        try{
+            r = await instance.get(`/chat/${chatId}/messages/?page=${page}`, {
+                headers: {
+                    "Authorization": u.access_token
+                }
+            })
+            store.dispatch("messages/set", r.data.data.messages)
+            store.dispatch("messages/setTotal", r.data.data.total)
+        } catch (e) {
+            if (e.response.data.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
         }
         return r
     }
@@ -120,11 +160,12 @@ class controller {
         }
         let u = store.get("user").user
         try{
-            r = await instance.post(`/chat/${id}/members`, data,{
+            r = await instance.post(`/chat/${id}/members`, [data],{
                 headers: {
                     "Authorization": u.access_token
                 }
             })
+            await this.getChatMembers(id)
         } catch (e) {
             if (e.response.data.code === 401){
                 return "reload"

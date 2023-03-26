@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import {useHistory} from "react-router";
 import Controller from "../controller/controller";
 import {useCookies} from "react-cookie";
+import {reloadTokenController} from "../tools/reloadToken";
+import AdminController from "../controller/adminController";
 
 export default function SignIn() {
   const [state, setState] = React.useState({
@@ -12,6 +14,12 @@ export default function SignIn() {
   })
   let history = useHistory();
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+
+  React.useEffect(() => {
+    if (cookies.access_token && cookies.refresh_token && cookies.login){
+      history.push("/");
+    }
+  }, [])
   
   const changeForm = (e) => setState({...state, [e.target.name]: e.target.value})
   const onSubmit = async (e) => {

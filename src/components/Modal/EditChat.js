@@ -15,6 +15,20 @@ const getText = (x) => {
     }
     return `${x} Пользователей`
 }
+
+export const getColorIdentity = (contactName) => {
+    const hc = hashCodeIdentity(contactName) % 360;
+    return `hsl(${hc}, 63%, 60%)`
+}
+
+const hashCodeIdentity = (s) => {
+    s = MD5(s).toString()
+    let h = 0, l = s.length, i = 0;
+    if (l > 0)
+        while (i < l)
+            h = (h << 5) - h + s.charCodeAt(i++) | 0;
+    return h;
+};
 export const EditChatMW = (props) => {
     const ref = React.useRef(null);
     const [showAddUser, setShowAddUser] = React.useState(false)
@@ -66,10 +80,14 @@ export const EditChatMW = (props) => {
                                     </span>
                                 </div>
                                 <ul className={"w-full"}>
-                                    {props.members.map(e => {
+                                    {props.members.map((e, key) => {
                                         return (
-                                            <div className={"flex items-center"}>
-                                                <i className={"fa fa-user mr-3"}></i>
+                                            <div key={key} className={"flex items-center mt-2"}>
+                                                <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.user_name + e.user_surname)}}>
+                                                    <span className={"m-auto uppercase"}>
+                                                      {e.user_name[0]+e.user_surname[0]}
+                                                    </span>
+                                                </div>
                                                 {e.user_name} {e.user_surname}
                                             </div>
                                         )
@@ -87,7 +105,8 @@ export const EditChatMW = (props) => {
 }
 
 const AddUserMW = (props) => {
-    const [state, setState] = React.useState({login: ""})
+    const [state, setState] = React.useState({user: "",
+        type: "public"})
     const onSubmit = (e) => {
         e.preventDefault()
         props.onSubmit(state)
@@ -106,8 +125,8 @@ const AddUserMW = (props) => {
                 </label>
                 <input
                     type="text"
-                    name={"login"}
-                    value={state.login}
+                    name={"user"}
+                    value={state.user}
                     onChange={changeForm}
                     className="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                     placeholder="Введите логин"

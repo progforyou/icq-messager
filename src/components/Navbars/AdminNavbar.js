@@ -5,6 +5,7 @@ import Controller from "../../controller/controller";
 import {useCookies} from "react-cookie";
 import {EditChatMW} from "../Modal/EditChat";
 import {reloadTokenController} from "../../tools/reloadToken";
+import {useHistory} from "react-router";
 
 const getText = (x) => {
   if (x === 1){
@@ -25,18 +26,19 @@ export default function Navbar() {
   const [showEditChat, setShowEditChat] = React.useState(false)
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'refresh_token', 'login']);
   const hid = contacts.active === 0 ? "hidden" : ""
+  let history = useHistory();
   const signOut = async (e) => {
     e.preventDefault();
     let login = cookies.login
-    let r = await Controller().signOut({login})
-    if (r && r.status === 201){
+    let r = await reloadTokenController(setCookie, Controller().signOut,{login})
+    if (r && r.data.code === 201){
       removeCookie('access_token');
       removeCookie('refresh_token');
       removeCookie('login');
+      history.push("/signIn");
     }
   }
   const handleAddUser = (data) => {
-    data.chat = contacts.active
     reloadTokenController(setCookie, Controller().addChatMember, contacts.active, data)
   }
   return (
@@ -49,17 +51,17 @@ export default function Navbar() {
             <div className={"flex md:hidden mr-3"}>
               <i onClick={() => {
                 dispatch("contacts/setActive", 0)
-              }} className={"fa fa-arrow-left"}></i>
+              }} className={"fa fa-arrow-left my-auto"}></i>
             </div>
             <div className={"cursor-pointer"} onClick={(e) => {
               e.preventDefault()
               setShowEditChat(true)
             }}>
-              <div className="text-black text-sm uppercase font-semibold">
-                {contacts.activeData.title}
+              <div className="text-black text-sm uppercase font-semibold sm:max-w-150 overflow-ellipsis whitespace-nowrap">
+                {contacts.activeData?.title}
               </div>
-              <div className={"text-sm"}>
-                {getText(contacts.activeMembers.count)}
+              <div className={"text-sm sm:max-w-150 overflow-ellipsis whitespace-nowrap"}>
+                {getText(contacts.activeMembers?.count)}
               </div>
             </div>
           </div>

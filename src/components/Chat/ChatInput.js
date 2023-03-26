@@ -6,7 +6,6 @@ import {ChatRecorder} from "./ChatRecorder";
 
 
 export const ChatInput = (props) => {
-    const [state, setState] = React.useState({message: ""})
     const audioRef = React.useRef(null);
     const [hasRecording, setHasRecording] = React.useState(false);
     const [timeRecording, setTimeRecording] = React.useState(null);
@@ -25,10 +24,10 @@ export const ChatInput = (props) => {
         recording
     } = useRecorder();
     const onChangeText = (e) => {
-        setState({...state, message: e})
+        props.setMessage(e)
     }
     const onChangeEmoji = (e) => {
-        setState({...state, message: state.message + e})
+        props.setMessage(props.state.message + e)
     }
     const startRecord = () => {
             if (!recording) {
@@ -97,15 +96,19 @@ export const ChatInput = (props) => {
         }
     }, [audioRef, repeat]);
     const onSendMessage = () => {
-        props.onSend(state.message)
-        setState({...state, message: ""})
+        if (props.isEdit){
+            props.onEditMessage()
+        } else {
+            props.onSend()   
+        }
+        props.setMessage("")
     }
     return (
         <div className={"flex h-100 items-center"} style={{height: "50px"}}>
             <audio ref={audioRef} hidden />
             {recording || hasRecording ? <ChatRecorder currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :
-            <ChatTextInput onSendMessage={onSendMessage}  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={state} startRecord={startRecord}/> }
+            <ChatTextInput isEdit={props.isEdit} onCancelEdit={props.onCancelEdit} onSendMessage={onSendMessage}  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={props.state} startRecord={startRecord}/> }
         </div>
     )
 }

@@ -2,8 +2,54 @@ import React, {createRef} from "react";
 import {useStoreon} from "storeon/react";
 import ReactDOM from "react-dom";
 import {EllipsisSpinner} from "../Spinners/Ellipsis";
-import {DeleteTimerMW} from "../Modal/DeleteTimer";
-import {messages} from "../../store/messages";
+import InfiniteScroll from 'react-infinite-scroll-component';
+
+
+
+function checkTime(i) {
+    if (i < 10) {
+        i = "0" + i;
+    }
+    return i;
+}
+
+function startTime(date) {
+    let newDate = new Date(date)
+    var h = newDate.getHours();
+    var m = newDate.getMinutes();
+    // add a zero in front of numbers<10
+    h = checkTime(h);
+    m = checkTime(m);
+    return `${h}:${m}`
+}
+
+var fulldays = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
+var months = ["Янв", "Фев", "Март", "Апрель", "Май", "Июнь", "Июль", "Авг", "Сент", "Окт", "Ноя", "Дек"];
+
+
+function toDate(someDateTimeStamp) {
+    var dt = new Date(someDateTimeStamp),
+        date = dt.getDate(),
+        month = months[dt.getMonth()],
+        timeDiff = someDateTimeStamp - Date.now(),
+        diffDays = new Date().getDate() - date,
+        diffMonths = new Date().getMonth() - dt.getMonth(),
+        diffYears = new Date().getFullYear() - dt.getFullYear();
+
+    if(diffYears === 0 && diffDays === 0 && diffMonths === 0){
+        return "Сегодня";
+    }else if(diffYears === 0 && diffDays === 1) {
+        return "Вчера";
+    }else if(diffYears === 0 && diffDays === -1) {
+        return "Завтра";
+    }else if(diffYears === 0 && (diffDays < -1 && diffDays > -7)) {
+        return fulldays[dt.getDay()];
+    }else if(diffYears >= 1){
+        return month + " " + date + ", " + new Date(someDateTimeStamp).getFullYear();
+    }else {
+        return month + " " + date;
+    }
+}
 
 const MessageFile = (props) => {
     return (<div><span className={"mr-2"}>loger.txt</span>
@@ -12,8 +58,13 @@ const MessageFile = (props) => {
 }
 
 const MessageText = (props) => {
-    return (<div>
-        {props.body}
+    return (<div className={""}>
+        <div className={"text-sm text-blueGray-600 font-bold"}>
+            {props.message.user_name + " " + props.message.user_surname}
+        </div>
+        <div>
+            {props.body}
+        </div>
     </div>)
 }
 
@@ -36,7 +87,7 @@ const MessageIn = (props) => {
             <div className={"mr-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: "70%"}}>
                 <TypeSwitcher {...props}/>
                 <div className={"absolute bottom-0 right-0 mr-2 mb-2 text-blueGray-300"} style={{fontSize: "13px"}}>
-                    22.15
+                    {startTime(props.message.created_at)}
                 </div>
             </div>
         </div>
@@ -50,7 +101,7 @@ const MessageOut = (props) => {
             <div className={"ml-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: "70%"}}>
                 <TypeSwitcher {...props}/>
                 <div className={"absolute bottom-0 right-0 mr-2 mb-2 text-blueGray-300"} style={{fontSize: "13px"}}>
-                    22.15
+                    {startTime(props.message.created_at)}
                 </div>
             </div>
         </div>
@@ -64,13 +115,25 @@ const Message = (props) => {
 }
 
 const Menu = (props) => {
+    let styles = {}
+    if ((window.innerWidth / 2) < props.points.x){
+        styles.left = props.points.x - 206
+    } else {
+        styles.left = props.points.x
+    }
+    if ((window.innerHeight / 2) < props.points.y){
+        styles.top = props.points.y - 136
+    } else {
+        styles.top = props.points.y
+    }
+    
     return ReactDOM.createPortal(
-        <div className={"absolute bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"} style={{top: props.points.y, left: props.points.x}}>
+        <div className={"absolute bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"} style={styles}>
                 <ul className={"flex flex-col p-1"}>
-                    <li className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
+                    <li onClick={props.onEdit} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
                         <i className={"fa fa-pen w-5 h-5 mr-2"}></i> Редактировать
                     </li>
-                    <li  className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
+                    <li onClick={props.onDelete} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
                         <i className={"fa fa-trash w-5 h-5 mr-2"}></i> Удалить
                     </li>
                     <li  className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
@@ -83,22 +146,39 @@ const Menu = (props) => {
 }
 
 export const ChatBody = (props) => {
-    const { dispatch, contacts, messages } = useStoreon('contacts', 'messages')
+    const { dispatch, contacts, messages, user } = useStoreon('contacts', 'messages', 'user')
     const [clicked, setClicked] = React.useState(false)
+    const [activeMessage, setActiveMessage] = React.useState(null)
     const [points, setPoints] = React.useState({x: 0, y: 0})
-    const ref = createRef()
-    const onContextMenu = (e) => {
-        e.preventDefault(); 
-        setClicked(true)
-        console.log(e)
-        setPoints({x: e.pageX, y: e.pageY})
+    const [hasMore, setHasMore] = React.useState(true)
+    const ref = React.useRef(null)
+
+    const onContextMenu = (id) => {
+        return (e) => {
+            e.preventDefault();
+            setClicked(true)
+            setActiveMessage(id)
+            setPoints({x: e.pageX, y: e.pageY})
+        }
     }
     const handleClick = () => setClicked(false);
-    const loadMessages = () => {
-        console.log("load")
+    const onDelete = () => {
+        props.handleDeleteMessage(activeMessage)
+    }
+    const onEdit = () => {
+        props.handleEditMessage(activeMessage, messages.list.find(e => e.id === activeMessage).text)
+    }
+    
+    const loadMessages = async () => {
+        if (Math.ceil(messages.total / messages.perPage) <= messages.page){
+            setHasMore(false)
+            return 
+        }
+        dispatch("messages/addPaginate")
+        return props.getMessages()
     }
     React.useEffect(() => {
-        loadMessages()
+        setHasMore(true)
     }, [contacts.active])
     React.useEffect(() => {
         window.addEventListener("click", handleClick);
@@ -117,22 +197,36 @@ export const ChatBody = (props) => {
         };
     }, []);
     return (
-        <div style={{height: "calc(100vh - 50px - 50px)"}}>
-            <div className={"h-full w-full flex"} style={{flexDirection: "column-reverse"}}>
-                {messages && messages?.length === 0 ? <div className={"m-auto"}>
+            <div ref={ref}
+                 id="scrollableDiv" className={"w-full flex overflow-y-auto text-black"} style={{flex: "1 1", flexDirection: "column-reverse", paddingRight: "10px"}}>
+                {messages.list && messages?.list?.length === 0 ? <div className={"m-auto"}>
                     Здесь пока пусто...
-                </div> : <div ref={ref} className={"w-full flex text-black overflow-y-auto"} style={{flexDirection: "column-reverse", paddingRight: "10px"}}>
-                    {messages.map(e => {
-                        return <Message onContextMenu={onContextMenu} messageIn  typeMessage={"text"} body={"very very very very very very very very very very very very very very very very very very very very MessageOut"}/>
-                    })}
-                    {/*<div className={"mx-auto"}>
+                </div> : <>
+                <InfiniteScroll
+                    dataLength={messages.list.length}
+                    next={loadMessages}
+                    style={{ display: 'flex', flexDirection: 'column-reverse' }} 
+                    inverse={true} //
+                    hasMore={hasMore}
+                    loader={<div className={"mx-auto"}>
                         <EllipsisSpinner/>
-                    </div>*/}
-                </div> }
+                    </div>}
+                    scrollableTarget="scrollableDiv"
+                >
+                    {[...messages.list].map((e, key) => {
+                        let typeMessage = e.media ? "file" : "text"
+                        let messageIn = e.user_login !== user.login
+                        if (e.type === "devider"){
+                            return <div className={"pb-3 pt-3 mx-auto"}>{toDate(e.date)}</div>
+                        }
+                        return <Message key={key} message={e} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                    })}
+                </InfiniteScroll>
+                </>}
+                {!hasMore ? <div className={"py-6"}></div> : null}
+
+                {/*<DeleteTimerMW onHide={onHide}/>*/}
+                {clicked && (<Menu points={points} onDelete={onDelete} onEdit={onEdit}/>)}
             </div>
-            {/*<DeleteTimerMW onHide={onHide}/>*/}
-            {clicked && (<Menu points={points}/>
-            )}
-        </div>
     )
 }

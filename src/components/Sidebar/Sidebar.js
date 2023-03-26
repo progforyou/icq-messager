@@ -27,6 +27,7 @@ const ChatItem = ({contacts, dispatch, e}) => {
   const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.title[0]
   const onClick = () => {
     dispatch("contacts/setActive", e.id)
+    dispatch("messages/clear")
   }
   if (contacts.active === e.id){
     return <div className={"px-3 flex text-white items-center cursor-pointer uppercase py-3 font-bold block bg-lightBlue-500 hover:bg-lightBlue-600"}>
