@@ -15,9 +15,9 @@ export let contacts = store => {
         return { contacts: {...contacts, active: active, activeData: contacts.list.find(e => e.id === active) }}
     })
     store.on('contacts/setActiveChatMembers', ({ contacts }, activeMembers) => {
-        return { contacts: {...contacts, activeMembers: activeMembers }}
+        return { contacts: {...contacts, activeMembers: {...activeMembers} }}
     })
     store.on('contacts/setActiveData', ({ contacts }, activeData) => {
-        return { contacts: {...contacts, activeData: activeData }}
+        return { contacts: {...contacts, activeData: {...activeData} }}
     })
 }

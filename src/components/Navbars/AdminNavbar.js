@@ -22,7 +22,7 @@ const getText = (x) => {
 }
 
 export default function Navbar() {
-  const { dispatch, contacts } = useStoreon('contacts')
+  const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
   const [showEditChat, setShowEditChat] = React.useState(false)
   const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'refresh_token', 'login']);
   const hid = contacts.active === 0 ? "hidden" : ""
@@ -40,6 +40,9 @@ export default function Navbar() {
   }
   const handleAddUser = (data) => {
     reloadTokenController(setCookie, Controller().addChatMember, contacts.active, data)
+  }
+  if (contacts.active === 0 && customize.isMobile){
+    return null
   }
   return (
     <>
@@ -72,7 +75,7 @@ export default function Navbar() {
           {/* User */}
         </div>
       </nav>
-      {showEditChat ? <EditChatMW handleAddUser={handleAddUser} data={contacts.activeData} members={contacts.activeData.members} onHide={() => {setShowEditChat(false)}}/> : null}
+      {showEditChat ? <EditChatMW handleAddUser={handleAddUser} data={contacts.activeData} activeMembers={contacts.activeMembers} onHide={() => {setShowEditChat(false)}}/> : null}
       {/* End Navbar */}
     </>
   );

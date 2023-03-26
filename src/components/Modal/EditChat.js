@@ -73,14 +73,14 @@ export const EditChatMW = (props) => {
                             <div className="relative w-full mb-3">
                                 <div className="block text-blueGray-600 items-center font-bold mb-2 flex justify-between">
                                     <span className={"uppercase text-xs"}>
-                                        {getText(props.members.length)}
+                                        {getText(props.activeMembers.members.length)}
                                     </span>
                                     <span>
                                         <i onClick={() => setShowAddUser(true)} className={"fa fa-user-plus hover:text-blueGray-500 cursor-pointer"}></i>
                                     </span>
                                 </div>
                                 <ul className={"w-full"}>
-                                    {props.members.map((e, key) => {
+                                    {props.activeMembers.members.map((e, key) => {
                                         return (
                                             <div key={key} className={"flex items-center mt-2"}>
                                                 <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.user_name + e.user_surname)}}>

@@ -55,12 +55,21 @@ const ChatItem = ({contacts, dispatch, e}) => {
 
 function Sidebar(props) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
+  const [find, setFind] = React.useState("")
   const [createChat, setCreateChat] = React.useState(false);
   const { dispatch, contacts } = useStoreon('contacts')
+  const [viewList, setViewList] = React.useState([])
+  React.useEffect(() => {
+    if (find !== ""){
+      setViewList(contacts.list.filter(e => e.title.includes(find)))
+    } else {
+      setViewList(contacts.list) 
+    }
+  }, [contacts.list, find])
   const classNames = ""
   return (
     <>
-      <nav className="hidden md:flex md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4">
+      <nav className="hidden md:flex md:left-0 md:block md:fixed md:top-0 md:bottom-0  md:overflow-y-hidden md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4">
         <div className="md:flex-col md:items-stretch md:min-h-full md:flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
           {/* Brand */}
           <div className={"flex items-center justify-between"}>
@@ -84,14 +93,16 @@ function Sidebar(props) {
                 <input
                   type="text"
                   placeholder="Поиск"
+                  value={find}
+                  onChange={e => setFind(e.target.value)}
                   className="focus:shadow-none border-0 px-3 py-2 h-8 border border-solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
                 />
               </div>
             </form>
 
-            <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none">
+            <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none" style={{height: "calc(100vh - 125px)"}}>
 
-              {contacts.list.map((e, key) => {
+              {viewList.map((e, key) => {
                 return (
                     <div key={key}>
                       <ChatItem contacts={contacts} e={e} dispatch={dispatch}/>
@@ -151,8 +162,17 @@ function Sidebar(props) {
 function MobileSidebar(props) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
   const [createChat, setCreateChat] = React.useState(false);
+  const [find, setFind] = React.useState("")
   const { dispatch, contacts } = useStoreon('contacts')
   const classNames = ""
+  const [viewList, setViewList] = React.useState([])
+  React.useEffect(() => {
+    if (find !== ""){
+      setViewList(contacts.list.filter(e => e.title.includes(find)))
+    } else {
+      setViewList(contacts.list)
+    }
+  }, [contacts.list, find])
   if (contacts.active !== 0){
     return  null
   }
@@ -176,14 +196,16 @@ function MobileSidebar(props) {
                   <input
                       type="text"
                       placeholder="Поиск"
+                      value={find}
+                      onChange={e => setFind(e.target.value)}
                       className="focus:shadow-none border-0 px-3 py-2 h-8 border border-solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
                   />
                 </div>
               </form>
 
-              <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none">
+              <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none" style={{height: "calc(100vh - 125px)"}}>
 
-                {contacts.list.map((e, key) => {
+                {viewList.map((e, key) => {
                   return (
                       <div key={key}>
                         <ChatItem contacts={contacts} e={e} dispatch={dispatch}/>

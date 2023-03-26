@@ -3,6 +3,7 @@ import {useStoreon} from "storeon/react";
 import ReactDOM from "react-dom";
 import {EllipsisSpinner} from "../Spinners/Ellipsis";
 import InfiniteScroll from 'react-infinite-scroll-component';
+import {DeleteTimerMW} from "../Modal/DeleteTimer";
 
 
 
@@ -136,7 +137,7 @@ const Menu = (props) => {
                     <li onClick={props.onDelete} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
                         <i className={"fa fa-trash w-5 h-5 mr-2"}></i> Удалить
                     </li>
-                    <li  className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
+                    <li onClick={props.onDeleteTimer}  className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
                         <i className={"fa fa-clock w-5 h-5 mr-2"}></i> Удалить по таймеру
                     </li>
                 </ul>
@@ -152,6 +153,7 @@ export const ChatBody = (props) => {
     const [points, setPoints] = React.useState({x: 0, y: 0})
     const [hasMore, setHasMore] = React.useState(true)
     const ref = React.useRef(null)
+    const [deleteTimer, setDeleteTimer] = React.useState(false)
 
     const onContextMenu = (id) => {
         return (e) => {
@@ -214,10 +216,13 @@ export const ChatBody = (props) => {
                     scrollableTarget="scrollableDiv"
                 >
                     {[...messages.list].map((e, key) => {
-                        let typeMessage = e.media ? "file" : "text"
+                        let typeMessage = e.media?.media?.length ? "file" : "text"
                         let messageIn = e.user_login !== user.login
                         if (e.type === "devider"){
-                            return <div className={"pb-3 pt-3 mx-auto text-blueGray-600 text-sm"}>{toDate(e.date)}</div>
+                            return <div key={key} className={"pb-3 pt-3 mx-auto text-blueGray-600 text-sm"}>{toDate(e.date)}</div>
+                        }
+                        if (messageIn){
+                            return <Message key={key} message={e} onContextMenu={() => {}} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                         }
                         return <Message key={key} message={e} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                     })}
@@ -225,8 +230,8 @@ export const ChatBody = (props) => {
                 </>}
                 {!hasMore ? <div className={"py-6"}></div> : null}
 
-                {/*<DeleteTimerMW onHide={onHide}/>*/}
-                {clicked && (<Menu points={points} onDelete={onDelete} onEdit={onEdit}/>)}
+                {deleteTimer ? <DeleteTimerMW onHide={() => setDeleteTimer(false)}/> : null}
+                {clicked && (<Menu points={points} onDeleteTimer={() => setDeleteTimer(true)} onDelete={onDelete} onEdit={onEdit}/>)}
             </div>
     )
 }

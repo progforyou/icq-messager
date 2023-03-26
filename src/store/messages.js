@@ -4,21 +4,41 @@ import { createStoreon } from 'storeon'
 export let messages = store => {
     // Initial state
     store.on('@init', () => ({ messages: {list: [], page: 0, total: 100, perPage: 15} }))
-    // Reducers returns only changed part of the state
-    store.on('messages/add', ({ messages }, message) => {
+    store.on('messages/delete', ({ messages }, message) => {
         let newData = []
         let date = new Date().getDate()
-        let oldData = messages.list.concat([message]).filter(e => e.type !== "devider")
+        let oldData = messages.list.concat().filter(e => e.type !== "devider" && e.id !== message.id)
         for (const item of oldData) {
             let diffDays = date - new Date(item.created_at).getDate()
-            if (diffDays >= 1){
+            if (diffDays >= 1) {
                 newData.push({type: "devider", date: item.created_at})
                 date = new Date(item.created_at).getDate()
             }
             newData.push(item)
         }
-        return { messages: {...messages, list: newData} }
+        console.log(newData)
+        return {messages: {...messages, list: newData}}
     })
+    // Reducers returns only changed part of the state
+    store.on('messages/add', ({ messages }, message) => {
+        if (messages.list.find(e => e.id === message.id)?.id) {
+            return {messages: messages}
+        }
+            let newData = []
+            let date = new Date().getDate()
+            let oldData = messages.list.concat().filter(e => e.type !== "devider")
+            oldData.unshift(message)
+            for (const item of oldData) {
+                let diffDays = date - new Date(item.created_at).getDate()
+                if (diffDays >= 1) {
+                    newData.push({type: "devider", date: item.created_at})
+                    date = new Date(item.created_at).getDate()
+                }
+                newData.push(item)
+            }
+            console.log(newData)
+            return {messages: {...messages, list: newData}}
+        })
     store.on('messages/set', ({ messages }, messagesAll) => {
         let newData = []
         let date = new Date().getDate()
@@ -47,6 +67,6 @@ export let messages = store => {
         return { messages: {...messages, list: messages.list.filter(e => e.id !== id)} }
     })
     store.on('messages/edit', ({ messages }, data) => {
-        return { messages: {...messages, list: messages.list.map(e => e.id === data.id ? {...e, text: data.message} : e)} }
+        return { messages: {...messages, list: messages.list.map(e => e.id === data.id ? data : e)} }
     })
 }

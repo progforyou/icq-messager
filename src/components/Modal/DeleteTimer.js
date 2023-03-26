@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 export const DeleteTimerMW = (props) => {
+    const [state, setState] = React.useState({date: ""})
     const ref = React.useRef(null);
     React.useEffect(() => {
         function handleClickOutside(event) {
@@ -14,6 +15,14 @@ export const DeleteTimerMW = (props) => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [ref]);
+
+    const onSubmit = (e) => {
+        e.preventDefault()
+        props.onSubmit(state.date)
+    }
+    const changeForm = (e) => {
+        setState( {...state,[e.target.name]: e.target.value})
+    }
     return ReactDOM.createPortal(
         <>
             <div
@@ -22,6 +31,7 @@ export const DeleteTimerMW = (props) => {
                     <div ref={ref}
                          className="border-0 rounded-lg bg-white shadow-md relative flex flex-col w-full bg-white outline-none focus:outline-none pb-6">
                         <div className={`flex items-start justify-between py-3 px-4 border-b border-solid border-gray-light rounded-t `}>
+                            <input type="datetime-local" id="date" name="date"></input>
                             <button
                                 className="p-1 ml-auto bg-transparent border-0 transition-all text-blueGray-600 hover:text-blueGray-500 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                                 onClick={props.onHide}

@@ -55,7 +55,7 @@ class controller {
                 }
             })
         } catch (e) {
-            if (e.response.data.code === 401){
+            if (e.response?.data?.code === 401){
                 return "reload"
             } else {
                 toast.error(e.response.data.message)
@@ -73,7 +73,9 @@ class controller {
             return 
         }
         try{
-            r = await instance.get(`/chat/${chatId}/messages/?page=${page}`, {
+            r = await instance.post(`/chat/${chatId}/messages/`, {
+                page: page
+            },{
                 headers: {
                     "Authorization": u.access_token
                 }
@@ -81,7 +83,7 @@ class controller {
             store.dispatch("messages/set", r.data.data.messages)
             store.dispatch("messages/setTotal", r.data.data.total)
         } catch (e) {
-            if (e.response.data.code === 401){
+            if (e.response?.data?.code === 401){
                 return "reload"
             } else {
                 toast.error(e.response.data.message)
@@ -100,7 +102,7 @@ class controller {
                 }
             })
         } catch (e) {
-            if (e.response.data.code === 401){
+            if (e.response?.data?.code === 401){
                 return "reload"
             } else {
                 toast.error(e.response.data.message)   
@@ -121,7 +123,7 @@ class controller {
             console.log(r.data.data.chats)
             store.dispatch("contacts/set", r.data.data.chats)
         } catch (e) {
-            if (e.response.data.code === 401){
+            if (e.response?.data?.code === 401){
                 return "reload"
             } else {
                 toast.error(e.response.data.message)
@@ -144,7 +146,7 @@ class controller {
             })
             store.dispatch("contacts/setActiveChatMembers", r.data.data)
         } catch (e) {
-            if (e.response.data.code === 401){
+            if (e.response?.data?.code === 401){
                 return "reload"
             } else {
                 toast.error(e.response.data.message)
@@ -165,9 +167,10 @@ class controller {
                     "Authorization": u.access_token
                 }
             })
-            await this.getChatMembers(id)
+            await new controller().getChatMembers(id)
         } catch (e) {
-            if (e.response.data.code === 401){
+            console.log(e)
+            if (e.response?.data?.code === 401){
                 return "reload"
             } else {
                 toast.error(e.response.data.message)
@@ -179,14 +182,17 @@ class controller {
     async sendMedia(data){
         let r
         let u = store.get("user").user
+        let formData = new FormData();
+        formData.append("file", data[0]);
         try{
-            r = await instance.post(`/media`, {
+            r = await instance.post(`/media`, formData, {
                 headers: {
-                    "Authorization": u.access_token
+                    "Authorization": u.access_token,
+                    "Content-Type": "multipart/form-data",
                 }
             })
         } catch (e) {
-            if (e.response.data.code === 401){
+            if (e.response?.data?.code === 401){
                 return "reload"
             } else {
                 toast.error(e.response.data.message)
@@ -199,6 +205,6 @@ class controller {
 
 }
 
-export default () => {
+export default  () => {
     return new controller();
 }
