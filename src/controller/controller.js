@@ -10,6 +10,19 @@ const instance = axios.create({
 });
 
 
+function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+    }
+    return result;
+}
+
+
 class controller {
     constructor() {
         if (controller._instance) {
@@ -183,6 +196,28 @@ class controller {
         let u = store.get("user").user
         let formData = new FormData();
         formData.append("file", data);
+        try{
+            r = await instance.post(`/media`, formData, {
+                headers: {
+                    "Authorization": u.access_token,
+                    "Content-Type": "multipart/form-data",
+                }
+            })
+        } catch (e) {
+            if (e.response?.data?.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
+        }
+        return r
+    }
+
+    async sendVoice(data){
+        let r
+        let u = store.get("user").user
+        let formData = new FormData();
+        formData.append("file", data, `voice_${makeid(4)}.mp3`);
         try{
             r = await instance.post(`/media`, formData, {
                 headers: {

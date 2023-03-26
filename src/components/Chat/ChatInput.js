@@ -13,6 +13,7 @@ export const ChatInput = (props) => {
     const [currentTime, setCurrentTime] = React.useState(0)
     const [sendToggle, setSendToggle] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
+    const [file, setFile] = React.useState(null);
     const {
         time,
         data,
@@ -42,6 +43,7 @@ export const ChatInput = (props) => {
         }
         setTimeRecording(null)
         setHasRecording(false)
+        setFile(null)
     }
     
     const stopRecord = () => {
@@ -52,14 +54,15 @@ export const ChatInput = (props) => {
         }
     }
 
-    const sendRecord = (r) => {
+    const sendRecord = async (r) => {
         if (recording) {
             stop();
-            console.log("send")
         }
+        props.sendRecord(file)
         setTimeRecording(null)
         setHasRecording(false)
         setSendToggle(true)
+        setFile(null)
     }
     
     const playRecord = () => {
@@ -75,6 +78,7 @@ export const ChatInput = (props) => {
             if (sendToggle){
                 setSendToggle(false)
             } else {
+                setFile(data.blob)
                 audioRef.current.src = data.url;
             }
         }
@@ -104,7 +108,7 @@ export const ChatInput = (props) => {
         props.setMessage("")
     }
     return (
-        <div className={"items-center"}>
+        <div className={"items-center flex"}>
             <audio ref={audioRef} hidden />
             {recording || hasRecording ? <ChatRecorder currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :

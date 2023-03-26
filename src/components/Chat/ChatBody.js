@@ -63,6 +63,9 @@ const FileTyper = (props) => {
             </NavLink>
         )
     }
+    if (props.data.file.match(/\.(mp3|wav)$/i)){
+        return <audio src={`${props.data.url}`}  />
+    }
     return (
         <>
             <span className={"mr-2"}>{getFileName(props.data.url)}</span>

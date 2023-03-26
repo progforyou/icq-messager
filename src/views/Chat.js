@@ -126,6 +126,18 @@ function _Chat(props) {
             }
         });
     }
+    
+    async function sendRecord(file){
+        let r = await reloadTokenController(setCookie, Controller().sendVoice, file)
+        sendJsonMessage({
+            event: 'create_message',
+            content: {
+                text: "",
+                media: [{id: r.data.data.id}],
+                access_token: cookies.access_token
+            }
+        });
+    }
 
     function handleEditMessage() {
         let media = state.prevFiles.map(e => ({id:e.id}))
@@ -153,7 +165,7 @@ function _Chat(props) {
     <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
         {contacts.active === 0 ? <div className={"m-auto"}>Выберите чат</div> : <>
         <ChatBody getMessages={getMessages} handleDeleteMessage={handleDeleteMessage} handleEditMessage={onEditMessage}/>
-        <ChatInput deleteFilePrev={deleteFilePrev} deleteFile={deleteFile}  handleFiles={handleFiles} isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>
+        <ChatInput sendRecord={sendRecord} deleteFilePrev={deleteFilePrev} deleteFile={deleteFile}  handleFiles={handleFiles} isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>
         </> }
     </div>
   );
