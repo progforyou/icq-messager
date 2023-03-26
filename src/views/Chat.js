@@ -14,7 +14,7 @@ import AdminController from "../controller/adminController";
 const WS_URL = 'ws://127.0.0.1:8000/chat';
 export default function Chat(props) {
     const { dispatch, contacts } = useStoreon('contacts')
-    const [state, setState] = React.useState({message: "", prevMessage: ""})
+    const [state, setState] = React.useState({message: "", files: [], prevMessage: ""})
     const [isEdit, setIsEdit] = React.useState(false)
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
     if (contacts.active !== 0){}
@@ -30,6 +30,13 @@ export default function Chat(props) {
             }
         }
     });
+    const handleFiles = (files) => {
+        setState({...state, files: [...state.files, ...files]})
+    }
+    
+    const deleteFile = (id) => {
+        setState({...state, files: state.files.filter((e, key) => key !== id)})
+    }
     
     React.useEffect(() => {
         reloadTokenController(setCookie, Controller().getChats)
@@ -44,7 +51,14 @@ export default function Chat(props) {
         return reloadTokenController(setCookie, Controller().getChatMessages)
     }
 
-    function handleSendMessage() {
+    async function handleSendMessage() {
+        if (state.files.length > 0){
+            let data = {files: state.files}
+            let r = await reloadTokenController(setCookie, Controller().sendMedia, data)
+            console.log(r)
+            //id here
+            //and create message with ID
+        }
         sendJsonMessage({
             event: 'create_message',
             content: {
@@ -107,7 +121,7 @@ export default function Chat(props) {
     <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
         {contacts.active === 0 ? <div className={"m-auto"}>Выберите чат</div> : <>
         <ChatBody getMessages={getMessages} handleDeleteMessage={handleDeleteMessage} handleEditMessage={onEditMessage}/>
-        <ChatInput isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>
+        <ChatInput deleteFile={deleteFile}  handleFiles={handleFiles} isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>
         </> }
     </div>
   );

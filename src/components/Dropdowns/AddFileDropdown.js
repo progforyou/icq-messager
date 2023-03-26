@@ -6,7 +6,6 @@ export const AddFileDropdown = (props) => {
     const btnDropdownRef = React.useRef(null);
     const ref = React.useRef(null);
     const fileRef = React.useRef(null);
-    const [file, setFile] = React.useState(null);
     const photoRef = React.useRef(null);
     
     const toggleDropdownPopover = () => {
@@ -25,7 +24,8 @@ export const AddFileDropdown = (props) => {
     }, [ref]);
     const handleFileChange = (e) => {
         if (e.target.files) {
-            setFile(e.target.files[0]);
+            let arr = Array.from(e.target.files)
+            props.handleFiles(arr)
         }
     };
     const handleFileOpen = () => {
@@ -39,7 +39,7 @@ export const AddFileDropdown = (props) => {
     return (
         <div className={"relative"}>
             <input type="file" onChange={handleFileChange} hidden ref={fileRef}/>
-            <input type="file" accept="image/*, video/*" onChange={handlePhotoOpen} hidden ref={photoRef}/>
+            <input type="file" accept="image/*, video/*" onChange={handleFileChange} hidden ref={photoRef}/>
             <i ref={btnDropdownRef} onClick={(e) => {
                 e.preventDefault();
                 toggleDropdownPopover();

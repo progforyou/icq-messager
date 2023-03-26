@@ -176,6 +176,25 @@ class controller {
         return r
     }
 
+    async sendMedia(data){
+        let r
+        let u = store.get("user").user
+        try{
+            r = await instance.post(`/media`, {
+                headers: {
+                    "Authorization": u.access_token
+                }
+            })
+        } catch (e) {
+            if (e.response.data.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
+        }
+        return r
+    }
+
    
 
 }

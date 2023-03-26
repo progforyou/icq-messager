@@ -24,7 +24,7 @@ function startTime(date) {
 }
 
 var fulldays = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПТ", "СБ"];
-var months = ["Янв", "Фев", "Март", "Апрель", "Май", "Июнь", "Июль", "Авг", "Сент", "Окт", "Ноя", "Дек"];
+var months = ["Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря"];
 
 
 function toDate(someDateTimeStamp) {
@@ -44,10 +44,10 @@ function toDate(someDateTimeStamp) {
         return "Завтра";
     }else if(diffYears === 0 && (diffDays < -1 && diffDays > -7)) {
         return fulldays[dt.getDay()];
-    }else if(diffYears >= 1){
-        return month + " " + date + ", " + new Date(someDateTimeStamp).getFullYear();
+    }else if (diffYears >= 1){
+        return date + " " + month + ", " + new Date(someDateTimeStamp).getFullYear();
     }else {
-        return month + " " + date;
+        return date + " " + month;
     }
 }
 
@@ -217,7 +217,7 @@ export const ChatBody = (props) => {
                         let typeMessage = e.media ? "file" : "text"
                         let messageIn = e.user_login !== user.login
                         if (e.type === "devider"){
-                            return <div className={"pb-3 pt-3 mx-auto"}>{toDate(e.date)}</div>
+                            return <div className={"pb-3 pt-3 mx-auto text-blueGray-600 text-sm"}>{toDate(e.date)}</div>
                         }
                         return <Message key={key} message={e} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                     })}

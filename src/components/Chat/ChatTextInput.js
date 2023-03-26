@@ -26,8 +26,16 @@ export const ChatTextInput = (props) => {
     }, [ref]);
     return (
         <>
+            {props.state.files?.length ? <div className={"text-sm flex text-blueGray-600"}>
+                {Array.from(props.state.files).map((file, key) => {
+                    return <div onClick={() => props.deleteFile(key)} style={{maxWidth: "100px"}} className={"hover:text-blueGray-500 mr-3 cursor-pointer overflow-ellipsis whitespace-nowrap"}>
+                        <i className={"fa fa-file"}></i> {file.name}
+                    </div>
+                })}
+            </div> : null}
+        <div className={"flex w-full"}>
             <div className={"mr-3"}>
-                <AddFileDropdown startRecord={props.startRecord}/>
+                <AddFileDropdown handleFiles={props.handleFiles} startRecord={props.startRecord}/>
             </div>
             <form className={"w-full"} onSubmit={(e) => {
                 e.preventDefault();
@@ -53,9 +61,10 @@ export const ChatTextInput = (props) => {
                 </div>
             </form>
             <div className={"ml-3 text-center"}>
-                {props.state.message ? <i onClick={props.onSendMessage} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> :
+                {props.state.message || props.state.files?.length ? <i onClick={props.onSendMessage} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> :
                     <i onClick={props.startRecord} className={"fa fa-microphone w-5 cursor-pointer text-blueGray-700 hover:text-blueGray-500 text-xl"}></i>}
             </div>
+        </div>
         </>
     )
 }
