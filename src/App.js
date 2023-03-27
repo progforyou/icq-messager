@@ -39,6 +39,7 @@ export default () => {
                     <Route path="/signIn" component={SignIn} />
                     <Route path="/admin" component={Admin} />
                     <Route path="/chat" component={Main} />
+                    <Redirect to={"/chat"} exact />
                 </Switch>
             </BrowserRouter>
         </>

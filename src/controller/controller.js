@@ -86,9 +86,7 @@ class controller {
             return 
         }
         try{
-            r = await instance.post(`/chat/${chatId}/messages/`, {
-                page: page
-            },{
+            r = await instance.get(`/chat/${chatId}/messages/?page=${page}`,{
                 headers: {
                     "Authorization": u.access_token
                 }
