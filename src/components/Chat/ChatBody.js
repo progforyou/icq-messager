@@ -194,6 +194,9 @@ export const ChatBody = (props) => {
     const onDelete = () => {
         props.handleDeleteMessage(activeMessage)
     }
+    const handleDeleteTimer = (date) => {
+        props.handleDeleteMessageTimer(activeMessage, date)
+    }
     const onEdit = () => {
         props.handleEditMessage(activeMessage, messages.list.find(e => e.id === activeMessage).text, messages.list.find(e => e.id === activeMessage).media.media)
     }
@@ -257,7 +260,7 @@ export const ChatBody = (props) => {
                 </>}
                 {!hasMore ? <div className={"py-6"}></div> : null}
 
-                {deleteTimer ? <DeleteTimerMW onHide={() => setDeleteTimer(false)}/> : null}
+                {deleteTimer ? <DeleteTimerMW onSubmit={handleDeleteTimer} onHide={() => setDeleteTimer(false)}/> : null}
                 {clicked && (<Menu points={points} onDeleteTimer={() => setDeleteTimer(true)} onDelete={onDelete} onEdit={onEdit}/>)}
             </div>
     )

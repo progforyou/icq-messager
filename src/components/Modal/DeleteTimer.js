@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 export const DeleteTimerMW = (props) => {
-    const [state, setState] = React.useState({date: ""})
+    const [state, setState] = React.useState({date: new Date()})
     const ref = React.useRef(null);
     React.useEffect(() => {
         function handleClickOutside(event) {
@@ -19,9 +19,7 @@ export const DeleteTimerMW = (props) => {
     const onSubmit = (e) => {
         e.preventDefault()
         props.onSubmit(state.date)
-    }
-    const changeForm = (e) => {
-        setState( {...state,[e.target.name]: e.target.value})
+        props.onHide()
     }
     return ReactDOM.createPortal(
         <>
@@ -31,7 +29,6 @@ export const DeleteTimerMW = (props) => {
                     <div ref={ref}
                          className="border-0 rounded-lg bg-white shadow-md relative flex flex-col w-full bg-white outline-none focus:outline-none pb-6">
                         <div className={`flex items-start justify-between py-3 px-4 border-b border-solid border-gray-light rounded-t `}>
-                            <input type="datetime-local" id="date" name="date"></input>
                             <button
                                 className="p-1 ml-auto bg-transparent border-0 transition-all text-blueGray-600 hover:text-blueGray-500 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
                                 onClick={props.onHide}
@@ -44,6 +41,17 @@ export const DeleteTimerMW = (props) => {
                         </div>
                         <div className={"flex py-4 px-4 font-w"}>
                             Введите время, после которого ваше сообщение удалится
+                        </div>
+                        <div className={"px-4"}>
+                            <input className={"mt-3 w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"} value={state.date} onChange={e => setState({...state, date: e.target.value})} type="datetime-local" id="date" name="date"></input>
+                        </div>
+                        <div className={"flex px-4 mt-4"}>
+                            <button onClick={onSubmit}
+                                    className="ml-auto w-full mr-3 bg-lightBlue-500 text-white active:bg-lightBlue-600 text-xs font-bold uppercase px-4 py-2 rounded shadow hover:shadow-lg outline-none focus:outline-none lg:mr-1 lg:mb-0 ml-3 mb-3 ease-linear transition-all duration-150"
+                                    type="submit"
+                            >
+                                ОК
+                            </button>
                         </div>
                     </div>
                 </div>

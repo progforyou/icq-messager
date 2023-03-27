@@ -115,13 +115,17 @@ function _Chat(props) {
             }
         });
     }
+    
+    const toPythonStr = (date) => {
+        return `${(date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))}/${(date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())}/${date.getFullYear()} ${(date.getHours() > 8) ? (date.getHours() + 1) : ('0' + (date.getHours() + 1))}:${(date.getMinutes() > 8) ? (date.getMinutes() + 1) : ('0' + (date.getMinutes() + 1))}:00`
+    }
 
     function handleDeleteTimerMessage(id, date) {
         sendJsonMessage({
             event: 'delete_message',
             content: {
                 id: id,
-                when: date,
+                when: toPythonStr(new Date(date)),
                 access_token: cookies.access_token
             }
         });
@@ -164,7 +168,7 @@ function _Chat(props) {
   return (
     <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
         {contacts.active === 0 ? <div className={"m-auto"}>Выберите чат</div> : <>
-        <ChatBody getMessages={getMessages} handleDeleteMessage={handleDeleteMessage} handleEditMessage={onEditMessage}/>
+        <ChatBody handleDeleteMessageTimer={handleDeleteTimerMessage} getMessages={getMessages} handleDeleteMessage={handleDeleteMessage} handleEditMessage={onEditMessage}/>
         <ChatInput sendRecord={sendRecord} deleteFilePrev={deleteFilePrev} deleteFile={deleteFile}  handleFiles={handleFiles} isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>
         </> }
     </div>
