@@ -108,7 +108,7 @@ export const ChatInput = (props) => {
         props.setMessage("")
     }
     return (
-        <div className={"items-center flex"}>
+        <div className={"items-center"}>
             <audio ref={audioRef} hidden />
             {recording || hasRecording ? <ChatRecorder currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :

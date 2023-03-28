@@ -10,8 +10,8 @@ import Controller from "../controller/controller";
 import {useCookies} from "react-cookie";
 import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
-
-const WS_URL = 'ws://127.0.0.1:8000/chat';
+//http://213.189.201.22/
+const WS_URL = 'ws://213.189.201.22:8000/chat';
 function _Chat(props) {
     const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})

@@ -7,9 +7,8 @@ function writeTime(t) {
 }
 
 export const ChatRecorder = (props) => {
-    console.log(props.currentTime)
     return (
-        <>
+        <div className={"flex"}>
             <div className={"mr-3"}>
                 <i onClick={props.deleteRecord} className={"fa fa-trash cursor-pointer text-blueGray-700 hover:text-blueGray-500 text-xl"}></i>
             </div>
@@ -36,6 +35,6 @@ export const ChatRecorder = (props) => {
             <div className={"ml-3 text-center"}>
                 <i onClick={props.sendRecord} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> 
             </div>
-        </>
+        </div>
     )
 }

@@ -13,8 +13,8 @@ export default function Admin() {
     let history = useHistory();
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
     React.useEffect(() => {
-        if (!(cookies.access_token && cookies.refresh_token && cookies.login)){
-            history.push("/signIn");
+        if (!(cookies.admin_access_token && cookies.admin_refresh_token)){
+            history.push("/admin/signIn");
         }
 
         reloadTokenController(setCookie, AdminController().getUsers)

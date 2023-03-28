@@ -6,19 +6,19 @@ import {useCookies} from "react-cookie";
 import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
 
-export default function SignIn() {
+export default function SignInAdmin() {
   const [state, setState] = React.useState({
     login: "",
     password: "",
     client: "",
-    type: "default"
+    type: "admin"
   })
   let history = useHistory();
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
 
   React.useEffect(() => {
-    if (cookies.access_token && cookies.refresh_token && cookies.login){
-      history.push("/chat");
+    if (cookies.admin_access_token && cookies.admin_refresh_token){
+      history.push("/admin");
     }
   }, [])
   
@@ -28,11 +28,11 @@ export default function SignIn() {
     state.client = getBrowserName()
     console.log(state)
     let r = await Controller().signIn(state)
-    setCookie('access_token', r.data.data.access_token);
-    setCookie('refresh_token', r.data.data.refresh_token);
+    setCookie('admin_access_token', r.data.data.access_token);
+    setCookie('admin_refresh_token', r.data.data.refresh_token);
     setCookie('login', state.login);
     if (r && r.status === 200){
-      history.push("/chat");
+      history.push("/admin");
     }
   }
 
@@ -62,7 +62,7 @@ export default function SignIn() {
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blueGray-200 border-0">
               <div className="flex-auto px-4 lg:px-10 py-10 pt-0">
                 <div className="text-blueGray-400 text-center mb-3 font-bold">
-                  <small>Вход</small>
+                  <small>Вход в панель администратора</small>
                 </div>
                 <form onSubmit={onSubmit}>
                   <div className="relative w-full mb-3">
