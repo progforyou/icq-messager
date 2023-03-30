@@ -3,7 +3,7 @@ import { createStoreon } from 'storeon'
 // Initial state, reducers and business logic are packed in independent modules
 export let contacts = store => {
     // Initial state
-    store.on('@init', () => ({ contacts: {list: [], active: 0, activeChat: 0, activeData: {}, activeMembers: {}, find: {}, activeType: ""} }))
+    store.on('@init', () => ({ contacts: {list: [], active: 0, activeChat: 0, activeData: {}, activeMembers: {}, find: {}, activeType: "", findStr: ""} }))
     // Reducers returns only changed part of the state
     store.on('contacts/addChat', ({ contacts }, contact) => {
         return { contacts: {...contacts, list: contacts.list.concat([contact])} }
@@ -31,5 +31,8 @@ export let contacts = store => {
     })
     store.on('contacts/activeChat', ({ contacts }, activeChat) => {
         return { contacts: {...contacts, activeChat: activeChat }}
+    })
+    store.on('contacts/setFindStr', ({ contacts }, findStr) => {
+        return { contacts: {...contacts, findStr: findStr }}
     })
 } 

@@ -10,6 +10,7 @@ import Controller from "../controller/controller";
 import {useCookies} from "react-cookie";
 import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
+import {store} from "../store";
 //http://213.189.201.22/
 const WS_URL = 'ws://127.0.0.1:8000/chat';
 //const WS_URL = 'ws://213.189.201.22:8000/chat';
@@ -176,6 +177,27 @@ function _Chat(props) {
   );
 }
 
+const hasUser = (data, uid) => {
+    for (let datum of data) {
+        for (let member of datum.members) {
+            if (member.user === uid){
+                return true
+            }
+        }
+    }
+    return false
+}
+
+const getChat = (data, uid) => {
+    for (let datum of data) {
+        for (let member of datum.members) {
+            if (member.user === uid){
+                return datum
+            }
+        }
+    }
+    return null
+}
 
 export default function Chat(props) {
     const { dispatch, contacts } = useStoreon('contacts')
@@ -184,21 +206,34 @@ export default function Chat(props) {
     React.useEffect(() => {
         reloadTokenController(setCookie, Controller().getChats)
     }, [])
+    console.log(contacts.list.members)
     React.useEffect(async () => {
         if (contacts.active !== 0) {
-            if (Object.keys(contacts.find).length) {
+            console.log(contacts)
+            if (Object.keys(contacts.find).length && contacts.findStr) {
                 setWait(true)
                 if (contacts.activeType === "private") {
                     let u = contacts.find.user.users.find(e => e.id === contacts.active)
-                    let r = await reloadTokenController(setCookie, Controller().createChat, {title: "w"})
+                    if (hasUser(contacts.list, u.id)){
+                        let chat = getChat(contacts.list, u.id)
+                        dispatch("contacts/setFindStr", "")
+                        store.dispatch("contacts/setActive", chat.id)
+                        setWait(false)
+                        return
+                    }
+                    let r = await reloadTokenController(setCookie, Controller().createChat, {title: `${u.name} ${u.surname}`})
                     await reloadTokenController(setCookie, Controller().addChatMember, r.data.data.id, {user: u.login, type: "public"})
+                    await reloadTokenController(setCookie, Controller().getChats)
+                    dispatch("contacts/setFindStr", "")
+                    store.dispatch("contacts/setActive", r.data.data.id)
                     setWait(false)
                 }
             }
         }
     }, [contacts.active])
 
-    if (contacts.active === 0){
+
+    if (contacts.active === 0 && !contacts.findStr){
         return <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
         </div>
     }
