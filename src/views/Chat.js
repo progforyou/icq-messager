@@ -11,13 +11,14 @@ import {useCookies} from "react-cookie";
 import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
 //http://213.189.201.22/
-const WS_URL = 'ws://213.189.201.22:8000/chat';
+const WS_URL = 'ws://127.0.0.1:8000/chat';
+//const WS_URL = 'ws://213.189.201.22:8000/chat';
 function _Chat(props) {
     const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})
     const [isEdit, setIsEdit] = React.useState(false)
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
-    const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}/${contacts.active}/?token=${cookies.access_token}`, {
+    const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}/${contacts.active}/?access_token=${cookies.access_token}`, {
         retryOnError: false,
         onClose: () => {
             
@@ -179,12 +180,30 @@ function _Chat(props) {
 export default function Chat(props) {
     const { dispatch, contacts } = useStoreon('contacts')
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+    const [wait, setWait] = React.useState(false)
     React.useEffect(() => {
         reloadTokenController(setCookie, Controller().getChats)
     }, [])
+    React.useEffect(async () => {
+        if (contacts.active !== 0) {
+            if (Object.keys(contacts.find).length) {
+                setWait(true)
+                if (contacts.activeType === "private") {
+                    let u = contacts.find.user.users.find(e => e.id === contacts.active)
+                    let r = await reloadTokenController(setCookie, Controller().createChat, {title: "w"})
+                    await reloadTokenController(setCookie, Controller().addChatMember, r.data.data.id, {user: u.login, type: "public"})
+                    setWait(false)
+                }
+            }
+        }
+    }, [contacts.active])
+
     if (contacts.active === 0){
         return <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
         </div>
+    }
+    if (wait){
+        return null
     }
     return <_Chat {...props}/>
 }

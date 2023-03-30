@@ -11,7 +11,7 @@ export default function SignIn() {
     login: "",
     password: "",
     client: "",
-    type: "default"
+    from: "default"
   })
   let history = useHistory();
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
@@ -28,10 +28,10 @@ export default function SignIn() {
     state.client = getBrowserName()
     console.log(state)
     let r = await Controller().signIn(state)
-    setCookie('access_token', r.data.data.access_token);
-    setCookie('refresh_token', r.data.data.refresh_token);
-    setCookie('login', state.login);
     if (r && r.status === 200){
+      setCookie('access_token', r.data.data.access_token);
+      setCookie('refresh_token', r.data.data.refresh_token);
+      setCookie('login', state.login);
       history.push("/chat");
     }
   }

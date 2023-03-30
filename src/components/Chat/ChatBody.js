@@ -248,6 +248,7 @@ export const ChatBody = (props) => {
                     {[...messages.list].map((e, key) => {
                         let typeMessage = e.media?.media?.length ? "file" : "text"
                         let messageIn = e.user_login !== user.login
+                        console.log(e.user_login, user)
                         if (e.type === "devider"){
                             return <div key={key} className={"pb-3 pt-3 mx-auto text-blueGray-600 text-sm"}>{toDate(e.date)}</div>
                         }

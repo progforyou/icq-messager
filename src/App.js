@@ -9,7 +9,19 @@ import SignInAdmin from "./views/SignInAdmin";
 
 export default () => {
     const { dispatch, customize, user } = useStoreon('customize', 'user')
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login', 'admin_access_token', 'admin_refresh_token']);
+    React.useEffect(() => {
+        if (user.access_token !== cookies.access_token) {
+            dispatch("user/setAccessToken", cookies.access_token)
+        }
+        if (user.refresh_token !== cookies.refresh_token) {
+            dispatch("user/setRefreshToken", cookies.refresh_token)
+        }
+        if (user.login !== cookies.login) {
+            dispatch("user/setLogin", cookies.login)
+        }
+    }, [cookies.access_token, cookies.refresh_token, cookies.login])
+
     React.useEffect(() => {
         if (user.admin_access_token !== cookies.admin_access_token) {
             dispatch("user/setAccessToken", cookies.admin_access_token)
@@ -17,10 +29,7 @@ export default () => {
         if (user.admin_refresh_token !== cookies.admin_refresh_token) {
             dispatch("user/setRefreshToken", cookies.admin_refresh_token)
         }
-        if (user.login !== cookies.login) {
-            dispatch("user/setLogin", cookies.login)
-        }
-    }, [cookies.admin_access_token, cookies.admin_refresh_token, cookies.admin_login])
+    }, [cookies.admin_access_token, cookies.admin_refresh_token])
     
     function handleWindowSizeChange() {
         dispatch("customize/width", window.innerWidth)

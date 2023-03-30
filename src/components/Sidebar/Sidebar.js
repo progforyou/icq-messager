@@ -7,6 +7,7 @@ import {CreateChatMW} from "../Modal/CreateChat";
 import Controller from "../../controller/controller";
 import {useCookies} from "react-cookie";
 import {reloadTokenController} from "../../tools/reloadToken";
+import {store} from "../../store";
 
 
 export const getColorIdentity = (contactName) => {
@@ -23,10 +24,33 @@ const hashCodeIdentity = (s) => {
   return h;
 };
 
+const writeFind = (contacts, dispatch, onClearFind) => {
+  let res = []
+  if (Object.keys(contacts.find).length) {
+    if (contacts.find.chats.chats.length > 0) {
+      contacts.find.chats.chats.map((e, key) => {
+        res.push(
+            <div key={`chats-${key}`}>
+              <ChatItem onClearFind={onClearFind} contacts={contacts} e={e} dispatch={dispatch}/>
+            </div>
+        )
+      })
+    }
+    contacts.find.user.users.map((e, key) => {
+      res.push(
+          <div key={`chats-${key}`}>
+            <UserItem onClearFind={onClearFind} contacts={contacts} e={e} dispatch={dispatch}/>
+          </div>
+      )
+    })
+  }
+  return res
+}
 const ChatItem = ({contacts, dispatch, e}) => {
   const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.title[0]
   const onClick = () => {
     dispatch("contacts/setActive", e.id)
+    dispatch("contacts/setActiveType", "group")
     dispatch("messages/clear")
   }
   if (contacts.active === e.id){
@@ -53,19 +77,52 @@ const ChatItem = ({contacts, dispatch, e}) => {
   </div>
 }
 
+const UserItem = ({contacts, dispatch, e}) => {
+  const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.login[0]
+  const onClick = () => {
+    dispatch("contacts/setActive", e.id)
+    dispatch("contacts/setActiveType", "private")
+    dispatch("messages/clear")
+  }
+  if (contacts.active === e.id){
+    return <div className={"px-3 flex text-white items-center cursor-pointer uppercase py-3 font-bold block bg-lightBlue-500 hover:bg-lightBlue-600"}>
+      <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.login)}}>
+        <span className={"m-auto"}>
+          {itemName}
+        </span>
+      </div>
+      <div className={"text-xs"}>
+        {e.login}
+      </div>
+    </div>
+  }
+  return  <div onClick={onClick} className={"px-3 flex text-black items-center cursor-pointer uppercase py-3 font-bold block bg-transparent hover:bg-blueGray-200"}>
+    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.login)}}>
+        <span className={"m-auto"}>
+          {itemName}
+        </span>
+    </div>
+    <div className={"text-xs"}>
+      {e.login}
+    </div>
+  </div>
+}
+
 function Sidebar(props) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
+  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
   const [find, setFind] = React.useState("")
   const [createChat, setCreateChat] = React.useState(false);
   const { dispatch, contacts } = useStoreon('contacts')
   const [viewList, setViewList] = React.useState([])
   React.useEffect(() => {
+    dispatch("contacts/setActive", 0)
     if (find !== ""){
-      setViewList(contacts.list.filter(e => e.title.includes(find)))
+      reloadTokenController(setCookie, Controller().findObject, find)
     } else {
-      setViewList(contacts.list) 
+      dispatch("contacts/setFindResult", {})
     }
-  }, [contacts.list, find])
+  }, [find])
   const classNames = ""
   return (
     <>
@@ -102,13 +159,14 @@ function Sidebar(props) {
 
             <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none" style={{height: "calc(100vh - 125px)"}}>
 
-              {viewList.map((e, key) => {
+              {find !== "" ? writeFind(contacts, dispatch) : <>
+              {contacts.list.map((e, key) => {
                 return (
                     <div key={key}>
                       <ChatItem contacts={contacts} e={e} dispatch={dispatch}/>
                     </div>
                 )
-              })}
+              })} </> }
             </ul>
 
            {/* <div className={"mt-auto"}>

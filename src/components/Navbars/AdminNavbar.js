@@ -44,6 +44,7 @@ export default function Navbar() {
   if (contacts.active === 0 && customize.isMobile){
     return null
   }
+  console.log(contacts.activeMembers)
   return (
     <>
       {/* Navbar */}
@@ -62,9 +63,10 @@ export default function Navbar() {
             }}>
               <div className="text-black text-sm uppercase font-semibold sm:max-w-150 overflow-ellipsis whitespace-nowrap">
                 {contacts.activeData?.title}
+                {contacts.activeData?.type === "public" ? <>{contacts.activeData?.title}</> : null}
               </div>
               <div className={"text-sm sm:max-w-150 overflow-ellipsis whitespace-nowrap"}>
-                {getText(contacts.activeMembers?.count)}
+                {contacts.activeData?.type === "public" ? <>{getText(contacts.activeMembers?.count)}</> : null}
               </div>
             </div>
           </div>

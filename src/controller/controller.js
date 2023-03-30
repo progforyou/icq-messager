@@ -67,6 +67,7 @@ class controller {
                     "Authorization": u.access_token
                 }
             })
+            store.dispatch("contacts/clear", "all")
         } catch (e) {
             if (e.response?.data?.code === 401){
                 return "reload"
@@ -106,6 +107,7 @@ class controller {
     async createChat(data){
         let r
         let u = store.get("user").user
+        data.type = store.get("contacts").contacts.activeType
         try{
             r = await instance.post("/chat", data, {
                 headers: {
@@ -132,6 +134,26 @@ class controller {
                 }
             })
             store.dispatch("contacts/set", r.data.data.chats)
+        } catch (e) {
+            if (e.response?.data?.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
+        }
+        return r
+    }
+
+    async findObject(text){
+        let r
+        let u = store.get("user").user
+        try{
+            r = await instance.get(`/search?text=${text}`, {
+                headers: {
+                    "Authorization": u.access_token
+                }
+            })
+            store.dispatch("contacts/setFindResult", r.data.data)
         } catch (e) {
             if (e.response?.data?.code === 401){
                 return "reload"

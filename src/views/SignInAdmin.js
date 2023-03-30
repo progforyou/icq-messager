@@ -11,10 +11,10 @@ export default function SignInAdmin() {
     login: "",
     password: "",
     client: "",
-    type: "admin"
+    from: "admin"
   })
   let history = useHistory();
-  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+  const [cookies, setCookie] = useCookies(['admin_access_token', 'admin_refresh_token']);
 
   React.useEffect(() => {
     if (cookies.admin_access_token && cookies.admin_refresh_token){
@@ -28,10 +28,9 @@ export default function SignInAdmin() {
     state.client = getBrowserName()
     console.log(state)
     let r = await Controller().signIn(state)
-    setCookie('admin_access_token', r.data.data.access_token);
-    setCookie('admin_refresh_token', r.data.data.refresh_token);
-    setCookie('login', state.login);
     if (r && r.status === 200){
+      setCookie('admin_access_token', r.data.data.access_token);
+      setCookie('admin_refresh_token', r.data.data.refresh_token);
       history.push("/admin");
     }
   }
