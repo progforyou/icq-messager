@@ -36,7 +36,7 @@ class adminController {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.get("/user/", {
+            r = await instance.get("/users/", {
                 headers: {
                     "Authorization": u.access_token
                 }})
@@ -55,7 +55,26 @@ class adminController {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.put(`/user/${id}`, data, {
+            r = await instance.put(`/users/${id}`, data, {
+                headers: {
+                    "Authorization": u.access_token
+                }})
+            toast.success(r.data.message)
+        } catch (e) {
+            if (e.response.data.code === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.message)
+            }
+        }
+        return r
+    }
+
+    async updateAdmin(data) {
+        let r
+        let u = store.get("user").user
+        try{
+            r = await instance.put(`/user/}`, data, {
                 headers: {
                     "Authorization": u.access_token
                 }})
@@ -74,7 +93,7 @@ class adminController {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.delete(`/user/${id}`, {
+            r = await instance.delete(`/users/${id}`, {
                 headers: {
                     "Authorization": u.access_token
                 }})

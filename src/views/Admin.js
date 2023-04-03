@@ -8,6 +8,7 @@ import {useHistory} from "react-router";
 import Controller from "../controller/controller";
 import AdminController from "../controller/adminController";
 import {reloadTokenController} from "../tools/reloadToken";
+import AdminNavbar from "../components/Navbars/AdminNavbar";
 
 export default function Admin() {
     let history = useHistory();
@@ -21,6 +22,7 @@ export default function Admin() {
     }, [])
     return (
         <>
+            <AdminNavbar/>
             <div className="flex flex-wrap mt-4">
                 <div className="w-full mb-12 px-4">
                     <CardTable />

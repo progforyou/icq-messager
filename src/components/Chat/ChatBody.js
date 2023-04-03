@@ -154,13 +154,16 @@ const Menu = (props) => {
     } else {
         styles.top = props.points.y
     }
-    
+
+    let isFile = activeMessage.media?.media?.length
     return ReactDOM.createPortal(
         <div className={"absolute bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"} style={styles}>
                 <ul className={"flex flex-col p-1"}>
+                    {isFile ? null : <>
                     <li onClick={props.onEdit} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
                         <i className={"fa fa-pen w-5 h-5 mr-2"}></i> Редактировать
                     </li>
+                    </>}
                     <li onClick={props.onDelete} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
                         <i className={"fa fa-trash w-5 h-5 mr-2"}></i> Удалить
                     </li>
@@ -261,7 +264,7 @@ export const ChatBody = (props) => {
                 {!hasMore ? <div className={"py-6"}></div> : null}
 
                 {deleteTimer ? <DeleteTimerMW onSubmit={handleDeleteTimer} onHide={() => setDeleteTimer(false)}/> : null}
-                {clicked && (<Menu points={points} onDeleteTimer={() => setDeleteTimer(true)} onDelete={onDelete} onEdit={onEdit}/>)}
+                {clicked && (<Menu activeMessage={activeMessage} points={points} onDeleteTimer={() => setDeleteTimer(true)} onDelete={onDelete} onEdit={onEdit}/>)}
             </div>
     )
 }

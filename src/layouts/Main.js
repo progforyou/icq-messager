@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from "react-router-dom";
 
 // components
 
-import Navbar from "../components/Navbars/AdminNavbar.js";
+import Navbar from "../components/Navbars/Navbar.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
 
 // views

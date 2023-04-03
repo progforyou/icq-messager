@@ -6,6 +6,7 @@ import SignIn from "./views/SignIn";
 import {useStoreon} from "storeon/react";
 import {useCookies} from "react-cookie";
 import SignInAdmin from "./views/SignInAdmin";
+import SettingsAdmin from "./views/SettingsAdmin";
 
 export default () => {
     const { dispatch, customize, user } = useStoreon('customize', 'user')
@@ -48,6 +49,7 @@ export default () => {
                     {/* add routes with layouts */}
                     <Route path="/signIn" component={SignIn} />
                     <Route path="/admin" exact component={Admin} />
+                    <Route path="/admin/settings" exact component={SettingsAdmin} />
                     <Route path="/admin/signIn" exact component={SignInAdmin} />
                     <Route path="/chat" component={Main} />
                     <Redirect to={"/chat"} exact />
