@@ -74,7 +74,7 @@ class adminController {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.put(`/user/}`, data, {
+            r = await instance.put(`/user/`, data, {
                 headers: {
                     "Authorization": u.access_token
                 }})

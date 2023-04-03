@@ -138,7 +138,7 @@ export default function CardTable({ color }) {
                   {e.session?.client}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  {e.session?.online?.toLocaleString()}
+                  {new Date(e.session?.online).toLocaleString() === "Invalid Date" ? "" : new Date(e.session?.online).toLocaleString()}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
                   <i onClick={() => {

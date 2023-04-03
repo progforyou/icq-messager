@@ -12,8 +12,8 @@ import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
 import {store} from "../store";
 //http://213.189.201.22/
-const WS_URL = `ws://${window.location.hostname}:8000/chat`;
-//const WS_URL = 'ws://127.0.0.1:8000/chat';
+const WS_URL = `wss://${window.location.hostname}:8000/chat`;
+//const WS_URL = 'wss://127.0.0.1:8000/chat';
 function _Chat(props) {
     const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})
