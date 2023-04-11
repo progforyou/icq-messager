@@ -123,7 +123,7 @@ const ChatItem = ({contacts, dispatch, e, login}) => {
 const UserItem = ({contacts, dispatch, e, setCookie}) => {
   const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.login[0]
   const onClick = async () => {
-      let u = contacts.find.user.users.find(e => e.id === contacts.active)
+      let u = e
       console.log(hasUser(contacts.list, u.id), contacts.list)
       if (hasUser(contacts.list, u.id)){
         let chat = getChat(contacts.list, u.id)
