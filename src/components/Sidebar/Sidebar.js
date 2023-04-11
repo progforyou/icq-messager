@@ -24,7 +24,18 @@ const hashCodeIdentity = (s) => {
   return h;
 };
 
-const writeFind = (contacts, dispatch, onClearFind) => {
+const hasUser = (data, uid) => {
+  for (let datum of data) {
+    for (let member of datum.members) {
+      if (member.user === uid){
+        return true
+      }
+    }
+  }
+  return false
+}
+
+const writeFind = (contacts, dispatch, setCookie) => {
   let res = []
   if (Object.keys(contacts.find).length) {
     if (contacts.find.chats.chats.length > 0) {
@@ -39,13 +50,29 @@ const writeFind = (contacts, dispatch, onClearFind) => {
     contacts.find.user.users.map((e, key) => {
       res.push(
           <div key={`chats-users-${key}`}>
-            <UserItem onClearFind={onClearFind} contacts={contacts} e={e} dispatch={dispatch}/>
+            <UserItem onClearFind={onClearFind} contacts={contacts} e={e} dispatch={dispatch} setCookie={setCookie}/>
           </div>
       )
     })
   }
   return res
 }
+
+/*const ChatItemFind = ({contacts, dispatch, e, setCookie}) => {
+  let name = e.title[0]
+  const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : name
+  return  <div onClick={onClick} className={"px-3 flex text-black items-center cursor-pointer uppercase py-3 font-bold block bg-transparent hover:bg-blueGray-200"}>
+    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(name)}}>
+        <span className={"m-auto"}>
+          {itemName}
+        </span>
+    </div>
+    <div className={"text-xs"}>
+      {e.title}
+    </div>
+  </div>
+}*/
+
 const ChatItem = ({contacts, dispatch, e, login}) => {
   let name = e.title[0]
   if (e.type === "private" && e.title.split(" ").length){
@@ -82,12 +109,24 @@ const ChatItem = ({contacts, dispatch, e, login}) => {
   </div>
 }
 
-const UserItem = ({contacts, dispatch, e}) => {
+const UserItem = ({contacts, dispatch, e, setCookie}) => {
   const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.login[0]
-  const onClick = () => {
-    dispatch("contacts/setActive", e.id)
-    dispatch("contacts/setActiveType", "private")
-    dispatch("messages/clear")
+  const onClick = async () => {
+    if (contacts.activeType === "private") {
+      let u = contacts.find.user.users.find(e => e.id === contacts.active)
+      if (hasUser(contacts.list, u.id)){
+        console.log(hasUser(contacts.list, u.id))
+        let chat = getChat(contacts.list, u.id)
+        dispatch("contacts/setFindStr", "")
+        store.dispatch("contacts/setActive", chat.id)
+        return
+      }
+      let r = await reloadTokenController(setCookie, Controller().createChat, {title: `${u.name} ${u.surname}`})
+      await reloadTokenController(setCookie, Controller().addChatMember, r.data.data.id, {user: u.login, type: "public"})
+      await reloadTokenController(setCookie, Controller().getChats)
+      dispatch("contacts/setFindStr", "")
+      store.dispatch("contacts/setActive", r.data.data.id)
+    }
   }
   if (contacts.active === e.id){
     return <div className={"px-3 flex text-white items-center cursor-pointer uppercase py-3 font-bold block bg-lightBlue-500 hover:bg-lightBlue-600"}>
@@ -163,7 +202,7 @@ function Sidebar(props) {
 
             <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none" style={{height: "calc(100vh - 125px)"}}>
 
-              {Object.keys(contacts.find).length ? writeFind(contacts, dispatch) : <>
+              {Object.keys(contacts.find).length ? writeFind(contacts, dispatch, setCookie) : <>
               {contacts.list.map((e, key) => {
                 return (
                     <div key={key}>

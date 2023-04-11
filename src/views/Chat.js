@@ -207,7 +207,7 @@ export default function Chat(props) {
         reloadTokenController(setCookie, Controller().getChats)
     }, [])
     console.log(contacts.list.members)
-    React.useEffect(async () => {
+    /*React.useEffect(async () => {
         if (contacts.active !== 0) {
             console.log(contacts)
             if (Object.keys(contacts.find).length && contacts.findStr) {
@@ -231,7 +231,7 @@ export default function Chat(props) {
                 }
             }
         }
-    }, [contacts.active, contacts.findStr])
+    }, [contacts.active, contacts.findStr])*/
 
 
     if (contacts.active === 0 && !contacts.findStr){
