@@ -42,7 +42,7 @@ const writeFind = (contacts, dispatch, setCookie) => {
       contacts.find.chats.chats.map((e, key) => {
         res.push(
             <div key={`chats-${key}`}>
-              <ChatItem onClearFind={onClearFind} contacts={contacts} e={e} dispatch={dispatch}/>
+              <ChatItem contacts={contacts} e={e} dispatch={dispatch}/>
             </div>
         )
       })
@@ -50,7 +50,7 @@ const writeFind = (contacts, dispatch, setCookie) => {
     contacts.find.user.users.map((e, key) => {
       res.push(
           <div key={`chats-users-${key}`}>
-            <UserItem onClearFind={onClearFind} contacts={contacts} e={e} dispatch={dispatch} setCookie={setCookie}/>
+            <UserItem  contacts={contacts} e={e} dispatch={dispatch} setCookie={setCookie}/>
           </div>
       )
     })
