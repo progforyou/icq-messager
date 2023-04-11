@@ -5,13 +5,15 @@ import Controller from "../controller/controller";
 import {useCookies} from "react-cookie";
 import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
+import axios from "axios";
 
 export default function SignIn() {
   const [state, setState] = React.useState({
     login: "",
     password: "",
     client: "",
-    from: "default"
+    from: "default",
+    ip: "127.0.0.1"
   })
   let history = useHistory();
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
@@ -26,6 +28,7 @@ export default function SignIn() {
   const onSubmit = async (e) => {
     e.preventDefault();
     state.client = getBrowserName()
+    state.ip = await getIp()
     console.log(state)
     let r = await Controller().signIn(state)
     if (r && r.status === 201){
@@ -34,6 +37,10 @@ export default function SignIn() {
       setCookie('login', state.login);
       history.push("/chat");
     }
+  }
+  const getIp = async ()=>{
+    const res = await axios.get('https://geolocation-db.com/json/')
+    return res.data.IPv4
   }
 
   const getBrowserName = () => {

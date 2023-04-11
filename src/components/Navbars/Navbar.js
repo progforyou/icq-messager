@@ -31,7 +31,7 @@ export default function Navbar() {
         e.preventDefault();
         let login = cookies.login
         let r = await reloadTokenController(setCookie, Controller().signOut,{login})
-        if (r && r.data.code === 201){
+        if (r && r.data.code === 200){
             removeCookie('access_token');
             removeCookie('refresh_token');
             removeCookie('login');
