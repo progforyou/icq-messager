@@ -38,7 +38,7 @@ const writeFind = (contacts, dispatch, onClearFind) => {
     }
     contacts.find.user.users.map((e, key) => {
       res.push(
-          <div key={`chats-${key}`}>
+          <div key={`chats-users-${key}`}>
             <UserItem onClearFind={onClearFind} contacts={contacts} e={e} dispatch={dispatch}/>
           </div>
       )

@@ -55,7 +55,7 @@ class adminController {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.put(`/users/${id}`, data, {
+            r = await instance.put(`/user/${id}`, data, {
                 headers: {
                     "Authorization": u.access_token
                 }})
@@ -93,7 +93,7 @@ class adminController {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.delete(`/users/${id}`, {
+            r = await instance.delete(`/user/${id}`, {
                 headers: {
                     "Authorization": u.access_token
                 }})

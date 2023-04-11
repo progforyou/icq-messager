@@ -230,11 +230,12 @@ export default function Chat(props) {
                 }
             }
         }
-    }, [contacts.active])
+    }, [contacts.active, contacts.findStr])
 
 
     if (contacts.active === 0 && !contacts.findStr){
         return <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
+            <div className={"m-auto"}>Выберите чат</div>
         </div>
     }
     if (wait){

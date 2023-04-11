@@ -28,7 +28,7 @@ export default function SignInAdmin() {
     state.client = getBrowserName()
     console.log(state)
     let r = await Controller().signIn(state)
-    if (r && r.status === 200){
+    if (r && r.status === 201){
       setCookie('admin_access_token', r.data.data.access_token);
       setCookie('admin_refresh_token', r.data.data.refresh_token);
       history.push("/admin");

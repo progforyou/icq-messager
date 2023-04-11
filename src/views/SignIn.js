@@ -28,7 +28,7 @@ export default function SignIn() {
     state.client = getBrowserName()
     console.log(state)
     let r = await Controller().signIn(state)
-    if (r && r.status === 200){
+    if (r && r.status === 201){
       setCookie('access_token', r.data.data.access_token);
       setCookie('refresh_token', r.data.data.refresh_token);
       setCookie('login', state.login);
