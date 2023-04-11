@@ -35,6 +35,17 @@ const hasUser = (data, uid) => {
   return false
 }
 
+const getChat = (data, uid) => {
+  for (let datum of data) {
+    for (let member of datum.members) {
+      if (member.user === uid){
+        return datum
+      }
+    }
+  }
+  return null
+}
+
 const writeFind = (contacts, dispatch, setCookie) => {
   let res = []
   if (Object.keys(contacts.find).length) {
@@ -114,8 +125,8 @@ const UserItem = ({contacts, dispatch, e, setCookie}) => {
   const onClick = async () => {
     if (contacts.activeType === "private") {
       let u = contacts.find.user.users.find(e => e.id === contacts.active)
+      console.log(hasUser(contacts.list, u.id), contacts.list)
       if (hasUser(contacts.list, u.id)){
-        console.log(hasUser(contacts.list, u.id))
         let chat = getChat(contacts.list, u.id)
         dispatch("contacts/setFindStr", "")
         store.dispatch("contacts/setActive", chat.id)
