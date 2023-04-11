@@ -139,6 +139,7 @@ const UserItem = ({contacts, dispatch, e, setCookie}) => {
       store.dispatch("contacts/setActive", r.data.data.id)
     }
   }
+  console.log(e)
   if (contacts.active === e.id){
     return <div className={"px-3 flex text-white items-center cursor-pointer uppercase py-3 font-bold block bg-lightBlue-500 hover:bg-lightBlue-600"}>
       <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.login)}}>
