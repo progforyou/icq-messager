@@ -107,7 +107,6 @@ class controller {
     async createChat(data){
         let r
         let u = store.get("user").user
-        data.type = store.get("contacts").contacts.activeType
         try{
             r = await instance.post("/chat", data, {
                 headers: {

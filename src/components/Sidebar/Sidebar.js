@@ -131,7 +131,7 @@ const UserItem = ({contacts, dispatch, e, setCookie}) => {
         store.dispatch("contacts/setActive", chat.id)
         return
       }
-      let r = await reloadTokenController(setCookie, Controller().createChat, {title: `${u.name} ${u.surname}`})
+      let r = await reloadTokenController(setCookie, Controller().createChat, {title: `${u.name} ${u.surname}`, type: "private"})
       await reloadTokenController(setCookie, Controller().addChatMember, r.data.data.id, {user: u.login, type: "public"})
       await reloadTokenController(setCookie, Controller().getChats)
       dispatch("contacts/setFindStr", "")
