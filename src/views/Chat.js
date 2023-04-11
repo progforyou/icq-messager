@@ -215,6 +215,7 @@ export default function Chat(props) {
                 if (contacts.activeType === "private") {
                     let u = contacts.find.user.users.find(e => e.id === contacts.active)
                     if (hasUser(contacts.list, u.id)){
+                        console.log(hasUser(contacts.list, u.id))
                         let chat = getChat(contacts.list, u.id)
                         dispatch("contacts/setFindStr", "")
                         store.dispatch("contacts/setActive", chat.id)
