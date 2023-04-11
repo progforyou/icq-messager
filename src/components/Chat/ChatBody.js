@@ -155,7 +155,7 @@ const Menu = (props) => {
         styles.top = props.points.y
     }
 
-    let isFile = activeMessage.media?.media?.length
+    let isFile = props.activeMessage.media?.media?.length
     return ReactDOM.createPortal(
         <div className={"absolute bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"} style={styles}>
                 <ul className={"flex flex-col p-1"}>
