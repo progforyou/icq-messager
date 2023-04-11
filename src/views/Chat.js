@@ -202,45 +202,15 @@ const getChat = (data, uid) => {
 export default function Chat(props) {
     const { dispatch, contacts } = useStoreon('contacts')
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
-    const [wait, setWait] = React.useState(false)
     React.useEffect(() => {
         reloadTokenController(setCookie, Controller().getChats)
     }, [])
-    console.log(contacts.list.members)
-    /*React.useEffect(async () => {
-        if (contacts.active !== 0) {
-            console.log(contacts)
-            if (Object.keys(contacts.find).length && contacts.findStr) {
-                setWait(true)
-                if (contacts.activeType === "private") {
-                    let u = contacts.find.user.users.find(e => e.id === contacts.active)
-                    if (hasUser(contacts.list, u.id)){
-                        console.log(hasUser(contacts.list, u.id))
-                        let chat = getChat(contacts.list, u.id)
-                        dispatch("contacts/setFindStr", "")
-                        store.dispatch("contacts/setActive", chat.id)
-                        setWait(false)
-                        return
-                    }
-                    let r = await reloadTokenController(setCookie, Controller().createChat, {title: `${u.name} ${u.surname}`})
-                    await reloadTokenController(setCookie, Controller().addChatMember, r.data.data.id, {user: u.login, type: "public"})
-                    await reloadTokenController(setCookie, Controller().getChats)
-                    dispatch("contacts/setFindStr", "")
-                    store.dispatch("contacts/setActive", r.data.data.id)
-                    setWait(false)
-                }
-            }
-        }
-    }, [contacts.active, contacts.findStr])*/
 
 
-    if (contacts.active === 0 && !contacts.findStr){
+    if (contacts.active === 0){
         return <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
             <div className={"m-auto"}>Выберите чат</div>
         </div>
-    }
-    if (wait){
-        return null
     }
     return <_Chat {...props}/>
 }
