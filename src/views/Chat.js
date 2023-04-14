@@ -12,14 +12,14 @@ import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
 import {store} from "../store";
 //http://213.189.201.22/
-const WS_URL = `wss://${window.location.hostname}:8000/chat`;
+const WS_URL = `wss://${window.location.hostname}/wss`;
 //const WS_URL = 'wss://127.0.0.1:8000/chat';
 function _Chat(props) {
     const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})
     const [isEdit, setIsEdit] = React.useState(false)
     const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
-    const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}/${contacts.active}/?access_token=${cookies.access_token}`, {
+    const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}/${contacts.active}/?token=${cookies.access_token}`, {
         retryOnError: false,
         onClose: () => {
             
