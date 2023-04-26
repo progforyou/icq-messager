@@ -38,7 +38,8 @@ export const CreateUserMW = (props) => {
         }
     }
     const onSubmit = async (e) => {
-        state.role = Number(state.role)
+        state.is_admin = state.role === "2"
+        delete state.role
         e.preventDefault();
         console.log(state)
         props.onSubmit(state)

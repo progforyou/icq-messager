@@ -11,15 +11,12 @@ export default function SignInAdmin() {
   const [state, setState] = React.useState({
     login: "",
     password: "",
-    client: "",
-    from: "admin",
-    ip: "127.0.0.1"
   })
   let history = useHistory();
-  const [cookies, setCookie] = useCookies(['admin_access_token', 'admin_refresh_token']);
+  const [cookies, setCookie] = useCookies(['admin_access_token']);
 
   React.useEffect(() => {
-    if (cookies.admin_access_token && cookies.admin_refresh_token){
+    if (cookies.admin_access_token){
       history.push("/admin");
     }
   }, [])
@@ -27,21 +24,14 @@ export default function SignInAdmin() {
   const changeForm = (e) => setState({...state, [e.target.name]: e.target.value})
   const onSubmit = async (e) => {
     e.preventDefault();
-    state.client = getBrowserName()
-    state.ip = await getIp()
-    console.log(state)
+    state.browser = getBrowserName()
     let r = await Controller().signIn(state)
-    if (r && r.status === 201){
-      setCookie('admin_access_token', r.data.data.access_token);
-      setCookie('admin_refresh_token', r.data.data.refresh_token);
+    if (r && r.status === 200){
+      setCookie('admin_access_token', r.data.access_token);
       history.push("/admin");
     }
   }
 
-  const getIp = async ()=>{
-    const res = await axios.get('https://geolocation-db.com/json/')
-    return res.data.IPv4
-  }
 
   const getBrowserName = () => {
     let browserInfo = window.navigator.userAgent;

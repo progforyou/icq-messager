@@ -1,26 +1,6 @@
 import React from "react";
 
-import {useStoreon} from "storeon/react";
-import Controller from "../../controller/controller";
-import {useCookies} from "react-cookie";
-import {EditChatMW} from "../Modal/EditChat";
-import {reloadTokenController} from "../../tools/reloadToken";
-import {useHistory} from "react-router";
 import {NavLink} from "react-router-dom";
-
-const getText = (x) => {
-  if (x === 1){
-    return `Вы единственный подписчик канала`
-  }
-  if (x === 2 || x === 3 || x === 4 ){
-    return `${x} Пользователя`
-  }
-
-  if (x % 10 === 1 && x !== 11 ){
-    return `${x} Пользователь`
-  }
-  return `${x} Пользователей`
-}
 
 export default function AdminNavbar() {
   

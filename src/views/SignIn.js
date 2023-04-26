@@ -10,16 +10,13 @@ import axios from "axios";
 export default function SignIn() {
   const [state, setState] = React.useState({
     login: "",
-    password: "",
-    client: "",
-    from: "default",
-    ip: "127.0.0.1"
+    password: ""
   })
   let history = useHistory();
-  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+  const [cookies, setCookie] = useCookies(['access_token', 'login']);
 
   React.useEffect(() => {
-    if (cookies.access_token && cookies.refresh_token && cookies.login){
+    if (cookies.access_token && cookies.login){
       history.push("/chat");
     }
   }, [])
@@ -27,20 +24,14 @@ export default function SignIn() {
   const changeForm = (e) => setState({...state, [e.target.name]: e.target.value})
   const onSubmit = async (e) => {
     e.preventDefault();
-    state.client = getBrowserName()
-    state.ip = await getIp()
+    state.browser = getBrowserName()
     console.log(state)
     let r = await Controller().signIn(state)
-    if (r && r.status === 201){
-      setCookie('access_token', r.data.data.access_token);
-      setCookie('refresh_token', r.data.data.refresh_token);
+    if (r && r.status === 200){
+      setCookie('access_token', r.data.access_token);
       setCookie('login', state.login);
       history.push("/chat");
     }
-  }
-  const getIp = async ()=>{
-    const res = await axios.get('https://geolocation-db.com/json/')
-    return res.data.IPv4
   }
 
   const getBrowserName = () => {

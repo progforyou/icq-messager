@@ -6,7 +6,8 @@ const axios = require('axios');
 
 
 const instance = axios.create({
-    baseURL: '/api/v1'
+    baseURL: '/api',
+    withCredentials: true
 });
 
 
@@ -34,9 +35,9 @@ class controller {
     async signIn(data) {
         let r
         try{
-            r = await instance.post("/user/auth/sign-in/", data)
+            r = await instance.post("/login/", data)
         } catch (e) {
-            toast.error(e.response.data.message)
+            toast.error(e.response.data.Message)
         }
         return r
     }
@@ -45,14 +46,16 @@ class controller {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.post("/user/token/refresh/", {
-                refresh: u.refresh_token
+            r = await instance.get("/auth/refresh/", {
+                headers: {
+                    "Authorization": `Bearer ${u.access_token}`
+                }
             })
         } catch (e) {
             if (e.response.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
             }
         }
         return r
@@ -62,17 +65,17 @@ class controller {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.post("/user/auth/sign-out/", data, {
+            r = await instance.post("/logout/", data, {
                 headers: {
-                    "Authorization": u.access_token
+                    "Authorization": `Bearer ${u.access_token}`
                 }
             })
             store.dispatch("contacts/clear", "all")
         } catch (e) {
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
             }
         }
         return r
@@ -82,23 +85,29 @@ class controller {
         let r
         let u = store.get("user").user
         let page = store.get("messages").messages.page
+        let messages = store.get("messages").messages.list
+        let lastId = messages.length ? messages[messages.length - 1] : 0
         let chatId = store.get("contacts").contacts.active
         if (chatId === 0){
             return 
         }
         try{
-            r = await instance.get(`/chat/${chatId}/messages/?page=${page}`,{
+            r = await instance.post(`/chats/messages/`,  {
+                chat_id: chatId,
+                before_id: lastId 
+            },{
                 headers: {
-                    "Authorization": u.access_token
-                }
+                    "Authorization": `Bearer ${u.access_token}`,
+                    "Content-Type": "application/json"
+                },
             })
-            store.dispatch("messages/set", r.data.data.messages)
-            store.dispatch("messages/setTotal", r.data.data.total)
+            store.dispatch("messages/set", r.data.Data.messages)
+            store.dispatch("messages/setTotal", r.data.Data.length)
         } catch (e) {
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
             }
         }
         return r
@@ -108,16 +117,16 @@ class controller {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.post("/chat", data, {
+            r = await instance.post("/chats/", data, {
                 headers: {
-                    "Authorization": u.access_token
+                    "Authorization": `Bearer ${u.access_token}`
                 }
             })
         } catch (e) {
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)   
+                toast.error(e.response.data.Message)   
             }
         }
         return r
@@ -126,18 +135,39 @@ class controller {
     async getChats(){
         let r
         let u = store.get("user").user
+        console.log(u.access_token)
         try{
-            r = await instance.get(`/chats`, {
+            r = await instance.get(`/chats/`, {
                 headers: {
-                    "Authorization": u.access_token
+                    "Authorization": `Bearer ${u.access_token}`
                 }
             })
-            store.dispatch("contacts/set", r.data.data.chats)
+            store.dispatch("contacts/set", r.data.Data ? r.data.Data : [])
         } catch (e) {
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
+            }
+        }
+        return r
+    }
+
+    async getUsers(text){
+        let r
+        let u = store.get("user").user
+        try{
+            r = await instance.get(`/users/`, {
+                headers: {
+                    "Authorization": `Bearer ${u.access_token}`
+                }
+            })
+            store.dispatch("contacts/setFindResult", r.data.Data ? r.data.Data : [])
+        } catch (e) {
+            if (e.response?.status === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.Message)
             }
         }
         return r
@@ -149,15 +179,15 @@ class controller {
         try{
             r = await instance.get(`/search?text=${text}`, {
                 headers: {
-                    "Authorization": u.access_token
+                    "Authorization": `Bearer ${u.access_token}`
                 }
             })
             store.dispatch("contacts/setFindResult", r.data.data)
         } catch (e) {
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
             }
         }
         return r
@@ -172,15 +202,15 @@ class controller {
         try{
             r = await instance.get(`/chat/${id}/members`, {
                 headers: {
-                    "Authorization": u.access_token
+                    "Authorization": `Bearer ${u.access_token}`
                 }
             })
             store.dispatch("contacts/setActiveChatMembers", r.data.data)
         } catch (e) {
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
             }
         }
         return r
@@ -195,16 +225,16 @@ class controller {
         try{
             r = await instance.post(`/chat/${id}/members`, [data],{
                 headers: {
-                    "Authorization": u.access_token
+                    "Authorization": `Bearer ${u.access_token}`
                 }
             })
             await new controller().getChatMembers(id)
         } catch (e) {
             console.log(e)
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
             }
         }
         return r
@@ -214,19 +244,19 @@ class controller {
         let r
         let u = store.get("user").user
         let formData = new FormData();
-        formData.append("file", data);
+        formData.append("media", data);
         try{
-            r = await instance.post(`/media`, formData, {
+            r = await instance.post(`/files/`, formData, {
                 headers: {
-                    "Authorization": u.access_token,
+                    "Authorization": `Bearer ${u.access_token}`,
                     "Content-Type": "multipart/form-data",
                 }
             })
         } catch (e) {
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
             }
         }
         return r
@@ -238,17 +268,17 @@ class controller {
         let formData = new FormData();
         formData.append("file", data, `voice_${makeid(4)}.mp3`);
         try{
-            r = await instance.post(`/media`, formData, {
+            r = await instance.post(`/files`, formData, {
                 headers: {
-                    "Authorization": u.access_token,
+                    "Authorization": `Bearer ${u.access_token}`,
                     "Content-Type": "multipart/form-data",
                 }
             })
         } catch (e) {
-            if (e.response?.data?.code === 401){
+            if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.message)
+                toast.error(e.response.data.Message)
             }
         }
         return r

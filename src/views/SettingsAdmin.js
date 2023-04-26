@@ -12,9 +12,9 @@ import AdminNavbar from "../components/Navbars/AdminNavbar";
 export default function SettingsAdmin() {
     const [state, setState] = React.useState({private_password: ""})
     let history = useHistory();
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+    const [cookies, setCookie] = useCookies(['access_token']);
     React.useEffect(() => {
-        if (!(cookies.admin_access_token && cookies.admin_refresh_token)){
+        if (!(cookies.admin_access_token)){
             history.push("/admin/signIn");
         }
 

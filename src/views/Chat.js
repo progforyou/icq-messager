@@ -11,15 +11,17 @@ import {useCookies} from "react-cookie";
 import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
 import {store} from "../store";
+import {useHistory} from "react-router";
 //http://213.189.201.22/
-const WS_URL = `wss://${window.location.hostname}/wss`;
+//const WS_URL = `wss://${window.location.hostname}/ws/`;
+const WS_URL = `wss://chat.salekhov.ru/ws/`;
 //const WS_URL = 'wss://127.0.0.1:8000/chat';
 function _Chat(props) {
     const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})
     const [isEdit, setIsEdit] = React.useState(false)
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
-    const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}/${contacts.active}/?token=${cookies.access_token}`, {
+    const [cookies, setCookie] = useCookies(['access_token', 'login']);
+    const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}?token=${cookies.access_token}`, {
         retryOnError: false,
         onClose: () => {
             
@@ -51,7 +53,7 @@ function _Chat(props) {
     }
     
     React.useEffect(async () => {
-        reloadTokenController(setCookie, Controller().getChatMembers, contacts.active)
+        //reloadTokenController(setCookie, Controller().getChatMembers, contacts.active)
         reloadTokenController(setCookie, Controller().getChatMessages)
     }, [contacts.active])
     
@@ -64,7 +66,7 @@ function _Chat(props) {
             let ids = []
             for (let file of state.files) {
                 let r = await reloadTokenController(setCookie, Controller().sendMedia, file)
-                ids.push({id: r.data.data.id})
+                ids.push({id: r.data.id})
             }
             //id here
             //and create message with ID
@@ -73,7 +75,7 @@ function _Chat(props) {
                 content: {
                     media: ids,
                     text: state.message,
-                    access_token: cookies.access_token
+                    chat_id: contacts.active
                 }
             });
             setState({...state, message: "", prevMessage: "", files: []})
@@ -82,7 +84,7 @@ function _Chat(props) {
                 event: 'create_message',
                 content: {
                     text: state.message,
-                    access_token: cookies.access_token
+                    chat_id: contacts.active
                 }
             });
         }
@@ -112,8 +114,8 @@ function _Chat(props) {
             event: 'delete_message',
             content: {
                 id: id,
-                when: "now",
-                access_token: cookies.access_token
+                "delete_at": new Date().toISOString(),
+                chat_id: contacts.active
             }
         });
     }
@@ -127,8 +129,8 @@ function _Chat(props) {
             event: 'delete_message',
             content: {
                 id: id,
-                when: toPythonStr(new Date(date)),
-                access_token: cookies.access_token
+                "delete_at": new Date().toISOString(),
+                chat_id: contacts.active
             }
         });
     }
@@ -140,7 +142,7 @@ function _Chat(props) {
             content: {
                 text: "",
                 media: [{id: r.data.data.id}],
-                access_token: cookies.access_token
+                chat_id: contacts.active
             }
         });
     }
@@ -153,7 +155,7 @@ function _Chat(props) {
                 id: state.id,
                 media: media,
                 text: state.message,
-                access_token: cookies.access_token
+                chat_id: contacts.active
             }
         });
         setIsEdit(false)
@@ -177,34 +179,19 @@ function _Chat(props) {
   );
 }
 
-const hasUser = (data, uid) => {
-    for (let datum of data) {
-        for (let member of datum.members) {
-            if (member.user === uid){
-                return true
-            }
-        }
-    }
-    return false
-}
-
-const getChat = (data, uid) => {
-    for (let datum of data) {
-        for (let member of datum.members) {
-            if (member.user === uid){
-                return datum
-            }
-        }
-    }
-    return null
-}
-
 export default function Chat(props) {
     const { dispatch, contacts } = useStoreon('contacts')
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+    const [cookies, setCookie] = useCookies(['access_token', 'login']);
+    const history = useHistory();
     React.useEffect(() => {
         reloadTokenController(setCookie, Controller().getChats)
     }, [])
+
+    React.useEffect(() => {
+        if (!cookies.access_token){
+            history.push("/signIn");
+        }
+    }, [cookies.access_token])
 
 
     if (contacts.active === 0){

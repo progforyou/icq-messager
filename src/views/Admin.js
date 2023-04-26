@@ -7,19 +7,21 @@ import {useCookies} from "react-cookie";
 import {useHistory} from "react-router";
 import Controller from "../controller/controller";
 import AdminController from "../controller/adminController";
-import {reloadTokenController} from "../tools/reloadToken";
+import {reloadAdminTokenController, reloadTokenController} from "../tools/reloadToken";
 import AdminNavbar from "../components/Navbars/AdminNavbar";
 
 export default function Admin() {
     let history = useHistory();
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+    const [cookies, setCookie] = useCookies(['admin_access_token', 'admin_login']);
     React.useEffect(() => {
-        if (!(cookies.admin_access_token && cookies.admin_refresh_token)){
-            history.push("/admin/signIn");
-        }
-
-        reloadTokenController(setCookie, AdminController().getUsers)
+        reloadAdminTokenController(setCookie, AdminController().getUsers)
     }, [])
+    React.useEffect(() => {
+        if (!(cookies.admin_access_token)){
+            history.push("/admin/signIn");
+            return
+        }
+    }, [cookies.admin_access_token])
     return (
         <>
             <AdminNavbar/>

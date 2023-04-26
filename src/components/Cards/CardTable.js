@@ -7,10 +7,13 @@ import Controller from "../../controller/controller";
 import {DeleteUserMW} from "../Modal/DeleteUser";
 import {EditUserMW} from "../Modal/EditUser";
 import {useStoreon} from "storeon/react";
+import {reloadAdminTokenController} from "../../tools/reloadToken";
+import {useCookies} from "react-cookie";
 
 // components
 
 export default function CardTable({ color }) {
+  const [cookies, setCookie] = useCookies(['admin_access_token', 'login']);
   const [createUser, setCreateUser] = React.useState(false)
   const [deleteUser, setDeleteUser] = React.useState(false)
   const [editUser, setEditUser] = React.useState(false)
@@ -28,17 +31,21 @@ export default function CardTable({ color }) {
     }
   }
   const onDeleteUser = async () => {
-    let r = await AdminController().deleteUser(state.activeUser.id)
+    await reloadAdminTokenController(setCookie, AdminController().deleteUser, state.activeUser.id)
+    await reloadAdminTokenController(setCookie, AdminController().getUsers)
     setState({...state, activeUser: {}})
   }
   const onCreateUser = async (data) => {
-    let r = await AdminController().createUser(data)
+    await reloadAdminTokenController(setCookie, AdminController().createUser, data)
+    await reloadAdminTokenController(setCookie, AdminController().getUsers)
   }
-  const setActiveUser = (data) => {
-    setState({...state, activeUser: data})
+  const setActiveUser = async (data) => {
+    let r = await reloadAdminTokenController(setCookie, AdminController().getUser, data.user.id)
+    setState({...state, activeUser: r.Data})
   }
-  const onEditUser = async () => {
-    let r = await AdminController().updateUser(state.activeUser.id, state.activeUser)
+  const onEditUser = async (data) => {
+    await reloadAdminTokenController(setCookie, AdminController().updateUser, data)
+    await reloadAdminTokenController(setCookie, AdminController().getUsers)
     setState({...state, activeUser: {}})
   }
   return (
@@ -119,8 +126,8 @@ export default function CardTable({ color }) {
               </tr>
             </thead>
             <tbody>
-            {admin.list.map(e => {
-              return <tr>
+            {admin.list.map((e, key) => {
+              return <tr key={key}>
                 <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left flex items-center">
                   <span
                       className={
@@ -128,17 +135,17 @@ export default function CardTable({ color }) {
                           +(color === "light" ? "text-blueGray-600" : "text-white")
                       }
                   >
-                    {e.login}
+                    {e.user?.login}
                   </span>
                 </th>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  {e.session?.ip}
+                  {e.ip}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  {e.session?.client}
+                  {e.browser}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                  {new Date(e.session?.online).toLocaleString() === "Invalid Date" ? "" : new Date(e.session?.online).toLocaleString()}
+                  {e.authorization_at}
                 </td>
                 <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-right">
                   <i onClick={() => {
@@ -165,12 +172,12 @@ export default function CardTable({ color }) {
         onCreateUser(data);
       }}/> : null}
       {editUser ? <EditUserMW data={state.activeUser} onHide={() => setEditUser(false)} onSubmit={(data) => {
+        onEditUser(data);
         setEditUser(false);
-        onEditUser();
       }}/> : null}
       {deleteUser ? <DeleteUserMW onHide={() => setDeleteUser(false)} onSubmit={(data) => {
-        setDeleteUser(false);
         onDeleteUser();
+        setDeleteUser(false);
       }}/> : null}
     </div>
   );

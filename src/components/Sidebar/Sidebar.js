@@ -46,19 +46,21 @@ const getChat = (data, uid) => {
   return null
 }
 
-const writeFind = (contacts, dispatch, setCookie) => {
+const writeFind = (contacts, dispatch, setCookie, findStr) => {
   let res = []
   if (Object.keys(contacts.find).length) {
-    if (contacts.find.chats.chats.length > 0) {
-      contacts.find.chats.chats.map((e, key) => {
+    /*if (contacts.find.length > 0) {
+      contacts.find.map((e, key) => {
         res.push(
             <div key={`chats-${key}`}>
               <ChatItem contacts={contacts} e={e} dispatch={dispatch}/>
             </div>
         )
       })
-    }
-    contacts.find.user.users.map((e, key) => {
+    }*/
+    contacts.find.filter(e => {
+      return `${e.name} ${e.surname}`.toLowerCase().includes(findStr.toLowerCase())
+    }).map((e, key) => {
       res.push(
           <div key={`chats-users-${key}`}>
             <UserItem  contacts={contacts} e={e} dispatch={dispatch} setCookie={setCookie}/>
@@ -85,8 +87,9 @@ const writeFind = (contacts, dispatch, setCookie) => {
 }*/
 
 const ChatItem = ({contacts, dispatch, e, login}) => {
-  let name = e.title[0]
-  if (e.type === "private" && e.title.split(" ").length){
+  console.log(e)
+  let name = e.title?.length ? e.title[0] : e.title
+  if (e.personal && e.title?.split(" ").length){
     let s = e.title.split(" ")
     name = s[0][0] + s[1][0]
   }
@@ -121,33 +124,12 @@ const ChatItem = ({contacts, dispatch, e, login}) => {
 }
 
 const UserItem = ({contacts, dispatch, e, setCookie}) => {
-  const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.login[0]
+  const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : e.name[0]
   const onClick = async () => {
-      let u = e
-      console.log(hasUser(contacts.list, u.id), contacts.list)
-      if (hasUser(contacts.list, u.id)){
-        let chat = getChat(contacts.list, u.id)
-        dispatch("contacts/setFindStr", "")
-        store.dispatch("contacts/setActive", chat.id)
-        return
-      }
-      let r = await reloadTokenController(setCookie, Controller().createChat, {title: `${u.name} ${u.surname}`, type: "private"})
-      await reloadTokenController(setCookie, Controller().addChatMember, r.data.data.id, {user: u.login, type: "public"})
-      await reloadTokenController(setCookie, Controller().getChats)
+      let r = await reloadTokenController(setCookie, Controller().createChat, {users: [e], personal: true})
+    await reloadTokenController(setCookie, Controller().getChats)
       dispatch("contacts/setFindStr", "")
-      store.dispatch("contacts/setActive", r.data.data.id)
-  }
-  if (contacts.active === e.id){
-    return <div className={"px-3 flex text-white items-center cursor-pointer uppercase py-3 font-bold block bg-lightBlue-500 hover:bg-lightBlue-600"}>
-      <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.login)}}>
-        <span className={"m-auto"}>
-          {itemName}
-        </span>
-      </div>
-      <div className={"text-xs"}>
-        {e.login}
-      </div>
-    </div>
+      store.dispatch("contacts/setActive", r.data.Data?.id)
   }
   return  <div onClick={onClick} className={"px-3 flex text-black items-center cursor-pointer uppercase py-3 font-bold block bg-transparent hover:bg-blueGray-200"}>
     <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.login)}}>
@@ -156,23 +138,24 @@ const UserItem = ({contacts, dispatch, e, setCookie}) => {
         </span>
     </div>
     <div className={"text-xs"}>
-      {e.login}
+      {e.name} {e.surname}
     </div>
   </div>
 }
 
 function Sidebar(props) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
-  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+  const [cookies, setCookie] = useCookies(['access_token', 'login']);
   const [createChat, setCreateChat] = React.useState(false);
   const { dispatch, contacts } = useStoreon('contacts')
   const [viewList, setViewList] = React.useState([])
   React.useEffect(() => {
-    if (contacts.findStr){
+    if (contacts.findStr && contacts.find.length === 0){
       dispatch("contacts/setActive", 0)
-      reloadTokenController(setCookie, Controller().findObject, contacts.findStr)
-    } else {
-      dispatch("contacts/setFindResult", {})
+      reloadTokenController(setCookie, Controller().getUsers)
+    } 
+    if (contacts.findStr === ""){
+      dispatch("contacts/setFindResult", [])
     }
   }, [contacts.findStr])
   const classNames = ""
@@ -211,8 +194,9 @@ function Sidebar(props) {
 
             <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none" style={{height: "calc(100vh - 125px)"}}>
 
-              {Object.keys(contacts.find).length ? writeFind(contacts, dispatch, setCookie) : <>
+              {Object.keys(contacts.find).length ? writeFind(contacts, dispatch, setCookie, contacts.findStr) : <>
               {contacts.list.map((e, key) => {
+                console.log(e)
                 return (
                     <div key={key}>
                       <ChatItem login={cookies.login} contacts={contacts} e={e} dispatch={dispatch}/>
@@ -220,43 +204,6 @@ function Sidebar(props) {
                 )
               })} </> }
             </ul>
-
-           {/* <div className={"mt-auto"}>
-              <hr className="my-2 md:min-w-full" />
-              <ul className="px-6 mt-auto md:min-w-full flex justify-between list-none">
-                <li className="items-center">
-                  <NavLink
-                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
-                      activeClassName="!text-lightBlue-500 "
-                      to="/wqe"
-                  >
-                    <i className="fas fa-fingerprint mx-auto text-xl"></i>{" "}
-                    Контакты
-                  </NavLink>
-                </li>
-
-                <li className="items-center">
-                  <NavLink
-                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
-                      activeClassName="!text-lightBlue-500 "
-                      to="/chat"
-                  >
-                    <i className="fas fa-clipboard-list mx-auto text-xl"></i>{" "}
-                    Чаты
-                  </NavLink>
-                </li>
-                <li className="items-center">
-                  <NavLink
-                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
-                      activeClassName="!text-lightBlue-500 "
-                      to="/notes"
-                  >
-                    <i className="fas mx-auto fa-cog  text-xl"></i>{" "}
-                    Заметки
-                  </NavLink>
-                </li>
-              </ul>
-            </div>*/}
             
           </div>
         </div>
@@ -274,7 +221,6 @@ function MobileSidebar(props) {
   const [createChat, setCreateChat] = React.useState(false);
   const [find, setFind] = React.useState("")
   const { dispatch, contacts } = useStoreon('contacts')
-  const classNames = ""
   const [viewList, setViewList] = React.useState([])
   React.useEffect(() => {
     if (find !== ""){
@@ -323,44 +269,6 @@ function MobileSidebar(props) {
                   )
                 })}
               </ul>
-
-              {/* <div className={"mt-auto"}>
-              <hr className="my-2 md:min-w-full" />
-              <ul className="px-6 mt-auto md:min-w-full flex justify-between list-none">
-                <li className="items-center">
-                  <NavLink
-                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
-                      activeClassName="!text-lightBlue-500 "
-                      to="/wqe"
-                  >
-                    <i className="fas fa-fingerprint mx-auto text-xl"></i>{" "}
-                    Контакты
-                  </NavLink>
-                </li>
-
-                <li className="items-center">
-                  <NavLink
-                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
-                      activeClassName="!text-lightBlue-500 "
-                      to="/chat"
-                  >
-                    <i className="fas fa-clipboard-list mx-auto text-xl"></i>{" "}
-                    Чаты
-                  </NavLink>
-                </li>
-                <li className="items-center">
-                  <NavLink
-                      className="text-blueGray-700 flex flex-col text-xs pt-3 font-bold block"
-                      activeClassName="!text-lightBlue-500 "
-                      to="/notes"
-                  >
-                    <i className="fas mx-auto fa-cog  text-xl"></i>{" "}
-                    Заметки
-                  </NavLink>
-                </li>
-              </ul>
-            </div>*/}
-
             </div>
         </nav>
         {createChat ? <CreateChatMW onHide={() => setCreateChat(false)} onSubmit={(data) => {
@@ -373,7 +281,7 @@ function MobileSidebar(props) {
 
 export default (props) => {
   const { dispatch, customize } = useStoreon('customize')
-  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+  const [cookies, setCookie] = useCookies(['access_token', 'login']);
   const createChat = async (data) => {
     let r = await reloadTokenController(setCookie, Controller().createChat, data)
     

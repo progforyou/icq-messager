@@ -8,11 +8,8 @@ export const EditUserMW = (props) => {
     const ref = React.useRef(null);
     const [state, setState] = React.useState({
         login: "",
-        password: "",
-        private_password: "",
         name: "",
         surname: "",
-        role: "1",
         id: 0
     })
     React.useEffect(() => {
@@ -165,7 +162,7 @@ export const EditUserMW = (props) => {
                                         placeholder="Пароль"
                                     />
                                 </div>*/}
-                                <label
+                                {/*<label
                                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                                     htmlFor="role"
                                 >
@@ -179,7 +176,7 @@ export const EditUserMW = (props) => {
                                     <option value={"1"}>Пользователь</option>
                                     <option value="2">Админ</option>
                                     <option value="3">Владелец</option>
-                                </select>
+                                </select>*/}
                                 {error.length > 0 &&
                                     <span className='text-sm mt-1' style={{color: "red"}}>{error}</span>}
                                 <div className="text-center mt-6">

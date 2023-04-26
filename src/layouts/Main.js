@@ -15,9 +15,9 @@ import {useHistory} from "react-router";
 
 export default function Main() {
     let history = useHistory();
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+    const [cookies, setCookie] = useCookies(['access_token','login']);
     React.useEffect(() => {
-        if (!(cookies.access_token && cookies.refresh_token && cookies.login)){
+        if (!(cookies.access_token && cookies.login)){
             history.push("/signIn");
         }
     }, [])

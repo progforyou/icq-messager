@@ -24,16 +24,15 @@ const getText = (x) => {
 export default function Navbar() {
     const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [showEditChat, setShowEditChat] = React.useState(false)
-    const [cookies, setCookie, removeCookie] = useCookies(['access_token', 'refresh_token', 'login']);
+    const [cookies, setCookie, removeCookie] = useCookies(['access_token','login']);
     const hid = contacts.active === 0 ? "hidden" : ""
     let history = useHistory();
     const signOut = async (e) => {
         e.preventDefault();
         let login = cookies.login
         let r = await reloadTokenController(setCookie, Controller().signOut,{login})
-        if (r && r.data.code === 200){
+        if (r && r.status === 200){
             removeCookie('access_token');
-            removeCookie('refresh_token');
             removeCookie('login');
             history.push("/signIn");
         }
@@ -44,7 +43,7 @@ export default function Navbar() {
     if (contacts.active === 0 && customize.isMobile){
         return null
     }
-    console.log(contacts.activeMembers)
+    
     return (
         <>
             {/* Navbar */}
@@ -59,14 +58,16 @@ export default function Navbar() {
                         </div>
                         <div className={"cursor-pointer"} onClick={(e) => {
                             e.preventDefault()
+                            if (contacts.activeData?.personal) {
+                                return
+                            }
                             setShowEditChat(true)
                         }}>
                             <div className="text-black text-sm uppercase font-semibold sm:max-w-150 overflow-ellipsis whitespace-nowrap">
                                 {contacts.activeData?.title}
-                                {contacts.activeData?.type === "public" ? <>{contacts.activeData?.title}</> : null}
                             </div>
                             <div className={"text-sm sm:max-w-150 overflow-ellipsis whitespace-nowrap"}>
-                                {contacts.activeData?.type === "public" ? <>{getText(contacts.activeMembers?.count)}</> : null}
+                                {contacts.activeData?.personal ? null : <>{getText(contacts.activeMembers?.count)}</>}
                             </div>
                         </div>
                     </div>

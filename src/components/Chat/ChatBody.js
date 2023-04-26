@@ -115,7 +115,7 @@ const MessageIn = (props) => {
             <div className={"mr-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: "70%"}}>
                 <TypeSwitcher {...props}/>
                 <div className={"absolute bottom-0 right-0 mr-2 mb-2 text-blueGray-300"} style={{fontSize: "13px"}}>
-                    {startTime(props.message.created_at)}
+                    {startTime(props.message.create_at)}
                 </div>
             </div>
         </div>
@@ -129,7 +129,7 @@ const MessageOut = (props) => {
             <div className={"ml-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: "70%"}}>
                 <TypeSwitcher {...props}/>
                 <div className={"absolute bottom-0 right-0 mr-2 mb-2 text-blueGray-300"} style={{fontSize: "13px"}}>
-                    {startTime(props.message.created_at)}
+                    {startTime(props.message.create_at)}
                 </div>
             </div>
         </div>
@@ -250,7 +250,8 @@ export const ChatBody = (props) => {
                 >
                     {[...messages.list].map((e, key) => {
                         let typeMessage = e.media?.media?.length ? "file" : "text"
-                        let messageIn = e.user_login !== user.login
+                        let userData = JSON.parse(atob(user.access_token.split('.')[1]))
+                        let messageIn = e.user_id !== userData.user_id
                         if (e.type === "devider"){
                             return <div key={key} className={"pb-3 pt-3 mx-auto text-blueGray-600 text-sm"}>{toDate(e.date)}</div>
                         }
