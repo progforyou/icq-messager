@@ -37,7 +37,7 @@ function _Chat(props) {
                     dispatch("messages/edit", d.data.message)
                     return
                 }
-                dispatch("messages/add", d.data.message)
+                dispatch("messages/add", d.Message)
             }
         }
     });
@@ -71,8 +71,8 @@ function _Chat(props) {
             //id here
             //and create message with ID
             sendJsonMessage({
-                event: 'create_message',
-                content: {
+                type: 'create_message',
+                message: {
                     media: ids,
                     text: state.message,
                     chat_id: contacts.active
@@ -81,8 +81,8 @@ function _Chat(props) {
             setState({...state, message: "", prevMessage: "", files: []})
         } else {
             sendJsonMessage({
-                event: 'create_message',
-                content: {
+                type: 'create_message',
+                message: {
                     text: state.message,
                     chat_id: contacts.active
                 }
@@ -111,8 +111,8 @@ function _Chat(props) {
 
     function handleDeleteMessage(id) {
         sendJsonMessage({
-            event: 'delete_message',
-            content: {
+            type: 'delete_message',
+            message: {
                 id: id,
                 "delete_at": new Date().toISOString(),
                 chat_id: contacts.active
@@ -126,8 +126,8 @@ function _Chat(props) {
 
     function handleDeleteTimerMessage(id, date) {
         sendJsonMessage({
-            event: 'delete_message',
-            content: {
+            type: 'delete_message',
+            message: {
                 id: id,
                 "delete_at": new Date().toISOString(),
                 chat_id: contacts.active
@@ -138,8 +138,8 @@ function _Chat(props) {
     async function sendRecord(file){
         let r = await reloadTokenController(setCookie, Controller().sendVoice, file)
         sendJsonMessage({
-            event: 'create_message',
-            content: {
+            type: 'create_message',
+            message: {
                 text: "",
                 media: [{id: r.data.data.id}],
                 chat_id: contacts.active
@@ -150,8 +150,8 @@ function _Chat(props) {
     function handleEditMessage() {
         let media = state.prevFiles.map(e => ({id:e.id}))
         sendJsonMessage({
-            event: 'edit_message',
-            content: {
+            type: 'edit_message',
+            message: {
                 id: state.id,
                 media: media,
                 text: state.message,
@@ -185,6 +185,7 @@ export default function Chat(props) {
     const history = useHistory();
     React.useEffect(() => {
         reloadTokenController(setCookie, Controller().getChats)
+        reloadTokenController(setCookie, Controller().getAllUsers)
     }, [])
 
     React.useEffect(() => {

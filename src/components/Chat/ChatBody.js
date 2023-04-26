@@ -86,9 +86,10 @@ const MessageFile = (props) => {
 }
 
 const MessageText = (props) => {
+    let user = props.users.find(e => e.id === props.message.user_id)
     return (<div className={""}>
         <div className={"text-sm text-blueGray-600 font-bold"}>
-            {props.message.user_name + " " + props.message.user_surname}
+            {user ? user.name + " " + user.surname : "Вы"}
         </div>
         <div>
             {props.body}
@@ -256,9 +257,9 @@ export const ChatBody = (props) => {
                             return <div key={key} className={"pb-3 pt-3 mx-auto text-blueGray-600 text-sm"}>{toDate(e.date)}</div>
                         }
                         if (messageIn){
-                            return <Message key={key} message={e} onContextMenu={() => {}} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                            return <Message users={contacts.allUsers} key={key} message={e} onContextMenu={() => {}} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                         }
-                        return <Message key={key} message={e} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                        return <Message users={contacts.allUsers} key={key} message={e} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                     })}
                 </InfiniteScroll>
                 </>}

@@ -1,4 +1,8 @@
 deploy:
-	zip -vr build.zip ./ -x "node_modules/*" "*.DS_Store" ".idea/*" "build/*"
-	scp ./build.zip root@151.248.122.13:/opt/frontend/
-	rm -r ./build.zip
+	rm -r ./html
+	mv ./build ./html
+	zip -vr html.zip ./html
+
+qwe:
+	scp ./html.zip root@213.189.201.22:/var/www/
+	rm -r ./html.zip

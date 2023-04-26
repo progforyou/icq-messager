@@ -153,7 +153,7 @@ class controller {
         return r
     }
 
-    async getUsers(text){
+    async getUsers(){
         let r
         let u = store.get("user").user
         try{
@@ -163,6 +163,27 @@ class controller {
                 }
             })
             store.dispatch("contacts/setFindResult", r.data.Data ? r.data.Data : [])
+            store.dispatch("contacts/setAllUsers", r.data.Data ? r.data.Data : [])
+        } catch (e) {
+            if (e.response?.status === 401){
+                return "reload"
+            } else {
+                toast.error(e.response.data.Message)
+            }
+        }
+        return r
+    }
+
+    async getAllUsers(){
+        let r
+        let u = store.get("user").user
+        try{
+            r = await instance.get(`/users/`, {
+                headers: {
+                    "Authorization": `Bearer ${u.access_token}`
+                }
+            })
+            store.dispatch("contacts/setAllUsers", r.data.Data ? r.data.Data : [])
         } catch (e) {
             if (e.response?.status === 401){
                 return "reload"

@@ -6,6 +6,9 @@
 /build.zip
 /.idea
 
+./html.zip
+./html
+
 # testing
 /coverage
 
