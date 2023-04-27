@@ -61,7 +61,7 @@ export const ChatInput = (props) => {
             return null
         }
         if (file){
-            //props.sendRecord(file)
+            props.sendRecord(file)
             setTimeRecording(null)
             setHasRecording(false)
             setSendToggle(true)
