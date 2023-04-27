@@ -3,6 +3,7 @@ import React from "react";
 import { useRecorder } from "voice-recorder-react";
 import {ChatTextInput} from "./ChatTextInput";
 import {ChatRecorder} from "./ChatRecorder";
+import {sleep} from "../../tools/other";
 
 
 export const ChatInput = (props) => {
@@ -14,6 +15,7 @@ export const ChatInput = (props) => {
     const [sendToggle, setSendToggle] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [file, setFile] = React.useState(null);
+    const [localSendRecord, setLocalSendRecord] = React.useState(false);
     const {
         time,
         data,
@@ -53,16 +55,18 @@ export const ChatInput = (props) => {
             setTimeRecording(time)
         }
     }
-
-    const sendRecord = async (r) => {
-        if (recording) {
-            stop();
+    
+    const sendRecord = (r) => {
+        if (file === null){
+            return null
         }
-        props.sendRecord(file)
-        setTimeRecording(null)
-        setHasRecording(false)
-        setSendToggle(true)
-        setFile(null)
+        if (file){
+            //props.sendRecord(file)
+            setTimeRecording(null)
+            setHasRecording(false)
+            setSendToggle(true)
+            setFile(null)   
+        }
     }
     
     const playRecord = () => {
@@ -75,17 +79,10 @@ export const ChatInput = (props) => {
 
     React.useEffect(() => {
         if (data.url) {
-            if (sendToggle){
-                setSendToggle(false)
-            } else {
-                setFile(data.blob)
-                audioRef.current.src = data.url;
-            }
+            setFile(data.blob)
+            audioRef.current.src = data.url;
         }
-    }, [data.url, sendToggle]);
-    const togglePlayPause = () => {
-        setIsPlaying((prev) => !prev);
-    };
+    }, [data.url]);
     const playAnimationRef = React.useRef();
 
     const repeat = React.useCallback(() => {

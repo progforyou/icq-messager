@@ -180,7 +180,7 @@ function Sidebar(props) {
             }
           >
             {/* Form */}
-            <form className="mb-4 px-3">
+            <form className="mb-4 px-3" onSubmit={e => e.preventDefault()}>
               <div className="pt-0">
                 <input
                   type="text"

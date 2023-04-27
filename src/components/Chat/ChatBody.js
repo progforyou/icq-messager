@@ -56,29 +56,33 @@ function toDate(someDateTimeStamp) {
 }
 
 const FileTyper = (props) => {
-    if (props.data.file.match(/\.(jpg|jpeg|png|gif)$/i)){
+    if (props.data.path.match(/\.(jpg|jpeg|png|gif)$/i)){
         return (
-            <NavLink target="_blank" to={props.data.url}>
-                <img style={{maxWidth: "300px", maxHeight: "200px"}} className={props.id > 1 ? "mt-3" : ""} src={`${props.data.url}`} alt={"image"}></img>
-            </NavLink>
+            <a target="_blank" href={`/media/${props.data.path}`}>
+                <img style={{maxWidth: "300px", maxHeight: "200px"}} className={props.id > 1 ? "mt-3" : ""} src={`/media/${props.data.path}`} alt={"image"}></img>
+            </a>
         )
     }
-    if (props.data.file.match(/\.(mp3|wav)$/i)){
-        return <audio src={`${props.data.url}`}  />
+    if (props.data.path.match(/\.(mp3|wav)$/i)){
+        return <audio controls><source src={`/media/${props.data.path}`} type="audio/mpeg"></source></audio>
     }
     return (
         <>
-            <span className={"mr-2"}>{getFileName(props.data.url)}</span>
-            <NavLink target="_blank" to={props.data.url}>
+            <div className={"mr-2"} style={{textOverflow: "ellipsis", width: "100%", overflow: "none"}}>{getFileName(`/media/${props.data.path}`)}</div>
+            <a target="_blank" href={`/media/${props.data.path}`}>
                 <i className={"fa fa-file text-3xl cursor-pointer"}></i>
-            </NavLink>
+            </a>
         </>
     )
 }
 
 const MessageFile = (props) => {
+    let user = props.users.find(e => e.id === props.message.user_id)
     return (<div>
-        {props.message.media.media.map((e, key) => {
+        <div className={"text-sm text-blueGray-600 font-bold"}>
+            {user ? user.name + " " + user.surname : "Вы"}
+        </div>
+        {props.message.media.map((e, key) => {
             return <FileTyper id={key} key={key} data={e}/>
         })}
         {props.message.text ? props.message.text : null}
@@ -155,8 +159,7 @@ const Menu = (props) => {
     } else {
         styles.top = props.points.y
     }
-
-    let isFile = props.activeMessage.media?.media?.length
+    let isFile = props.messages.find(e => e.id === props.activeMessage).media?.length
     return ReactDOM.createPortal(
         <div className={"absolute bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"} style={styles}>
                 <ul className={"flex flex-col p-1"}>
@@ -202,7 +205,7 @@ export const ChatBody = (props) => {
         props.handleDeleteMessageTimer(activeMessage, date)
     }
     const onEdit = () => {
-        props.handleEditMessage(activeMessage, messages.list.find(e => e.id === activeMessage).text, messages.list.find(e => e.id === activeMessage).media.media)
+        props.handleEditMessage(activeMessage, messages.list.find(e => e.id === activeMessage).text)
     }
     
     const loadMessages = async () => {
@@ -250,7 +253,7 @@ export const ChatBody = (props) => {
                     scrollableTarget="scrollableDiv"
                 >
                     {[...messages.list].map((e, key) => {
-                        let typeMessage = e.media?.media?.length ? "file" : "text"
+                        let typeMessage = e.media?.length ? "file" : "text"
                         let userData = JSON.parse(atob(user.access_token.split('.')[1]))
                         let messageIn = e.user_id !== userData.user_id
                         if (e.type === "devider"){
@@ -266,7 +269,7 @@ export const ChatBody = (props) => {
                 {!hasMore ? <div className={"py-6"}></div> : null}
 
                 {deleteTimer ? <DeleteTimerMW onSubmit={handleDeleteTimer} onHide={() => setDeleteTimer(false)}/> : null}
-                {clicked && (<Menu activeMessage={activeMessage} points={points} onDeleteTimer={() => setDeleteTimer(true)} onDelete={onDelete} onEdit={onEdit}/>)}
+                {clicked && (<Menu messages={messages.list} activeMessage={activeMessage} points={points} onDeleteTimer={() => setDeleteTimer(true)} onDelete={onDelete} onEdit={onEdit}/>)}
             </div>
     )
 }

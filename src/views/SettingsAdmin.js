@@ -10,7 +10,7 @@ import {reloadTokenController} from "../tools/reloadToken";
 import AdminNavbar from "../components/Navbars/AdminNavbar";
 
 export default function SettingsAdmin() {
-    const [state, setState] = React.useState({private_password: ""})
+    const [state, setState] = React.useState({password: ""})
     let history = useHistory();
     const [cookies, setCookie] = useCookies(['access_token']);
     React.useEffect(() => {
@@ -45,8 +45,8 @@ export default function SettingsAdmin() {
                                         </label>
                                         <input
                                             type="text"
-                                            name={"private_password"}
-                                            value={state.private_password}
+                                            name={"password"}
+                                            value={state.password}
                                             onChange={e => setState({...state, [e.target.name]: e.target.value})}
                                             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                                             placeholder="Пароль"

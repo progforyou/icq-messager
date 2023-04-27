@@ -1,5 +1,6 @@
 import React from "react";
 import {useRecorder} from "voice-recorder-react";
+import {sleep} from "../../tools/other";
 
 function writeTime(t) {
     const model = (x) => x > 9 ? `${x}` : `0${x}`
@@ -33,7 +34,10 @@ export const ChatRecorder = (props) => {
                 </div>
             </div>
             <div className={"ml-3 text-center"}>
-                <i onClick={props.sendRecord} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> 
+                <i onClick={() => {
+                    props.stopRecord()
+                    props.sendRecord()
+                }} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> 
             </div>
         </div>
     )

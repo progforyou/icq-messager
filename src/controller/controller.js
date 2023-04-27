@@ -102,12 +102,13 @@ class controller {
                 },
             })
             store.dispatch("messages/set", r.data.Data.messages)
-            store.dispatch("messages/setTotal", r.data.Data.length)
+            store.dispatch("messages/setTotal", r.data.Data.count)
         } catch (e) {
             if (e.response?.status === 401){
                 return "reload"
             } else {
-                toast.error(e.response.data.Message)
+                console.log(e)
+                toast.error(e.response?.data.Message)
             }
         }
         return r
@@ -135,7 +136,6 @@ class controller {
     async getChats(){
         let r
         let u = store.get("user").user
-        console.log(u.access_token)
         try{
             r = await instance.get(`/chats/`, {
                 headers: {
@@ -287,9 +287,9 @@ class controller {
         let r
         let u = store.get("user").user
         let formData = new FormData();
-        formData.append("file", data, `voice_${makeid(4)}.mp3`);
+        formData.append("media", data, `voice_${makeid(4)}.mp3`);
         try{
-            r = await instance.post(`/files`, formData, {
+            r = await instance.post(`/files/`, formData, {
                 headers: {
                     "Authorization": `Bearer ${u.access_token}`,
                     "Content-Type": "multipart/form-data",

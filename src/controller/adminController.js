@@ -58,6 +58,7 @@ class adminController {
     async getUsers() {
         let r
         let u = store.get("user").user
+        if (!u.admin_access_token) return
         try{
             r = await instance.get("/users/", {
                 headers: {
@@ -116,11 +117,11 @@ class adminController {
         let r
         let u = store.get("user").user
         try{
-            r = await instance.put(`/user/`, data, {
+            r = await instance.put(`/password/`, data, {
                 headers: {
                     "Authorization": `Bearer ${u.admin_access_token}`
                 }})
-            toast.success(r.data.message)
+            toast.success("Пароль сменен")
         } catch (e) {
             if (e.response?.status === 401){
                 return "reload"

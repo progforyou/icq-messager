@@ -9,14 +9,13 @@ export let messages = store => {
         let date = new Date().getDate()
         let oldData = messages.list.concat().filter(e => e.type !== "devider" && e.id !== message.id)
         for (const item of oldData) {
-            let diffDays = date - new Date(item.created_at).getDate()
+            let diffDays = date - new Date(item.create_at).getDate()
             if (diffDays >= 1) {
-                newData.push({type: "devider", date: item.created_at})
-                date = new Date(item.created_at).getDate()
+                newData.push({type: "devider", date: item.create_at})
+                date = new Date(item.create_at).getDate()
             }
             newData.push(item)
         }
-        console.log(newData)
         return {messages: {...messages, list: newData}}
     })
     // Reducers returns only changed part of the state
@@ -30,14 +29,13 @@ export let messages = store => {
             let oldData = messages.list.concat().filter(e => e.type !== "devider")
             oldData.unshift(message)
             for (const item of oldData) {
-                let diffDays = date - new Date(item.created_at).getDate()
+                let diffDays = date - new Date(item.create_at).getDate()
                 if (diffDays >= 1) {
-                    newData.push({type: "devider", date: item.created_at})
-                    date = new Date(item.created_at).getDate()
+                    newData.push({type: "devider", date: item.create_at})
+                    date = new Date(item.create_at).getDate()
                 }
                 newData.push(item)
             }
-            console.log(newData)
             return {messages: {...messages, list: newData}}
         })
     store.on('messages/set', ({ messages }, messagesAll) => {
@@ -45,10 +43,10 @@ export let messages = store => {
         let date = new Date().getDate()
         let oldData = messages.list.concat(messagesAll).filter(e => e.type !== "devider")
         for (const item of oldData) {
-            let diffDays = date - new Date(item.created_at).getDate()
+            let diffDays = date - new Date(item.create_at).getDate()
             if (diffDays >= 1){
-                newData.push({type: "devider", date: item.created_at})
-                date = new Date(item.created_at).getDate()
+                newData.push({type: "devider", date: item.create_at})
+                date = new Date(item.create_at).getDate()
             }
             newData.push(item)
         }

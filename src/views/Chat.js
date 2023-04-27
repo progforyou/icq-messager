@@ -28,16 +28,17 @@ function _Chat(props) {
         },
         onMessage: (e) => {
             let d = JSON.parse(e.data)
-            if (d.data?.message){
-                if (d.data?.message.is_deleted){
-                    dispatch("messages/delete", d.data.message)
-                    return
-                }
-                if (d.data?.message.updated_at){
-                    dispatch("messages/edit", d.data.message)
-                    return
-                }
+            console.log(d)
+            if (d.Type === "delete_message"){
+                dispatch("messages/delete", d.Message)
+                return
+            }
+            if (d.Type === "create_message"){
                 dispatch("messages/add", d.Message)
+                return
+            }
+            if (d.Type === "edit_message"){
+                dispatch("messages/edit", d.Message)
             }
         }
     });
@@ -66,7 +67,7 @@ function _Chat(props) {
             let ids = []
             for (let file of state.files) {
                 let r = await reloadTokenController(setCookie, Controller().sendMedia, file)
-                ids.push({id: r.data.id})
+                ids.push({id: r.data.id, path: r.data.path})
             }
             //id here
             //and create message with ID
@@ -114,7 +115,6 @@ function _Chat(props) {
             type: 'delete_message',
             message: {
                 id: id,
-                "delete_at": new Date().toISOString(),
                 chat_id: contacts.active
             }
         });
@@ -136,12 +136,13 @@ function _Chat(props) {
     }
     
     async function sendRecord(file){
+        console.log(file)
         let r = await reloadTokenController(setCookie, Controller().sendVoice, file)
         sendJsonMessage({
             type: 'create_message',
             message: {
                 text: "",
-                media: [{id: r.data.data.id}],
+                media: [{id: r.data.id, path: r.data.path}],
                 chat_id: contacts.active
             }
         });
@@ -153,7 +154,6 @@ function _Chat(props) {
             type: 'edit_message',
             message: {
                 id: state.id,
-                media: media,
                 text: state.message,
                 chat_id: contacts.active
             }
@@ -162,8 +162,8 @@ function _Chat(props) {
         setState({...state, message: "", prevMessage: "", prevFiles: []})
     }
 
-    function onEditMessage(id, text, files) {
-        setState({...state, message: text, prevMessage: text, id: id, prevFiles: files})
+    function onEditMessage(id, text) {
+        setState({...state, message: text, prevMessage: text, id: id})
         setIsEdit(true)
     }
     if (contacts.active === 0 && customize.isMobile){
