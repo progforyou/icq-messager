@@ -38,7 +38,9 @@ export default function Navbar() {
         }
     }
     const handleAddUser = (data) => {
-        reloadTokenController(setCookie, Controller().addChatMember, contacts.active, data)
+        let c = contacts.allUsers.find(e => e.name.includes(data.user))
+        let r = reloadTokenController(setCookie, Controller().addChatMember, contacts.active, c.id)
+        
     }
     if (contacts.active === 0 && customize.isMobile){
         return null
@@ -67,7 +69,7 @@ export default function Navbar() {
                                 {contacts.activeData?.title}
                             </div>
                             <div className={"text-sm sm:max-w-150 overflow-ellipsis whitespace-nowrap"}>
-                                {contacts.activeData?.personal ? null : <>{getText(contacts.activeMembers?.count)}</>}
+                                {contacts.activeData?.personal ? null : <>{getText(contacts.activeData?.users?.length)}</>}
                             </div>
                         </div>
                     </div>
@@ -78,7 +80,7 @@ export default function Navbar() {
                     {/* User */}
                 </div>
             </nav>
-            {showEditChat ? <EditChatMW handleAddUser={handleAddUser} data={contacts.activeData} activeMembers={contacts.activeMembers} onHide={() => {setShowEditChat(false)}}/> : null}
+            {showEditChat ? <EditChatMW allUsers={contacts.allUsers} handleAddUser={handleAddUser} data={contacts.activeData} activeMembers={contacts.activeData.users} onHide={() => {setShowEditChat(false)}}/> : null}
             {/* End Navbar */}
         </>
     );

@@ -47,6 +47,7 @@ export const EditChatMW = (props) => {
         await props.handleAddUser(data)
         setShowAddUser(false)
     }
+    const activeUsersIds = props.activeMembers.map(e => e.id)
     return ReactDOM.createPortal(
         <>
             <div
@@ -73,25 +74,33 @@ export const EditChatMW = (props) => {
                             <div className="relative w-full mb-3">
                                 <div className="block text-blueGray-600 items-center font-bold mb-2 flex justify-between">
                                     <span className={"uppercase text-xs"}>
-                                        {getText(props.activeMembers.members.length)}
+                                        {getText(props.activeMembers.length)}
                                     </span>
                                     <span>
                                         <i onClick={() => setShowAddUser(true)} className={"fa fa-user-plus hover:text-blueGray-500 cursor-pointer"}></i>
                                     </span>
                                 </div>
                                 <ul className={"w-full"}>
-                                    {props.activeMembers.members.map((e, key) => {
+                                    {props.allUsers.filter(e => activeUsersIds.includes(e.id) ).map((e, key) => {
                                         return (
                                             <div key={key} className={"flex items-center mt-2"}>
-                                                <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.user_name + e.user_surname)}}>
+                                                <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.name + e.surname)}}>
                                                     <span className={"m-auto uppercase"}>
-                                                      {e.user_name[0]+e.user_surname[0]}
+                                                      {e.name[0]+e.surname[0]}
                                                     </span>
                                                 </div>
-                                                {e.user_name} {e.user_surname}
+                                                {e.name} {e.surname}
                                             </div>
                                         )
                                     })}
+                                    <div key={`key-${activeUsersIds.length}`} className={"flex items-center mt-2"}>
+                                        <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity("Вы")}}>
+                                                    <span className={"m-auto uppercase"}>
+                                                      Вы
+                                                    </span>
+                                        </div>
+                                        Вы
+                                    </div>
                                 </ul>
                             </div> }
                                 
@@ -105,8 +114,7 @@ export const EditChatMW = (props) => {
 }
 
 const AddUserMW = (props) => {
-    const [state, setState] = React.useState({user: "",
-        type: "public"})
+    const [state, setState] = React.useState({user: ""})
     const onSubmit = (e) => {
         e.preventDefault()
         props.onSubmit(state)
@@ -121,7 +129,7 @@ const AddUserMW = (props) => {
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                     htmlFor="grid-password"
                 >
-                    Логин
+                    Имя пользователя
                 </label>
                 <input
                     type="text"
@@ -129,7 +137,7 @@ const AddUserMW = (props) => {
                     value={state.user}
                     onChange={changeForm}
                     className="w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
-                    placeholder="Введите логин"
+                    placeholder="Введите имя пользователя"
                 />
             </div>
 

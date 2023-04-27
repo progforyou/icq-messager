@@ -86,7 +86,7 @@ class controller {
         let u = store.get("user").user
         let page = store.get("messages").messages.page
         let messages = store.get("messages").messages.list
-        let lastId = messages.length ? messages[messages.length - 1] : 0
+        let lastId = messages.length ? messages[messages.length - 1]?.id : 0
         let chatId = store.get("contacts").contacts.active
         if (chatId === 0){
             return 
@@ -244,14 +244,12 @@ class controller {
         }
         let u = store.get("user").user
         try{
-            r = await instance.post(`/chat/${id}/members`, [data],{
+            r = await instance.post(`/chats/members/`, {users_id: [data], id: id},{
                 headers: {
                     "Authorization": `Bearer ${u.access_token}`
                 }
             })
-            await new controller().getChatMembers(id)
         } catch (e) {
-            console.log(e)
             if (e.response?.status === 401){
                 return "reload"
             } else {

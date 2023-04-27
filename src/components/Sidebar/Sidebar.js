@@ -286,8 +286,8 @@ export default (props) => {
     let r = await reloadTokenController(setCookie, Controller().createChat, data)
     
     if (r.status === 200){
-      dispatch("contacts/addChat", r.data.data)
-      dispatch("contacts/setActive", r.data.data.id)
+      dispatch("contacts/addChat", r.data.Data)
+      dispatch("contacts/setActive", r.data.Data.id)
     }
   }
   if (customize.isMobile) {

@@ -129,7 +129,7 @@ function _Chat(props) {
             type: 'delete_message',
             message: {
                 id: id,
-                "delete_at": new Date().toISOString(),
+                "delete_at": date,
                 chat_id: contacts.active
             }
         });
