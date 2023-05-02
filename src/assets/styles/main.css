@@ -3,6 +3,9 @@ Custom Input range
 =============================*/
 
 /* Input range - chrome and safari */
+.rhap_progress-container{
+    width: 150px;
+}
 
 input[type="range"] {
     --range-progress: 0;

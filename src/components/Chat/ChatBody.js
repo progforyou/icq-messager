@@ -4,9 +4,9 @@ import ReactDOM from "react-dom";
 import {EllipsisSpinner} from "../Spinners/Ellipsis";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {DeleteTimerMW} from "../Modal/DeleteTimer";
-import {useHistory} from "react-router";
-import {NavLink} from "react-router-dom";
 import {getFileName} from "../../tools/other";
+import AudioPlayer, {RHAP_UI} from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 
 
 
@@ -64,7 +64,24 @@ const FileTyper = (props) => {
         )
     }
     if (props.data.path.match(/\.(mp3|wav)$/i)){
-        return <audio controls><source src={`/media/${props.data.path}`} type="audio/mpeg"></source></audio>
+        return <AudioPlayer
+            preload={"auto"}
+            onLoadedMetaData={e => {
+                console.log(e)
+            }}
+            showSkipControls={false}
+            showJumpControls={false}
+            showDownloadProgress={false}
+            showFilledProgress={false}
+            showFilledVolume={false}
+            layout="horizontal-reverse"
+            customControlsSection={
+                [
+                    RHAP_UI.MAIN_CONTROLS,
+                ]
+            }
+            src={`/media/${props.data.path}`}
+        />
     }
     return (
         <>
