@@ -7,7 +7,16 @@ function writeTime(t) {
     return `${model(t.h)}:${model(t.m)},${model(t.s)}`
 }
 
+function writeSecTime(t) {
+    return {
+        h: Math.floor(t/3600),
+        m: Math.floor(t/60),
+        s: Math.floor(t % 60)
+    }
+}
+
 export const ChatRecorder = (props) => {
+    console.log(props.duration)
     return (
         <div className={"flex"}>
             <div className={"mr-3"}>
@@ -29,6 +38,7 @@ export const ChatRecorder = (props) => {
                         e.stopPropagation()
                     }}></i> }
                     <div className={"ml-auto"}>
+                        {props.isPlaying && (writeTime(writeSecTime(props.duration)) + "/")}
                         {writeTime(props.timeRecording ? props.timeRecording : props.time)}
                     </div>
                 </div>

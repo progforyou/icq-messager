@@ -14,34 +14,15 @@ import {store} from "../store";
 import {useHistory} from "react-router";
 //http://213.189.201.22/
 //const WS_URL = `wss://${window.location.hostname}/ws/`;
-const WS_URL = `wss://chat.salekhov.ru/ws/`;
+const WS_URL = `wss://bichiko.ru/ws/`;
 //const WS_URL = 'wss://127.0.0.1:8000/chat';
 function _Chat(props) {
+    const {sendJsonMessage} = props;
     const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})
     const [isEdit, setIsEdit] = React.useState(false)
     const [cookies, setCookie] = useCookies(['access_token', 'login']);
-    const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}?token=${cookies.access_token}`, {
-        retryOnError: false,
-        onClose: () => {
-            
-        },
-        onMessage: (e) => {
-            let d = JSON.parse(e.data)
-            console.log(d)
-            if (d.Type === "delete_message"){
-                dispatch("messages/delete", d.Message)
-                return
-            }
-            if (d.Type === "create_message"){
-                dispatch("messages/add", d.Message)
-                return
-            }
-            if (d.Type === "edit_message"){
-                dispatch("messages/edit", d.Message)
-            }
-        }
-    });
+    
     const handleFiles = (files) => {
         setState({...state, files: [...state.files, ...files]})
     }
@@ -54,7 +35,6 @@ function _Chat(props) {
     }
     
     React.useEffect(async () => {
-        //reloadTokenController(setCookie, Controller().getChatMembers, contacts.active)
         reloadTokenController(setCookie, Controller().getChatMessages)
     }, [contacts.active])
     
@@ -129,7 +109,7 @@ function _Chat(props) {
             type: 'delete_message',
             message: {
                 id: id,
-                "delete_at": date,
+                "delete_at": new Date(date).toUTCString(),
                 chat_id: contacts.active
             }
         });
@@ -183,9 +163,42 @@ export default function Chat(props) {
     const { dispatch, contacts } = useStoreon('contacts')
     const [cookies, setCookie] = useCookies(['access_token', 'login']);
     const history = useHistory();
+    const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}?token=${cookies.access_token}`, {
+        retryOnError: false,
+        onClose: () => {
+
+        },
+        onMessage: (e) => {
+            let d = JSON.parse(e.data)
+            console.log(d)
+            if (d.Type === "delete_message"){
+                dispatch("messages/delete", d.Message)
+                return
+            }
+            if (d.Type === "create_message"){
+                dispatch("messages/add", d.Message)
+                return
+            }
+            if (d.Type === "edit_message"){
+                dispatch("messages/edit", d.Message)
+                return;
+            }
+            if (d.Event === "open"){
+                reloadTokenController(setCookie, Controller().getChats)
+                return;
+            }
+            if (d.Event === "close"){
+                reloadTokenController(setCookie, Controller().getChats)
+                return;
+            }
+        }
+    });
+    const loadAll = async () => {
+        await reloadTokenController(setCookie, Controller().getChats)
+        await reloadTokenController(setCookie, Controller().getAllUsers)
+    }
     React.useEffect(() => {
-        reloadTokenController(setCookie, Controller().getChats)
-        reloadTokenController(setCookie, Controller().getAllUsers)
+        loadAll()
     }, [])
 
     React.useEffect(() => {
@@ -200,5 +213,5 @@ export default function Chat(props) {
             <div className={"m-auto"}>Выберите чат</div>
         </div>
     }
-    return <_Chat {...props}/>
+    return <_Chat sendJsonMessage={sendJsonMessage} {...props}/>
 }

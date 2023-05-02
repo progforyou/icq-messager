@@ -9,13 +9,15 @@ import Controller from "../controller/controller";
 import AdminController from "../controller/adminController";
 import {reloadAdminTokenController, reloadTokenController} from "../tools/reloadToken";
 import AdminNavbar from "../components/Navbars/AdminNavbar";
+import {useStoreon} from "storeon/react";
 
 export default function Admin() {
-    let history = useHistory();
     const [cookies, setCookie] = useCookies(['admin_access_token', 'admin_login']);
+    const { dispatch, user } = useStoreon('user')
+    let history = useHistory();
     React.useEffect(() => {
         reloadAdminTokenController(setCookie, AdminController().getUsers)
-    }, [])
+    }, [user.admin_access_token])
     React.useEffect(() => {
         if (!(cookies.admin_access_token)){
             history.push("/admin/signIn");

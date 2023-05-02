@@ -26,9 +26,10 @@ export const AddFileDropdown = (props) => {
         if (e.target.files) {
             let arr = Array.from(e.target.files)
             props.handleFiles(arr)
+            e.target.value = ""
         }
     };
-    const handleFileOpen = () => {
+    const handleFileOpen = (e) => {
         fileRef.current.click()
         setDropdownPopoverShow(false)
     }

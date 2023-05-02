@@ -6,3 +6,9 @@ deploy:
 	rm -r ./html
 	rm -r ./html.zip
 	echo "ACCEPT"
+
+deploy:
+	yarn build
+	zip -vr build.zip ./build
+	rm -r ./build
+	echo "ACCEPT"

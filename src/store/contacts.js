@@ -38,4 +38,12 @@ export let contacts = store => {
     store.on('contacts/setAllUsers', ({ contacts }, allUsers) => {
         return { contacts: {...contacts, allUsers: allUsers }}
     })
+    store.on('contacts/setChatMember', ({ contacts }, memberData) => {
+        return { contacts: {...contacts, list: contacts.list.map(e => {
+            if (e.id === memberData.id){
+                e.users.push({id: memberData.users_id[0]})
+            }
+            return e
+                })} }
+    })
 } 

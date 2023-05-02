@@ -37,10 +37,9 @@ export default function Navbar() {
             history.push("/signIn");
         }
     }
-    const handleAddUser = (data) => {
-        let c = contacts.allUsers.find(e => e.name.includes(data.user))
-        let r = reloadTokenController(setCookie, Controller().addChatMember, contacts.active, c.id)
-        
+    const handleAddUser = async (data) => {
+        let c = contacts.allUsers.find(e => e.login.includes(data.user))
+        let r = await reloadTokenController(setCookie, Controller().addChatMember, contacts.active, c.id)
     }
     if (contacts.active === 0 && customize.isMobile){
         return null

@@ -45,6 +45,9 @@ class controller {
     async reloadToken(){
         let r
         let u = store.get("user").user
+        if (!u.access_token){
+            return "reload"
+        }
         try{
             r = await instance.get("/auth/refresh/", {
                 headers: {
@@ -249,6 +252,7 @@ class controller {
                     "Authorization": `Bearer ${u.access_token}`
                 }
             })
+            store.dispatch("contacts/setChatMember", r.data.Data)
         } catch (e) {
             if (e.response?.status === 401){
                 return "reload"

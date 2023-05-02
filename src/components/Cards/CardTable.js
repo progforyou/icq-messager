@@ -19,7 +19,6 @@ export default function CardTable({ color }) {
   const [editUser, setEditUser] = React.useState(false)
   const [state, setState] = React.useState({activeUser: {}})
   const { dispatch, admin } = useStoreon('admin')
-  console.log(admin)
   const handleEdit = (e) => {
     return () => {
       console.log(e)

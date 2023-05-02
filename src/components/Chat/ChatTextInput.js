@@ -29,14 +29,14 @@ export const ChatTextInput = (props) => {
         <>
             {props.state.files?.length ? <div className={"text-sm flex text-blueGray-600"}>
                 {Array.from(props.state.files).map((file, key) => {
-                    return <div id={key} onClick={() => props.deleteFile(key)} style={{maxWidth: "100px"}} className={"hover:text-blueGray-500 mr-3 cursor-pointer overflow-ellipsis whitespace-nowrap"}>
+                    return <div key={key} onClick={() => props.deleteFile(key)} style={{maxWidth: "100px"}} className={"hover:text-blueGray-500 mr-3 cursor-pointer overflow-ellipsis whitespace-nowrap"}>
                         <i className={"fa fa-file"}></i> {file.name}
                     </div>
                 })}
             </div> : null}
             {props.state.prevFiles?.length ? <div className={"text-sm flex text-blueGray-600"}>
                 {props.state.prevFiles.map((file, key) => {
-                    return <div id={key} onClick={() => props.deleteFilePrev(key)} style={{maxWidth: "100px"}} className={"hover:text-blueGray-500 mr-3 cursor-pointer overflow-ellipsis whitespace-nowrap"}>
+                    return <div key={key} onClick={() => props.deleteFilePrev(key)} style={{maxWidth: "100px"}} className={"hover:text-blueGray-500 mr-3 cursor-pointer overflow-ellipsis whitespace-nowrap"}>
                         <i className={"fa fa-file"}></i> {getFileName(file.url)}
                     </div>
                 })}

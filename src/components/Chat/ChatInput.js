@@ -10,12 +10,11 @@ export const ChatInput = (props) => {
     const audioRef = React.useRef(null);
     const [hasRecording, setHasRecording] = React.useState(false);
     const [timeRecording, setTimeRecording] = React.useState(null);
-    const [audioPaused, setAudioPaused] = React.useState(false);
     const [currentTime, setCurrentTime] = React.useState(0)
+    const [duration, setDuration] = React.useState(0);
     const [sendToggle, setSendToggle] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [file, setFile] = React.useState(null);
-    const [localSendRecord, setLocalSendRecord] = React.useState(false);
     const {
         time,
         data,
@@ -91,6 +90,15 @@ export const ChatInput = (props) => {
         playAnimationRef.current = requestAnimationFrame(repeat);
     }, []);
     React.useEffect(() => {
+        function getTime(){
+            setDuration(audioRef.current.currentTime)
+        }
+        audioRef.current?.addEventListener("timeupdate", getTime)
+        return () => {
+            audioRef.current?.removeEventListener('timeupdate', getTime);
+        };
+    }, [])
+    React.useEffect(() => {
         playAnimationRef.current = requestAnimationFrame(repeat);
         return () => {
             playAnimationRef.current = null
@@ -107,7 +115,7 @@ export const ChatInput = (props) => {
     return (
         <div className={"items-center"}>
             <audio ref={audioRef} hidden />
-            {recording || hasRecording ? <ChatRecorder currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
+            {recording || hasRecording ? <ChatRecorder duration={duration} currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :
             <ChatTextInput deleteFilePrev={props.deleteFilePrev} deleteFile={props.deleteFile} handleFiles={props.handleFiles} isEdit={props.isEdit} onCancelEdit={props.onCancelEdit} onSendMessage={onSendMessage}  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={props.state} startRecord={startRecord}/> }
         </div>

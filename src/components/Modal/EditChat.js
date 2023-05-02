@@ -70,7 +70,7 @@ export const EditChatMW = (props) => {
                             </button>
                         </div>
                         <div className={"flex py-4 px-4 font-w w-full"}>
-                            {showAddUser ? <AddUserMW onSubmit={onAddUser}/> : 
+                            {showAddUser ? <AddUserMW onSubmit={onAddUser} users={props.allUsers.filter(e => !activeUsersIds.includes(e.id) )}/> : 
                             <div className="relative w-full mb-3">
                                 <div className="block text-blueGray-600 items-center font-bold mb-2 flex justify-between">
                                     <span className={"uppercase text-xs"}>
@@ -114,16 +114,16 @@ export const EditChatMW = (props) => {
 }
 
 const AddUserMW = (props) => {
-    const [state, setState] = React.useState({user: ""})
-    const onSubmit = (e) => {
-        e.preventDefault()
-        props.onSubmit(state)
-    }
+    const [state, setState] = React.useState({user: "", usersList: []})
+    React.useEffect(() => {
+        if (state.user !== "") setState({...state, usersList: props.users.filter(e => e.login.includes(state.user))})
+        else setState({...state, usersList: []})
+    }, [state.user])
     const changeForm = (e) => {
         setState( {...state,[e.target.name]: e.target.value})
     }
     return (
-        <form onSubmit={onSubmit} className={"w-full"}>
+        <form onSubmit={e => e.preventDefault()} className={"w-full"}>
             <div className="relative w-full mb-3">
                 <label
                     className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
@@ -141,14 +141,32 @@ const AddUserMW = (props) => {
                 />
             </div>
 
-            <div className="text-center mt-6">
+            {state.usersList.map((e, key) => {
+                return <div key={key} onClick={() => {
+                    props.onSubmit({user: e.login})
+                }} className={"flex items-center mt-2 px-2 py-1 cursor-pointer hover:bg-blueGray-200"}>
+                    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.name + e.surname)}}>
+                                                    <span className={"m-auto uppercase"}>
+                                                      {e.name[0]+e.surname[0]}
+                                                    </span>
+                    </div>
+                    <div>
+                        <div>
+                        {e.name} {e.surname}
+                        </div>
+                        <small>{e.login}</small>
+                    </div>
+                </div>
+            })}
+
+            {/*<div className="text-center mt-6">
                 <button
                     className="bg-blueGray-800 text-white active:bg-blueGray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
                     type="submit"
                 >
                     Добавить пользователя
                 </button>
-            </div>
+            </div>*/}
         </form>
     )
 }

@@ -59,7 +59,7 @@ const writeFind = (contacts, dispatch, setCookie, findStr) => {
       })
     }*/
     contacts.find.filter(e => {
-      return `${e.name} ${e.surname}`.toLowerCase().includes(findStr.toLowerCase())
+      return e.login.toLowerCase().includes(findStr.toLowerCase())
     }).map((e, key) => {
       res.push(
           <div key={`chats-users-${key}`}>
@@ -218,20 +218,20 @@ function Sidebar(props) {
 
 function MobileSidebar(props) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
+  const [cookies, setCookie] = useCookies(['access_token', 'login']);
   const [createChat, setCreateChat] = React.useState(false);
-  const [find, setFind] = React.useState("")
   const { dispatch, contacts } = useStoreon('contacts')
   const [viewList, setViewList] = React.useState([])
   React.useEffect(() => {
-    if (find !== ""){
-      setViewList(contacts.list.filter(e => e.title.includes(find)))
-    } else {
-      setViewList(contacts.list)
+    if (contacts.findStr && contacts.find.length === 0){
+      dispatch("contacts/setActive", 0)
+      reloadTokenController(setCookie, Controller().getUsers)
     }
-  }, [contacts.list, find])
-  if (contacts.active !== 0){
-    return  null
-  }
+    if (contacts.findStr === ""){
+      dispatch("contacts/setFindResult", [])
+    }
+  }, [contacts.findStr])
+  const classNames = ""
   return (
       <>
         <nav style={{height: "100vh", alignItems: "start"}} className="flex left-0 block fixed top-0 bottom-0 overflow-y-auto flex-row flex-nowrap overflow-hidden shadow-xl bg-white flex flex-wrap justify-between relative w-64 z-10 py-4">
@@ -247,28 +247,30 @@ function MobileSidebar(props) {
             </div>
             {/* Collapse */}
               {/* Form */}
-              <form className="mb-4 px-3">
+              <form className="mb-4 px-3" onSubmit={e => e.preventDefault()}>
                 <div className="pt-0">
                   <input
                       type="text"
                       placeholder="Поиск"
-                      value={find}
-                      onChange={e => setFind(e.target.value)}
+                      value={contacts.findStr}
+                      onChange={e => dispatch("contacts/setFindStr", e.target.value)}
                       className="focus:shadow-none border-0 px-3 py-2 h-8 border border-solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
                   />
                 </div>
               </form>
+            
+            <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none" style={{height: "calc(100vh - 125px)"}}>
 
-              <ul className="h-full md:flex-col md:min-w-full flex flex-col list-none" style={{height: "calc(100vh - 125px)"}}>
-
-                {viewList.map((e, key) => {
+              {Object.keys(contacts.find).length ? writeFind(contacts, dispatch, setCookie, contacts.findStr) : <>
+                {contacts.list.map((e, key) => {
+                  console.log(e)
                   return (
                       <div key={key}>
-                        <ChatItem contacts={contacts} e={e} dispatch={dispatch}/>
+                        <ChatItem login={cookies.login} contacts={contacts} e={e} dispatch={dispatch}/>
                       </div>
                   )
-                })}
-              </ul>
+                })} </> }
+            </ul>
             </div>
         </nav>
         {createChat ? <CreateChatMW onHide={() => setCreateChat(false)} onSubmit={(data) => {
@@ -285,7 +287,7 @@ export default (props) => {
   const createChat = async (data) => {
     let r = await reloadTokenController(setCookie, Controller().createChat, data)
     
-    if (r.status === 200){
+    if (r.status === 201){
       dispatch("contacts/addChat", r.data.Data)
       dispatch("contacts/setActive", r.data.Data.id)
     }
