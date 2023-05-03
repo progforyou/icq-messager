@@ -64,10 +64,10 @@ export default function Navbar() {
                             }
                             setShowEditChat(true)
                         }}>
-                            <div className="text-black text-sm uppercase font-semibold sm:max-w-150 overflow-ellipsis whitespace-nowrap">
+                            <div className="text-black text-sm uppercase font-semibold sm:max-w-120 overflow-ellipsis whitespace-nowrap">
                                 {contacts.activeData?.title}
                             </div>
-                            <div className={"text-sm sm:max-w-150 overflow-ellipsis whitespace-nowrap"}>
+                            <div className={"text-sm sm:max-w-120 overflow-ellipsis whitespace-nowrap"}>
                                 {contacts.activeData?.personal ? null : <>{getText(contacts.activeData?.users?.length)}</>}
                             </div>
                         </div>

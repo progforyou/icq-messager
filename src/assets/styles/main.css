@@ -176,5 +176,8 @@ input[type="range"]:active::-moz-range-thumb {
 @media (max-width: 450px) {
     .sm\:max-w-150{
         max-width: 150px;
-    }   
+    }
+    .sm\:max-w-120{
+        max-width: 120px;
+    }
 }

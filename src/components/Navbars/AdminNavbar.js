@@ -13,7 +13,7 @@ export default function AdminNavbar() {
           {/* Brand */}
           <div className={"flex"}>
             <div>
-              <div className="text-black text-sm uppercase font-semibold sm:max-w-150 overflow-ellipsis whitespace-nowrap">
+              <div className="text-black text-sm uppercase font-semibold sm:max-w-120 overflow-ellipsis whitespace-nowrap">
                 <ul className={"flex"}>
                   <li className={"mr-3"}>
                     <NavLink className={"text-blueGray-600 hover:text-blueGray-500 text-sm uppercase hidden lg:inline-block font-semibold"} to={"/admin"}>Список пользователей</NavLink>

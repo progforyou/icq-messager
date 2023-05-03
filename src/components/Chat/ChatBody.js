@@ -5,8 +5,6 @@ import {EllipsisSpinner} from "../Spinners/Ellipsis";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {DeleteTimerMW} from "../Modal/DeleteTimer";
 import {getFileName} from "../../tools/other";
-import AudioPlayer, {RHAP_UI} from 'react-h5-audio-player';
-import 'react-h5-audio-player/lib/styles.css';
 
 
 
@@ -64,24 +62,10 @@ const FileTyper = (props) => {
         )
     }
     if (props.data.path.match(/\.(mp3|wav)$/i)){
-        return <AudioPlayer
-            preload={"auto"}
-            onLoadedMetaData={e => {
-                console.log(e)
-            }}
-            showSkipControls={false}
-            showJumpControls={false}
-            showDownloadProgress={false}
-            showFilledProgress={false}
-            showFilledVolume={false}
-            layout="horizontal-reverse"
-            customControlsSection={
-                [
-                    RHAP_UI.MAIN_CONTROLS,
-                ]
-            }
-            src={`/media/${props.data.path}`}
-        />
+        return <audio style={{maxWidth: "100%"}}
+            controls
+            src={`/media/${props.data.path}`}>
+        </audio>
     }
     return (
         <>
@@ -134,7 +118,7 @@ const MessageIn = (props) => {
             e.preventDefault(); // prevent the default behaviour when right clicked
             console.log("Right Click");
         }}>
-            <div className={"mr-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: "70%"}}>
+            <div className={"mr-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: props.isMobile ? "90%" : "70%"}}>
                 <TypeSwitcher {...props}/>
                 <div className={"absolute bottom-0 right-0 mr-2 mb-2 text-blueGray-300"} style={{fontSize: "13px"}}>
                     {startTime(props.message.create_at)}
@@ -148,7 +132,7 @@ const MessageIn = (props) => {
 const MessageOut = (props) => {
     return (
         <div className={"flex w-full relative"}>
-            <div className={"ml-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: "70%"}}>
+            <div className={"ml-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: props.isMobile ? "90%" : "70%"}}>
                 <TypeSwitcher {...props}/>
                 <div className={"absolute bottom-0 right-0 mr-2 mb-2 text-blueGray-300"} style={{fontSize: "13px"}}>
                     {startTime(props.message.create_at)}
@@ -198,7 +182,7 @@ const Menu = (props) => {
 }
 
 export const ChatBody = (props) => {
-    const { dispatch, contacts, messages, user } = useStoreon('contacts', 'messages', 'user')
+    const { dispatch, contacts, messages, user, customize } = useStoreon('contacts', 'messages', 'user', 'customize')
     const [clicked, setClicked] = React.useState(false)
     const [activeMessage, setActiveMessage] = React.useState(null)
     const [points, setPoints] = React.useState({x: 0, y: 0})
@@ -261,8 +245,8 @@ export const ChatBody = (props) => {
                 <InfiniteScroll
                     dataLength={messages.list.length}
                     next={loadMessages}
-                    style={{ display: 'flex', flexDirection: 'column-reverse' }} 
-                    inverse={true} //
+                    style={{ display: 'flex', flexDirection: 'column-reverse', overflowX: "hidden" }} 
+                    inverse={true} 
                     hasMore={hasMore}
                     loader={<div className={"mx-auto"}>
                         <EllipsisSpinner/>
@@ -277,9 +261,9 @@ export const ChatBody = (props) => {
                             return <div key={key} className={"pb-3 pt-3 mx-auto text-blueGray-600 text-sm"}>{toDate(e.date)}</div>
                         }
                         if (messageIn){
-                            return <Message users={contacts.allUsers} key={key} message={e} onContextMenu={() => {}} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                            return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenu={() => {}} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                         }
-                        return <Message users={contacts.allUsers} key={key} message={e} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                        return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                     })}
                 </InfiniteScroll>
                 </>}

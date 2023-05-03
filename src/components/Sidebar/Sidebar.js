@@ -101,7 +101,7 @@ const ChatItem = ({contacts, dispatch, e, login}) => {
   }
   if (contacts.active === e.id){
     return <div className={"px-3 flex text-white items-center cursor-pointer uppercase py-3 font-bold block bg-lightBlue-500 hover:bg-lightBlue-600"}>
-      <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(name)}}>
+      <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(name), minHeight: "2.5rem", minWidth: "2.5rem"}}>
         <span className={"m-auto"}>
           {itemName}
         </span>
@@ -112,7 +112,7 @@ const ChatItem = ({contacts, dispatch, e, login}) => {
     </div>
   }
   return  <div onClick={onClick} className={"px-3 flex text-black items-center cursor-pointer uppercase py-3 font-bold block bg-transparent hover:bg-blueGray-200"}>
-    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(name)}}>
+    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(name), minHeight: "2.5rem", minWidth: "2.5rem"}}>
         <span className={"m-auto"}>
           {itemName}
         </span>
@@ -132,7 +132,7 @@ const UserItem = ({contacts, dispatch, e, setCookie}) => {
       store.dispatch("contacts/setActive", r.data.Data?.id)
   }
   return  <div onClick={onClick} className={"px-3 flex text-black items-center cursor-pointer uppercase py-3 font-bold block bg-transparent hover:bg-blueGray-200"}>
-    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.login)}}>
+    <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.login), minHeight: "2.5rem", minWidth: "2.5rem"}}>
         <span className={"m-auto"}>
           {itemName}
         </span>
@@ -231,6 +231,9 @@ function MobileSidebar(props) {
       dispatch("contacts/setFindResult", [])
     }
   }, [contacts.findStr])
+  if (contacts.active !== 0){
+    return  null
+  }
   const classNames = ""
   return (
       <>

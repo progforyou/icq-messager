@@ -9,8 +9,6 @@ import useWebSocket from "react-use-websocket";
 import Controller from "../controller/controller";
 import {useCookies} from "react-cookie";
 import {reloadTokenController} from "../tools/reloadToken";
-import AdminController from "../controller/adminController";
-import {store} from "../store";
 import {useHistory} from "react-router";
 //http://213.189.201.22/
 //const WS_URL = `wss://${window.location.hostname}/ws/`;
