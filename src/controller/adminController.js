@@ -36,6 +36,16 @@ class adminController {
         return r
     }
 
+    async signIn(data) {
+        let r
+        try{
+            r = await instance.post("/login/", data)
+        } catch (e) {
+            toast.error(e.response.data.Message)
+        }
+        return r
+    }
+
     async createUser(data) {
         let r
         let u = store.get("user").user

@@ -1,11 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import {useHistory} from "react-router";
-import Controller from "../controller/controller";
 import {useCookies} from "react-cookie";
-import {reloadTokenController} from "../tools/reloadToken";
 import AdminController from "../controller/adminController";
-import axios from "axios";
 
 export default function SignInAdmin() {
   const [state, setState] = React.useState({
@@ -25,7 +21,7 @@ export default function SignInAdmin() {
   const onSubmit = async (e) => {
     e.preventDefault();
     state.browser = getBrowserName()
-    let r = await Controller().signIn(state)
+    let r = await AdminController().signIn(state)
     if (r && r.status === 200){
       setCookie('admin_access_token', r.data.access_token);
       history.push("/admin");
