@@ -49,7 +49,7 @@ export const CreateUserMW = (props) => {
         <>
             <div
                 className={`top-0 left-0 w-full h-screen flex justify-center items-top overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none `}>
-                <div style={{maxWidth: "500px"}} className="w-full mt-48 relative my-16 mx-auto max-w-3xl">
+                <div style={{maxWidth: "500px"}} className="w-full mt-1 md:mt-12 relative my-16 mx-auto max-w-3xl">
                     <div ref={ref}
                          className="border-0 rounded-lg bg-white shadow-md relative flex flex-col w-full bg-white outline-none focus:outline-none pb-6">
                         <div className={`flex items-start justify-between py-3 px-4 border-b border-solid border-gray-light rounded-t `}>

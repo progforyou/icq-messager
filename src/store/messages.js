@@ -53,7 +53,7 @@ export let messages = store => {
         return { messages: {...messages, list: newData} }
     })
     store.on('messages/clear', ({ messages }, messagesAll) => {
-        return { messages: {...messages, list: [], page: 1} }
+        return { messages: {...messages, list: [], page: 1, total: 0} }
     })
     store.on('messages/addPaginate', ({ messages }) => {
         return { messages: {...messages, page: messages.page + 1} }

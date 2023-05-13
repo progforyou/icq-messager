@@ -129,7 +129,8 @@ const UserItem = ({contacts, dispatch, e, setCookie}) => {
       let r = await reloadTokenController(setCookie, Controller().createChat, {users: [e], personal: true})
     await reloadTokenController(setCookie, Controller().getChats)
       dispatch("contacts/setFindStr", "")
-      store.dispatch("contacts/setActive", r.data.Data?.id)
+      dispatch("contacts/setActive", r.data.Data?.id)
+      dispatch("messages/clear")
   }
   return  <div onClick={onClick} className={"px-3 flex text-black items-center cursor-pointer uppercase py-3 font-bold block bg-transparent hover:bg-blueGray-200"}>
     <div className={"w-10 h-10 mr-2 rounded-full flex"} style={{backgroundColor: getColorIdentity(e.login), minHeight: "2.5rem", minWidth: "2.5rem"}}>

@@ -3107,3 +3107,9 @@ select {
 
 @media (min-width: 1536px) {
 }
+
+@media (min-width: 768px) {
+  .md\:mt-12 {
+    margin-top: 3rem/* 48px */;
+  }
+}

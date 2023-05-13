@@ -143,7 +143,7 @@ const MessageOut = (props) => {
 }
 
 const Message = (props) => {
-    return <div className={"w-full"} onContextMenu={props.onContextMenu}>
+    return <div className={"w-full prevent-select"} onContextMenu={props.onContextMenu}>
         {props.messageIn ? <MessageIn {...props}/> :  <MessageOut {...props}/>}
     </div>
 }
