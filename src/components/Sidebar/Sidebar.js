@@ -91,7 +91,7 @@ const ChatItem = ({contacts, dispatch, e, login}) => {
   let name = e.title?.length ? e.title[0] : e.title
   if (e.personal && e.title?.split(" ").length){
     let s = e.title.split(" ")
-    name = s[0][0] + s[1][0]
+    name = s[0][0] + (s[1][0] ? s[1][0] : "")
   }
   const itemName = e.id === -1 ? <i className={"fa fa-star"}></i> : name
   const onClick = () => {

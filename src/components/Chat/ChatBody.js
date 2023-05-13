@@ -198,6 +198,16 @@ export const ChatBody = (props) => {
             setPoints({x: e.pageX, y: e.pageY})
         }
     }
+    const onContextMenuHandle = (id) => {
+        return (e) => {
+            e.preventDefault();
+            if (e.type === 'contextmenu') {
+                setClicked(true)
+                setActiveMessage(id)
+                setPoints({x: e.pageX, y: e.pageY})
+            }
+        }
+    }
     const handleClick = () => setClicked(false);
     const onDelete = () => {
         props.handleDeleteMessage(activeMessage)
@@ -245,7 +255,7 @@ export const ChatBody = (props) => {
                 <InfiniteScroll
                     dataLength={messages.list.length}
                     next={loadMessages}
-                    style={{ display: 'flex', flexDirection: 'column-reverse', overflowX: "hidden" }} 
+                    style={{ display: 'flex', flexDirection: 'column-reverse', overflowX: "hidden", paddingBottom: "30px" }} 
                     inverse={true} 
                     hasMore={hasMore}
                     loader={<div className={"mx-auto"}>
@@ -263,7 +273,7 @@ export const ChatBody = (props) => {
                         if (messageIn){
                             return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenu={() => {}} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                         }
-                        return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                        return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onClick={onContextMenuHandle(e.id)} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                     })}
                 </InfiniteScroll>
                 </>}
