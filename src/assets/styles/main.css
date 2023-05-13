@@ -2,6 +2,10 @@
 Custom Input range 
 =============================*/
 
+#chatBody {
+    min-height: 100vh;
+}
+
 .prevent-select {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
@@ -185,5 +189,11 @@ input[type="range"]:active::-moz-range-thumb {
     }
     .sm\:max-w-120{
         max-width: 120px;
+    }
+}
+
+@supports (-webkit-touch-callout: none) {
+    #chatBody {
+        height: -webkit-fill-available;
     }
 }

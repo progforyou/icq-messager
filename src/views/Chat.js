@@ -148,7 +148,7 @@ function _Chat(props) {
         return null
     }
   return (
-    <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
+    <div id={"chatBody"} style={{paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
         {contacts.active === 0 ? <div className={"m-auto"}>Выберите чат</div> : <>
         <ChatBody handleDeleteMessageTimer={handleDeleteTimerMessage} getMessages={getMessages} handleDeleteMessage={handleDeleteMessage} handleEditMessage={onEditMessage}/>
         <ChatInput sendRecord={sendRecord} deleteFilePrev={deleteFilePrev} deleteFile={deleteFile}  handleFiles={handleFiles} isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>

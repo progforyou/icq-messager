@@ -143,7 +143,7 @@ const MessageOut = (props) => {
 }
 
 const Message = (props) => {
-    return <div className={"w-full prevent-select"} onContextMenu={props.onContextMenu}>
+    return <div className={"w-full prevent-select"} onClick={props.onContextMenuIos} onContextMenu={props.onContextMenu}>
         {props.messageIn ? <MessageIn {...props}/> :  <MessageOut {...props}/>}
     </div>
 }
@@ -198,7 +198,7 @@ export const ChatBody = (props) => {
             setPoints({x: e.pageX, y: e.pageY})
         }
     }
-    const onContextMenuHandle = (id) => {
+    const onContextMenuIos = (id) => {
         return (e) => {
             e.preventDefault();
             if (e.type === 'contextmenu') {
@@ -248,7 +248,7 @@ export const ChatBody = (props) => {
     }, []);
     return (
             <div ref={ref}
-                 id="scrollableDiv" className={"w-full flex overflow-y-auto text-black"} style={{flex: "1 1", flexDirection: "column-reverse", paddingRight: "10px"}}>
+                 id="scrollableDiv" className={"w-full flex overflow-y-auto text-black px-4"} style={{flex: "1 1", flexDirection: "column-reverse", paddingRight: "30px"}}>
                 {messages.list && messages?.list?.length === 0 ? <div className={"m-auto"}>
                     Здесь пока пусто...
                 </div> : <>
@@ -273,7 +273,7 @@ export const ChatBody = (props) => {
                         if (messageIn){
                             return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenu={() => {}} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                         }
-                        return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onClick={onContextMenuHandle(e.id)} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                        return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenuIos={onContextMenuIos(e.id)} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                     })}
                 </InfiniteScroll>
                 </>}

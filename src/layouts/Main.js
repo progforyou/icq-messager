@@ -28,7 +28,7 @@ export default function Main() {
       <div className="relative md:ml-64 bg-blueGray-100">
         <Navbar />
         {/* Header */}
-        <div className="px-4 w-full">
+        <div className="w-full">
           <Switch>
                 <Route path="/chat" exact component={Chat} />
           </Switch>

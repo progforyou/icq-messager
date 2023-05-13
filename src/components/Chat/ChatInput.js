@@ -113,7 +113,7 @@ export const ChatInput = (props) => {
         props.setMessage("")
     }
     return (
-        <div className={"items-center"} style={{bottom: "calc(1rem + env(safe-area-inset-bottom))", position: "fixed"}}>
+        <div className={"items-center bg-blueGray-100 px-4" } style={{bottom: "calc(1rem + env(safe-area-inset-bottom))", position: "fixed", width: "calc(100% - 265px)"}}>
             <audio ref={audioRef} hidden />
             {recording || hasRecording ? <ChatRecorder duration={duration} currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :
