@@ -292,6 +292,7 @@ export default (props) => {
     let r = await reloadTokenController(setCookie, Controller().createChat, data)
     
     if (r.status === 201){
+      dispatch("messages/clear")
       dispatch("contacts/addChat", r.data.Data)
       dispatch("contacts/setActive", r.data.Data.id)
     }
