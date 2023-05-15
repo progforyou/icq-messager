@@ -16,7 +16,7 @@ const WS_URL = `wss://bichiko.ru/ws/`;
 //const WS_URL = 'wss://127.0.0.1:8000/chat';
 function _Chat(props) {
     const {sendJsonMessage} = props;
-    const { dispatch, contacts } = useStoreon('contacts')
+    const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})
     const [isEdit, setIsEdit] = React.useState(false)
     const [cookies, setCookie] = useCookies(['access_token', 'login']);
@@ -97,10 +97,6 @@ function _Chat(props) {
             }
         });
     }
-    
-    const toPythonStr = (date) => {
-        return `${(date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))}/${(date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())}/${date.getFullYear()} ${(date.getHours() > 8) ? (date.getHours() + 1) : ('0' + (date.getHours() + 1))}:${(date.getMinutes() > 8) ? (date.getMinutes() + 1) : ('0' + (date.getMinutes() + 1))}:00`
-    }
 
     function handleDeleteTimerMessage(id, date) {
         sendJsonMessage({
@@ -145,7 +141,7 @@ function _Chat(props) {
         setIsEdit(true)
     }
   return (
-    <div id={"chatBody"} style={{paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
+    <div id={"chatBody"} style={{paddingTop: "50px", overflowY: "hidden", height: customize.isMobile ? customize.height + "px" : "100vh"}} className={"flex flex-col pb-4"}>
         {contacts.active === 0 ? <div className={"m-auto"}>Выберите чат</div> : <>
         <ChatBody handleDeleteMessageTimer={handleDeleteTimerMessage} getMessages={getMessages} handleDeleteMessage={handleDeleteMessage} handleEditMessage={onEditMessage}/>
         <ChatInput sendRecord={sendRecord} deleteFilePrev={deleteFilePrev} deleteFile={deleteFile}  handleFiles={handleFiles} isEdit={isEdit} onCancelEdit={() => setIsEdit(false)} state={state} setMessage={m => setState({...state, message: m})} onSend={handleSendMessage} onEditMessage={handleEditMessage}/>
@@ -208,7 +204,7 @@ export default function Chat(props) {
     }
 
     if (contacts.active === 0){
-        return <div style={{height: `${customize.height}px`, paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
+        return <div style={{height: "100vh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
             <div className={"m-auto"}>Выберите чат</div>
         </div>
     }
