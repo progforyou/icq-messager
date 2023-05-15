@@ -156,7 +156,7 @@ const MessageOutContainer = (props) => {
 
 const Menu = (props) => {
     let styles = {}
-    alert(JSON.stringify(props.points))
+    if (props.points.x === 0 && props.points.y === 0) return null
     if ((window.innerWidth / 2) < props.points.x){
         styles.left = props.points.x - (props.isMobile ? 160 : 206)
     } else {
@@ -211,7 +211,6 @@ export const ChatBody = (props) => {
         setClicked(true)
         setActiveMessage(id)
         setPoints({x: e.touches[0].clientX, y: e.touches[0].clientY})
-        alert(e.touches[0].clientX)
     }
     const onContextMenuIos = (id) => {
         return (e) => {
