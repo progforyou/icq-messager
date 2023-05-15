@@ -2,6 +2,10 @@
 Custom Input range 
 =============================*/
 
+.react-datetime-picker__wrapper{
+    border: 0 !important;
+}
+
 .prevent-select {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */

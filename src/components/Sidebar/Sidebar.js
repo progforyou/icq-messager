@@ -197,7 +197,6 @@ function Sidebar(props) {
 
               {Object.keys(contacts.find).length ? writeFind(contacts, dispatch, setCookie, contacts.findStr) : <>
               {contacts.list.map((e, key) => {
-                console.log(e)
                 return (
                     <div key={key}>
                       <ChatItem login={cookies.login} contacts={contacts} e={e} dispatch={dispatch}/>

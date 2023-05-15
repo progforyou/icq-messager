@@ -79,7 +79,7 @@ export default function Navbar() {
                     {/* User */}
                 </div>
             </nav>
-            {showEditChat ? <EditChatMW allUsers={contacts.allUsers} handleAddUser={handleAddUser} data={contacts.activeData} activeMembers={contacts.activeData.users} onHide={() => {setShowEditChat(false)}}/> : null}
+            {showEditChat ? <EditChatMW allUsers={contacts.allUsers} handleAddUser={handleAddUser} data={contacts.activeData} onHide={() => {setShowEditChat(false)}}/> : null}
             {/* End Navbar */}
         </>
     );

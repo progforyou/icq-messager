@@ -1,5 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import DateTimePicker from 'react-datetime-picker';
+import 'react-datetime-picker/dist/DateTimePicker.css';
+import 'react-calendar/dist/Calendar.css';
+import 'react-clock/dist/Clock.css';
+
 
 export const DeleteTimerMW = (props) => {
     const [state, setState] = React.useState({date: new Date()})
@@ -43,7 +48,7 @@ export const DeleteTimerMW = (props) => {
                             Введите время, после которого ваше сообщение удалится
                         </div>
                         <div className={"px-4"}>
-                            <input className={"mt-3 w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"} value={state.date} onChange={e => setState({...state, date: e.target.value})} type="datetime-local" id="date" name="date"></input>
+                            <DateTimePicker disableClock={true} className={"mt-3 w-full border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring ease-linear transition-all duration-150"} onChange={e => setState({...state, date: e})} value={state.date} />
                         </div>
                         <div className={"flex px-4 mt-4"}>
                             <button onClick={onSubmit}

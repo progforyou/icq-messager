@@ -5,6 +5,7 @@ import {EllipsisSpinner} from "../Spinners/Ellipsis";
 import InfiniteScroll from 'react-infinite-scroll-component';
 import {DeleteTimerMW} from "../Modal/DeleteTimer";
 import {getFileName} from "../../tools/other";
+import Waveform from "../Wave/Wave";
 
 
 
@@ -62,10 +63,11 @@ const FileTyper = (props) => {
         )
     }
     if (props.data.path.match(/\.(mp3|wav)$/i)){
-        return <audio style={{maxWidth: "100%"}}
+        return <Waveform targetWave={`wave_${Math.random().toString(36).slice(-8)}`} targetTrack={`track_${Math.random().toString(36).slice(-8)}`} url={`/media/${props.data.path}`}/>
+        /*return <audio style={{maxWidth: "100%"}}
             controls
             src={`/media/${props.data.path}`}>
-        </audio>
+        </audio>*/
     }
     return (
         <>
@@ -235,12 +237,18 @@ export const ChatBody = (props) => {
     }
     const onDelete = () => {
         props.handleDeleteMessage(activeMessage)
+        setPoints({x: 0, y: 0})
+        setActiveMessage(null)
     }
     const handleDeleteTimer = (date) => {
         props.handleDeleteMessageTimer(activeMessage, date)
+        setPoints({x: 0, y: 0})
+        setActiveMessage(null)
     }
     const onEdit = () => {
         props.handleEditMessage(activeMessage, messages.list.find(e => e.id === activeMessage).text)
+        setPoints({x: 0, y: 0})
+        setActiveMessage(null)
     }
     
     const loadMessages = async () => {

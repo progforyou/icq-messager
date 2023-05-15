@@ -47,7 +47,7 @@ export const EditChatMW = (props) => {
         await props.handleAddUser(data)
         setShowAddUser(false)
     }
-    const activeUsersIds = props.activeMembers.map(e => e.id)
+    const activeUsersIds = props.data.users.map(e => e.id)
     return ReactDOM.createPortal(
         <>
             <div
@@ -74,7 +74,7 @@ export const EditChatMW = (props) => {
                             <div className="relative w-full mb-3">
                                 <div className="block text-blueGray-600 items-center font-bold mb-2 flex justify-between">
                                     <span className={"uppercase text-xs"}>
-                                        {getText(props.activeMembers.length)}
+                                        {getText(props.data.users.length)}
                                     </span>
                                     <span>
                                         <i onClick={() => setShowAddUser(true)} className={"fa fa-user-plus hover:text-blueGray-500 cursor-pointer"}></i>

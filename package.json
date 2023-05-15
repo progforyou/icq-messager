@@ -20,7 +20,9 @@
     "react": "17.0.1",
     "react-audio-voice-recorder": "^1.0.4",
     "react-cookie": "^4.1.1",
+    "react-datetime-picker": "^5.0.3",
     "react-dom": "17.0.1",
+    "react-icons": "^4.8.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
@@ -30,6 +32,7 @@
     "storeon": "^3.1.5",
     "tailwindcss": "2.0.4",
     "voice-recorder-react": "^1.1.1",
+    "wavesurfer.js": "^6.6.3",
     "yarn": "^1.22.19"
   },
   "scripts": {
