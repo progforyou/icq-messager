@@ -2,12 +2,12 @@ deploy:
 	yarn build
 	mv ./build ./html
 	zip -vr html.zip ./html
-	scp ./html.zip root@213.189.201.22:/var/www/
+	scp ./html.zip root@134.0.112.198:/var/www/
 	rm -r ./html
 	rm -r ./html.zip
 	echo "ACCEPT"
 
-deploy:
+deplo2y:
 	yarn build
 	zip -vr build.zip ./build
 	rm -r ./build

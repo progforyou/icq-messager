@@ -48,7 +48,7 @@ export default function Navbar() {
     return (
         <>
             {/* Navbar */}
-            <nav style={{height: "50px"}} className={" absolute top-0 left-0 w-full z-10 bg-white flex lg:flex-nowrap lg:justify-start items-center p-4"}>
+            <nav style={{height: "50px"}} className={ (customize.isMobile ? "fixed" : "absolute" ) + " top-0 left-0 w-full z-10 bg-white flex lg:flex-nowrap lg:justify-start items-center p-4"}>
                 <div className="w-full mx-auto items-center flex justify-between md:flex-nowrap flex-wrap md:px-10 px-4">
                     {/* Brand */}
                     <div className={hid + " flex"}>

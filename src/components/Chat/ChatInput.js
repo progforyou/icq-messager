@@ -4,9 +4,11 @@ import { useRecorder } from "voice-recorder-react";
 import {ChatTextInput} from "./ChatTextInput";
 import {ChatRecorder} from "./ChatRecorder";
 import {sleep} from "../../tools/other";
+import {useStoreon} from "storeon/react";
 
 
 export const ChatInput = (props) => {
+    const { dispatch, customize } = useStoreon('customize')
     const audioRef = React.useRef(null);
     const [hasRecording, setHasRecording] = React.useState(false);
     const [timeRecording, setTimeRecording] = React.useState(null);
@@ -113,7 +115,7 @@ export const ChatInput = (props) => {
         props.setMessage("")
     }
     return (
-        <div className={"items-center bg-blueGray-100 px-4" } style={{bottom: "calc(1rem + env(safe-area-inset-bottom))", position: "fixed", width: "calc(100% - 265px)"}}>
+        <div className={"items-center bg-blueGray-100 px-4" } style={{bottom: "calc(1rem + env(safe-area-inset-bottom))", position: "fixed", width: customize.isMobile ? "100%" : "calc(100% - 265px)"}}>
             <audio ref={audioRef} hidden />
             {recording || hasRecording ? <ChatRecorder duration={duration} currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :

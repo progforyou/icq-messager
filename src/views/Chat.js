@@ -16,7 +16,7 @@ const WS_URL = `wss://bichiko.ru/ws/`;
 //const WS_URL = 'wss://127.0.0.1:8000/chat';
 function _Chat(props) {
     const {sendJsonMessage} = props;
-    const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
+    const { dispatch, contacts } = useStoreon('contacts')
     const [state, setState] = React.useState({message: "", files: [], prevMessage: "", prevFiles: []})
     const [isEdit, setIsEdit] = React.useState(false)
     const [cookies, setCookie] = useCookies(['access_token', 'login']);
@@ -144,9 +144,6 @@ function _Chat(props) {
         setState({...state, message: text, prevMessage: text, id: id})
         setIsEdit(true)
     }
-    if (contacts.active === 0 && customize.isMobile){
-        return null
-    }
   return (
     <div id={"chatBody"} style={{paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
         {contacts.active === 0 ? <div className={"m-auto"}>Выберите чат</div> : <>
@@ -158,7 +155,7 @@ function _Chat(props) {
 }
 
 export default function Chat(props) {
-    const { dispatch, contacts } = useStoreon('contacts')
+    const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
     const [cookies, setCookie] = useCookies(['access_token', 'login']);
     const history = useHistory();
     const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}?token=${cookies.access_token}`, {
@@ -206,8 +203,12 @@ export default function Chat(props) {
     }, [cookies.access_token])
 
 
+    if (contacts.active === 0 && customize.isMobile){
+        return null
+    }
+
     if (contacts.active === 0){
-        return <div style={{height: "100svh", paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
+        return <div style={{height: `${customize.height}px`, paddingTop: "50px", overflowY: "hidden"}} className={"flex flex-col pb-4"}>
             <div className={"m-auto"}>Выберите чат</div>
         </div>
     }

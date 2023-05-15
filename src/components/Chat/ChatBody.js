@@ -57,7 +57,7 @@ const FileTyper = (props) => {
     if (props.data.path.match(/\.(jpg|jpeg|png|gif)$/i)){
         return (
             <a target="_blank" href={`/media/${props.data.path}`}>
-                <img style={{maxWidth: "300px", maxHeight: "200px"}} className={props.id > 1 ? "mt-3" : ""} src={`/media/${props.data.path}`} alt={"image"}></img>
+                <img style={{maxWidth: "225px", maxHeight: "200px"}} className={props.id > 1 ? "mt-3" : ""} src={`/media/${props.data.path}`} alt={"image"}></img>
             </a>
         )
     }
@@ -192,6 +192,7 @@ export const ChatBody = (props) => {
 
     const onContextMenu = (id) => {
         return (e) => {
+            alert(e.type)
             e.preventDefault();
             setClicked(true)
             setActiveMessage(id)
@@ -201,14 +202,17 @@ export const ChatBody = (props) => {
     const onContextMenuIos = (id) => {
         return (e) => {
             e.preventDefault();
-            if (e.type === 'contextmenu') {
+            /*if (customize.isMobile) {
+                alert(e.type)
                 setClicked(true)
                 setActiveMessage(id)
                 setPoints({x: e.pageX, y: e.pageY})
-            }
+            }*/
         }
     }
-    const handleClick = () => setClicked(false);
+    const handleClick = () => {
+        setClicked(false);
+    }
     const onDelete = () => {
         props.handleDeleteMessage(activeMessage)
     }
@@ -255,7 +259,7 @@ export const ChatBody = (props) => {
                 <InfiniteScroll
                     dataLength={messages.list.length}
                     next={loadMessages}
-                    style={{ display: 'flex', flexDirection: 'column-reverse', overflowX: "hidden", paddingBottom: "30px" }} 
+                    style={{ display: 'flex', flexDirection: 'column-reverse', overflowX: "hidden", paddingBottom: "40px" }} 
                     inverse={true} 
                     hasMore={hasMore}
                     loader={<div className={"mx-auto"}>

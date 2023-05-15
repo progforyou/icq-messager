@@ -28,6 +28,7 @@ export default () => {
     
     function handleWindowSizeChange() {
         dispatch("customize/width", window.innerWidth)
+        dispatch("customize/height", window.innerHeight)
     }
     React.useEffect(() => {
         handleWindowSizeChange()
