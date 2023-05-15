@@ -142,37 +142,44 @@ const MessageOut = (props) => {
     )
 }
 
-const Message = (props) => {
-    return <div className={"w-full prevent-select"} onClick={props.onContextMenuIos} onContextMenu={props.onContextMenu}>
-        {props.messageIn ? <MessageIn {...props}/> :  <MessageOut {...props}/>}
+const MessageInContainer = (props) => {
+    return <div className={"w-full prevent-select"}>
+        <MessageIn {...props}/>
+    </div>
+}
+
+const MessageOutContainer = (props) => {
+    return <div className={"w-full prevent-select"} onTouchEnd={props.clearTouchTimer} onTouchCancel={props.clearTouchTimer} onTouchMove={props.clearTouchTimer} onTouchStart={props.onContextMenuIos} onContextMenu={props.onContextMenu}>
+        <MessageOut {...props}/>
     </div>
 }
 
 const Menu = (props) => {
     let styles = {}
+    alert(JSON.stringify(props.points))
     if ((window.innerWidth / 2) < props.points.x){
-        styles.left = props.points.x - 206
+        styles.left = props.points.x - (props.isMobile ? 160 : 206)
     } else {
         styles.left = props.points.x
     }
     if ((window.innerHeight / 2) < props.points.y){
-        styles.top = props.points.y - 136
+        styles.top = props.points.y - (props.isMobile ? 103 : 136)
     } else {
         styles.top = props.points.y
     }
     let isFile = props.messages.find(e => e.id === props.activeMessage).media?.length
     return ReactDOM.createPortal(
-        <div className={"absolute bg-white text-base z-50 float-left py-2 list-none text-left rounded shadow-lg min-w-48"} style={styles}>
+        <div className={"absolute bg-white z-50 float-left py-2 list-none text-left rounded shadow-lg " + (props.isMobile ? "text-xs " : "text-base min-w-48")} style={styles}>
                 <ul className={"flex flex-col p-1"}>
                     {isFile ? null : <>
-                    <li onClick={props.onEdit} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
+                    <li onClick={props.onEdit} className={"hover:bg-blueGray-200 cursor-pointer whitespace-nowrap " + (props.isMobile ? "py-1 px-2" : "py-2 px-3")}>
                         <i className={"fa fa-pen w-5 h-5 mr-2"}></i> Редактировать
                     </li>
                     </>}
-                    <li onClick={props.onDelete} className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
+                    <li onClick={props.onDelete} className={"hover:bg-blueGray-200 cursor-pointer whitespace-nowrap " + (props.isMobile ? "py-1 px-2" : "py-2 px-3")}>
                         <i className={"fa fa-trash w-5 h-5 mr-2"}></i> Удалить
                     </li>
-                    <li onClick={props.onDeleteTimer}  className={"hover:bg-blueGray-200 py-2 px-3 cursor-pointer whitespace-nowrap"}>
+                    <li onClick={props.onDeleteTimer}  className={"hover:bg-blueGray-200 cursor-pointer whitespace-nowrap " + (props.isMobile ? "py-1 px-2" : "py-2 px-3")}>
                         <i className={"fa fa-clock w-5 h-5 mr-2"}></i> Удалить по таймеру
                     </li>
                 </ul>
@@ -188,27 +195,41 @@ export const ChatBody = (props) => {
     const [points, setPoints] = React.useState({x: 0, y: 0})
     const [hasMore, setHasMore] = React.useState(true)
     const ref = React.useRef(null)
+    const touchTimer = React.useRef(null)
     const [deleteTimer, setDeleteTimer] = React.useState(false)
 
     const onContextMenu = (id) => {
         return (e) => {
-            alert(e.type)
             e.preventDefault();
             setClicked(true)
             setActiveMessage(id)
             setPoints({x: e.pageX, y: e.pageY})
         }
     }
+    
+    const startContextMenuOnTouch = (id, e) => {
+        setClicked(true)
+        setActiveMessage(id)
+        setPoints({x: e.touches[0].clientX, y: e.touches[0].clientY})
+        alert(e.touches[0].clientX)
+    }
     const onContextMenuIos = (id) => {
         return (e) => {
-            e.preventDefault();
-            /*if (customize.isMobile) {
-                alert(e.type)
-                setClicked(true)
-                setActiveMessage(id)
-                setPoints({x: e.pageX, y: e.pageY})
-            }*/
+            if (!customize.isMobile) return
+            var iOS = !window.MSStream && /iPad|iPhone|iPod/.test(navigator.userAgent);
+            if (!iOS){
+                return;
+            }
+            clearTouchTimer()
+            touchTimer.current = setTimeout( startContextMenuOnTouch.bind(null, id, e) , 1000 );
         }
+    }
+    
+    React.useEffect(() => {
+        return clearTouchTimer
+    }, [])
+    const clearTouchTimer = () => {
+        if (touchTimer.current) clearTimeout(touchTimer.current)
     }
     const handleClick = () => {
         setClicked(false);
@@ -275,16 +296,16 @@ export const ChatBody = (props) => {
                             return <div key={key} className={"pb-3 pt-3 mx-auto text-blueGray-600 text-sm"}>{toDate(e.date)}</div>
                         }
                         if (messageIn){
-                            return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenu={() => {}} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                            return <MessageInContainer users={contacts.allUsers} key={key} message={e} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                         }
-                        return <Message isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenuIos={onContextMenuIos(e.id)} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
+                        return <MessageOutContainer clearTouchTimer={clearTouchTimer} isMobile={customize.isMobile} users={contacts.allUsers} key={key} message={e} onContextMenuIos={onContextMenuIos(e.id)} onContextMenu={onContextMenu(e.id)} messageIn={messageIn} typeMessage={typeMessage} body={e.text}/>
                     })}
                 </InfiniteScroll>
                 </>}
                 {!hasMore ? <div className={"py-6"}></div> : null}
 
                 {deleteTimer ? <DeleteTimerMW onSubmit={handleDeleteTimer} onHide={() => setDeleteTimer(false)}/> : null}
-                {clicked && (<Menu messages={messages.list} activeMessage={activeMessage} points={points} onDeleteTimer={() => setDeleteTimer(true)} onDelete={onDelete} onEdit={onEdit}/>)}
+                {clicked && (<Menu isMobile={customize.isMobile} messages={messages.list} activeMessage={activeMessage} points={points} onDeleteTimer={() => setDeleteTimer(true)} onDelete={onDelete} onEdit={onEdit}/>)}
             </div>
     )
 }
