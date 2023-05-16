@@ -63,7 +63,7 @@ const FileTyper = (props) => {
         )
     }
     if (props.data.path.match(/\.(mp3|wav)$/i)){
-        return <Waveform targetWave={`wave_${Math.random().toString(36).slice(-8)}`} targetTrack={`track_${Math.random().toString(36).slice(-8)}`} url={`/media/${props.data.path}`}/>
+        return <Waveform key={props.data.path.split(".")[0]} targetWave={`wave_${props.data.path.split(".")[0]}`} targetTrack={`track_${props.data.path.split(".")[0]}`} url={`/media/${props.data.path}`}/>
         /*return <audio style={{maxWidth: "100%"}}
             controls
             src={`/media/${props.data.path}`}>
@@ -118,7 +118,6 @@ const MessageIn = (props) => {
     return (
         <div className={"flex w-full relative"} onContextMenu={(e) => {
             e.preventDefault(); // prevent the default behaviour when right clicked
-            console.log("Right Click");
         }}>
             <div className={"mr-auto relative mb-3 rounded-lg pl-4 pr-12 py-4 float-right bg-lightBlue-500 w-auto"} style={{maxWidth: props.isMobile ? "90%" : "70%"}}>
                 <TypeSwitcher {...props}/>

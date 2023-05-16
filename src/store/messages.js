@@ -20,7 +20,6 @@ export let messages = store => {
     })
     // Reducers returns only changed part of the state
     store.on('messages/add', ({ messages }, message) => {
-        console.log(message, messages.list, messages.list.find(e => e.id === message.id)?.id)
         if (messages.list.find(e => e.id === message.id)?.id) {
             return {messages: messages}
         }

@@ -32,12 +32,12 @@ class Waveform extends Component {
             forceDecode: true
         };
 
-        /*const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent || '') ||
+        const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent || '') ||
             /iPad|iPhone|iPod/i.test(navigator.userAgent || '');
 
         if (isSafari) {
             wavesurferArgs.backend = 'MediaElement';
-        }*/
+        }
         
 
         this.waveform = WaveSurfer.create(wavesurferArgs);

@@ -5,6 +5,19 @@ import {ChatTextInput} from "./ChatTextInput";
 import {ChatRecorder} from "./ChatRecorder";
 import {sleep} from "../../tools/other";
 import {useStoreon} from "storeon/react";
+import MicRecorder from "mic-recorder-to-mp3"
+
+function makeid(length) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    let counter = 0;
+    while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        counter += 1;
+    }
+    return result;
+}
 
 
 export const ChatInput = (props) => {
@@ -14,59 +27,84 @@ export const ChatInput = (props) => {
     const [timeRecording, setTimeRecording] = React.useState(null);
     const [currentTime, setCurrentTime] = React.useState(0)
     const [duration, setDuration] = React.useState(0);
-    const [sendToggle, setSendToggle] = React.useState(false);
+    const [recording, setRecording] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [file, setFile] = React.useState(null);
-    const {
-        time,
-        data,
-        stop,
-        start,
-        pause,
-        paused,
-        resume,
-        recording
-    } = useRecorder();
+    const [time, setTime] = React.useState(0);
+    const [isRunning, setIsRunning] = React.useState(false);
+    
+    const recordRef = React.useRef(new MicRecorder({
+        bitRate: 128
+    }))
     const onChangeText = (e) => {
         props.setMessage(e)
     }
     const onChangeEmoji = (e) => {
         props.setMessage(props.state.message + e)
     }
+    React.useEffect(() => {
+        let intervalId;
+        if (isRunning) {
+            intervalId = setInterval(() => setTime(time + 1), 10);
+        }
+        return () => clearInterval(intervalId);
+    }, [isRunning, time]);
+    const startAndStop = () => {
+        setIsRunning(!isRunning);
+    };
     const startRecord = () => {
-            if (!recording) {
-                start();
-                setHasRecording(false);
-            }
+        setRecording(true)
+        startAndStop()
+        recordRef.current.start()
+        setHasRecording(false);
     }
     
     const deleteRecord = () => {
-        if (recording) {
-            stop();
-        }
+        setRecording(false)
+        recordRef.current.stop()
+        setIsRunning(false);
+        setTime(0)
         setTimeRecording(null)
         setHasRecording(false)
         setFile(null)
     }
     
-    const stopRecord = () => {
-        if (recording) {
-            stop();
+    const stopRecord = async () => {
+        setRecording(false)
+        recordRef.current.stop().getMp3().then(([buffer, blob]) => {
+            const file = new File(buffer, `voice_${makeid(4)}.mp3`, {
+                type: blob.type,
+                lastModified: Date.now()
+            });
+            audioRef.current.src = URL.createObjectURL(file)
             setHasRecording(true)
-            setTimeRecording(time)
-        }
+            setIsRunning(false);
+            setFile(file)
+        })
     }
     
     const sendRecord = (r) => {
-        if (file === null){
-            return null
-        }
-        if (file){
-            props.sendRecord(file)
+        if (recording){
+            setRecording(false)
+            recordRef.current.stop().getMp3().then(([buffer, blob]) => {
+                const file = new File(buffer, `voice_${makeid(4)}.mp3`, {
+                    type: blob.type,
+                    lastModified: Date.now()
+                });
+                setIsRunning(false);
+                setTime(0)
+                setTimeRecording(null)
+                setHasRecording(false)
+                setFile(null)
+                props.sendRecord(file)
+            })
+        } else {
+            setIsRunning(false);
+            setTime(0)
             setTimeRecording(null)
             setHasRecording(false)
-            setSendToggle(true)
-            setFile(null)   
+            setFile(null)
+            props.sendRecord(file)
         }
     }
     
@@ -77,13 +115,7 @@ export const ChatInput = (props) => {
             audioRef.current?.pause();
         }
     }
-
-    React.useEffect(() => {
-        if (data.url) {
-            setFile(data.blob)
-            audioRef.current.src = data.url;
-        }
-    }, [data.url]);
+    
     const playAnimationRef = React.useRef();
 
     const repeat = React.useCallback(() => {

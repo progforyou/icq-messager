@@ -15,8 +15,23 @@ function writeSecTime(t) {
     }
 }
 
+function writeSecTimewatcher(t) {
+    // Hours calculation
+    const hours = Math.floor(t / 360000);
+
+    // Minutes calculation
+    const minutes = Math.floor((t % 360000) / 6000);
+
+    // Seconds calculation
+    const seconds = Math.floor((t % 6000) / 100);
+    return {
+        h: hours,
+        m: minutes,
+        s: seconds
+    }
+}
+
 export const ChatRecorder = (props) => {
-    console.log(props.duration)
     return (
         <div className={"flex"}>
             <div className={"mr-3"}>
@@ -39,13 +54,12 @@ export const ChatRecorder = (props) => {
                     }}></i> }
                     <div className={"ml-auto"}>
                         {props.isPlaying && (writeTime(writeSecTime(props.duration)) + "/")}
-                        {writeTime(props.timeRecording ? props.timeRecording : props.time)}
+                        {writeTime(props.timeRecording ? props.timeRecording : writeSecTimewatcher(props.time))}
                     </div>
                 </div>
             </div>
             <div className={"ml-3 text-center"}>
-                <i onClick={() => {
-                    props.stopRecord()
+                <i onClick={async () => {
                     props.sendRecord()
                 }} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> 
             </div>
