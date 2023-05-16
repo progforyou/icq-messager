@@ -14,14 +14,23 @@
     position: relative;
 }
 
-.wave:after{
-    content: "";
+.wave_line{
+    z-index: 4;
     position: absolute;
     top: 15px;
     left: 8px;
     width: calc(100% - 8px);
     height: 1px;
     background: #fff;
+}
+
+.wave_progress_line{
+    z-index: 5;
+    position: absolute;
+    top: 15px;
+    left: 8px;
+    height: 1px;
+    background: #2D5BFF;
 }
 
 

@@ -6,7 +6,8 @@ import {BsFillPauseFill, BsFillPlayFill} from "react-icons/bs";
 class Waveform extends Component {
     state = {
         playing: false,
-        duration: 0
+        duration: 0,
+        percent: 100
     };
 
     componentDidMount() {
@@ -28,6 +29,7 @@ class Waveform extends Component {
             cursorColor: 'transparent',
             fillParent: true,
             barHeight: 2,
+            forceDecode: true
         });
         //4 sec = 60
         //15 sec - 15
@@ -42,6 +44,7 @@ class Waveform extends Component {
         this.waveform.zoom(1)
         function setDuration(e){
             this.setState({ duration: (this.waveform.getDuration() - this.waveform.getCurrentTime()).toFixed(2) });
+            this.setState({ percent: (this.waveform.getCurrentTime()/this.waveform.getDuration() * 100).toFixed() });
         }
         this.waveform.on('audioprocess', setDuration.bind(this));
         this.waveform.on('ready', setDuration.bind(this));
@@ -60,8 +63,10 @@ class Waveform extends Component {
                     <div className={'play_button'} onClick={this.handlePlay} >
                         {!this.state.playing ? <BsFillPlayFill/> : <BsFillPauseFill/>}
                     </div>
-                    <div>
+                    <div className={"relative"}>
                         <div className={"wave"} id={this.props.targetWave} />
+                        <div className={"wave_line"}></div>
+                        <div className={"wave_progress_line"} style={{width: `calc(${this.state.percent}% - 8px)`}}></div>
                         <div className={"ml-1 text-blueGray-300"} style={{fontSize: "13px"}}>
                             {this.state.duration}
                         </div>
