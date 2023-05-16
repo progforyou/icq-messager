@@ -17,7 +17,7 @@ class Waveform extends Component {
             this.setState({ playing: toggle });
         }
 
-        this.waveform = WaveSurfer.create({
+        let wavesurferArgs = {
             barWidth: 3,
             cursorWidth: 1,
             container: `#${this.props.targetWave}`,
@@ -30,17 +30,29 @@ class Waveform extends Component {
             fillParent: true,
             barHeight: 2,
             forceDecode: true
-        });
+        };
+
+        /*const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent || '') ||
+            /iPad|iPhone|iPod/i.test(navigator.userAgent || '');
+
+        if (isSafari) {
+            wavesurferArgs.backend = 'MediaElement';
+        }*/
+        
+
+        this.waveform = WaveSurfer.create(wavesurferArgs);
         //4 sec = 60
         //15 sec - 15
 
-        function startAudio(track, e){
-            this.waveform.load(track);
-        }
+        /*function startAudio(track, e){
+            this.waveform.load(this.props.url);
+        }*/
         
-        track.addEventListener('loadedmetadata', startAudio.bind(this, track), false);
+        //track.addEventListener('loadedmetadata', startAudio.bind(this, track), false);
 
+        this.waveform.load(this.props.url);
         this.waveform.on('finish', changePlaying.bind(this));
+        this.waveform.setVolume(1)
         this.waveform.zoom(1)
         function setDuration(e){
             this.setState({ duration: (this.waveform.getDuration() - this.waveform.getCurrentTime()).toFixed(2) });
@@ -71,7 +83,6 @@ class Waveform extends Component {
                             {this.state.duration}
                         </div>
                     </div>
-                    <audio id={this.props.targetTrack} src={this.props.url} />
                 </div>
             </div>
         );

@@ -80,7 +80,7 @@ const FileTyper = (props) => {
 }
 
 const MessageFile = (props) => {
-    let user = props.users.find(e => e.id === props.message.user_id)
+    let user = props.users?.find(e => e.id === props.message.user_id)
     return (<div>
         <div className={"text-sm text-blueGray-600 font-bold"}>
             {user ? user.name + " " + user.surname : "Вы"}
