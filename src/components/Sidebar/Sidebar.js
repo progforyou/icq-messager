@@ -220,7 +220,7 @@ function MobileSidebar(props) {
   const [collapseShow, setCollapseShow] = React.useState("hidden");
   const [cookies, setCookie] = useCookies(['access_token', 'login']);
   const [createChat, setCreateChat] = React.useState(false);
-  const { dispatch, contacts } = useStoreon('contacts')
+  const { dispatch, contacts, customize } = useStoreon('contacts', 'customize')
   const [viewList, setViewList] = React.useState([])
   React.useEffect(() => {
     if (contacts.findStr && contacts.find.length === 0){
@@ -237,7 +237,7 @@ function MobileSidebar(props) {
   const classNames = ""
   return (
       <>
-        <nav style={{height: "100vh", alignItems: "start"}} className="flex left-0 block fixed top-0 bottom-0 overflow-y-auto flex-row flex-nowrap overflow-hidden shadow-xl bg-white flex flex-wrap justify-between relative w-64 z-10 py-4">
+        <nav style={{height: customize.height + "px", alignItems: "start"}} className="flex left-0 block fixed top-0 bottom-0 overflow-y-auto flex-row flex-nowrap overflow-hidden shadow-xl bg-white flex flex-wrap justify-between relative w-64 z-10 py-4">
           <div className="flex-col items-stretch min-h-full flex-nowrap px-0 flex flex-wrap items-center justify-between w-full mx-auto">
             {/* Brand */}
             <div className={"flex items-center justify-between"}>
