@@ -179,6 +179,10 @@ export default function Chat(props) {
                 reloadTokenController(setCookie, Controller().getChats)
                 return;
             }
+            if (d.Event === "append"){
+                reloadTokenController(setCookie, Controller().getChats)
+                return;
+            }
             if (d.Event === "close"){
                 reloadTokenController(setCookie, Controller().getChats)
                 return;
