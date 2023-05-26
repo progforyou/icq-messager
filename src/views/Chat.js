@@ -59,6 +59,7 @@ function _Chat(props) {
             });
             setState({...state, message: "", prevMessage: "", files: []})
         } else {
+            console.log("handleSendMessage", state.message, sendJsonMessage)
             sendJsonMessage({
                 type: 'create_message',
                 message: {
@@ -155,7 +156,7 @@ export default function Chat(props) {
     const [cookies, setCookie] = useCookies(['access_token', 'login']);
     const history = useHistory();
     const { lastJsonMessage, sendJsonMessage } = useWebSocket(`${WS_URL}?token=${cookies.access_token}`, {
-        retryOnError: false,
+        retryOnError: true,
         onClose: () => {
 
         },
