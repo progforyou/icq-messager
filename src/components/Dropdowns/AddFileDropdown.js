@@ -38,7 +38,7 @@ export const AddFileDropdown = (props) => {
         setDropdownPopoverShow(false)
     }
     return (
-        <div className={"relative"}>
+        <div className={"relative mt-auto"} style={{marginBottom: "8px"}}>
             <input type="file" onChange={handleFileChange} hidden ref={fileRef}/>
             <input type="file" accept="image/*, video/*" onChange={handleFileChange} hidden ref={photoRef}/>
             <i ref={btnDropdownRef} onClick={(e) => {

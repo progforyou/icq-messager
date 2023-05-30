@@ -33,7 +33,7 @@ function writeSecTimewatcher(t) {
 
 export const ChatRecorder = (props) => {
     return (
-        <div className={"flex"}>
+        <div className={"flex"} style={{paddingBottom:  "8px"}}>
             <div className={"mr-3"}>
                 <i onClick={props.deleteRecord} className={"fa fa-trash cursor-pointer text-blueGray-700 hover:text-blueGray-500 text-xl"}></i>
             </div>

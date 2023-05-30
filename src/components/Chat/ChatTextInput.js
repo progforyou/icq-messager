@@ -4,6 +4,8 @@ import EmojiPicker from 'emoji-picker-react';
 import {AddFileDropdown} from "../Dropdowns/AddFileDropdown";
 import {useStoreon} from "storeon/react";
 import {getFileName} from "../../tools/other";
+import TextareaAutosize from 'react-textarea-autosize';
+
 
 
 export const ChatTextInput = (props) => {
@@ -42,22 +44,25 @@ export const ChatTextInput = (props) => {
                 })}
             </div> : null}
         <div className={"flex w-full"}>
-            <div className={"mr-3"}>
+            <div className={"mr-3 flex"}>
                 <AddFileDropdown handleFiles={props.handleFiles} startRecord={props.startRecord}/>
             </div>
             <form className={"w-full"} onSubmit={(e) => {
                 e.preventDefault();
                 if (props.state.message !== "") props.onSendMessage();
             }}>
-                <div className="pt-0 relative">
-                    <input
+                <div className="relative">
+                    <TextareaAutosize 
+                        maxRows={10}
+                        minRows={1}
+                        
                         onChange={e => props.onChange(e.target.value)}
                         value={props.state.message}
-                        type="text"
                         placeholder="Сообщение"
-                        className="focus:shadow-none border-0 px-3 py-2 h-8 border border-solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
+                        style={{paddingRight: "2rem", resize: "none"}}
+                        className="focus:shadow-none px-3 py-1 border border-solid  border-blueGray-500 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-base leading-snug shadow-none outline-none focus:outline-none w-full font-normal"
                     />
-                    <div className={"absolute top-0 right-0 mr-2 flex h-full"}>
+                    <div className={"absolute right-0 mr-2 flex"} style={{bottom: "15px"}}>
                         <i ref={btnDropdownRef} className={"fa fa-smile my-auto cursor-pointer text-blueGray-700 hover:text-blueGray-500"} onClick={toggleEmoji}></i>
                         {showEmoji ? 
                             <div className={"absolute bottom-0 right-0 mb-5"} ref={ref}>
@@ -68,9 +73,9 @@ export const ChatTextInput = (props) => {
                     </div>
                 </div>
             </form>
-            <div className={"ml-3 text-center"}>
-                {props.state.message || props.state.files?.length || props.state.prevFiles?.length ? <i onClick={props.onSendMessage} className={"fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> :
-                    <i onClick={props.startRecord} className={"fa fa-microphone w-5 cursor-pointer text-blueGray-700 hover:text-blueGray-500 text-xl"}></i>}
+            <div className={"ml-3 text-center flex"}>
+                {props.state.message || props.state.files?.length || props.state.prevFiles?.length ? <i style={{marginBottom: "8px"}} onClick={props.onSendMessage} className={"mt-auto fa fa-paper-plane cursor-pointer text-lightBlue-500 text-xl"}></i> :
+                    <i onClick={props.startRecord} style={{marginBottom: "8px"}} className={"mt-auto fa fa-microphone w-5 cursor-pointer text-blueGray-700 hover:text-blueGray-500 text-xl"}></i>}
             </div>
         </div>
         </>
