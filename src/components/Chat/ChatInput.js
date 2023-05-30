@@ -146,12 +146,15 @@ export const ChatInput = (props) => {
         }
         props.setMessage("")
     }
+    const onChangeHeight = (h) => {
+        dispatch("customize/setTextareaHeight", h)
+    }
     return (
         <div className={"items-center bg-blueGray-100 px-4" } style={{bottom: "calc(1rem + env(safe-area-inset-bottom))", position: "fixed", width: customize.isMobile ? "100%" : "calc(100% - 265px)"}}>
             <audio ref={audioRef} hidden />
             {recording || hasRecording ? <ChatRecorder duration={duration} currentTime={currentTime} isPlaying={isPlaying} hasRecording={hasRecording} timeRecording={timeRecording} stopRecord={stopRecord} time={time}
                                                        deleteRecord={deleteRecord} sendRecord={sendRecord} playRecord={playRecord}/> :
-            <ChatTextInput deleteFilePrev={props.deleteFilePrev} deleteFile={props.deleteFile} handleFiles={props.handleFiles} isEdit={props.isEdit} onCancelEdit={props.onCancelEdit} onSendMessage={onSendMessage}  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={props.state} startRecord={startRecord}/> }
+            <ChatTextInput onChangeHeight={onChangeHeight} deleteFilePrev={props.deleteFilePrev} deleteFile={props.deleteFile} handleFiles={props.handleFiles} isEdit={props.isEdit} onCancelEdit={props.onCancelEdit} onSendMessage={onSendMessage}  onChange={onChangeText} onChangeEmoji={onChangeEmoji} state={props.state} startRecord={startRecord}/> }
         </div>
     )
 }

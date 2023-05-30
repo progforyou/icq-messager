@@ -286,7 +286,7 @@ export const ChatBody = (props) => {
                 <InfiniteScroll
                     dataLength={messages.list.length}
                     next={loadMessages}
-                    style={{ display: 'flex', flexDirection: 'column-reverse', overflowX: "hidden", paddingBottom: "40px" }} 
+                    style={{ display: 'flex', flexDirection: 'column-reverse', overflowX: "hidden", paddingBottom: `${customize.textareaHeight + 10}px` }} 
                     inverse={true} 
                     hasMore={hasMore}
                     loader={<div className={"mx-auto"}>

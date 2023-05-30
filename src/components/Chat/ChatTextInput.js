@@ -55,7 +55,7 @@ export const ChatTextInput = (props) => {
                     <TextareaAutosize 
                         maxRows={10}
                         minRows={1}
-                        
+                        onHeightChange={props.onChangeHeight}
                         onChange={e => props.onChange(e.target.value)}
                         value={props.state.message}
                         placeholder="Сообщение"
