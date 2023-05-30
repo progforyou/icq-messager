@@ -144,13 +144,13 @@ const MessageOut = (props) => {
 }
 
 const MessageInContainer = (props) => {
-    return <div className={"w-full prevent-select"}>
+    return <div className={"w-full prevent-select"} style={{wordWrap: "break-word"}}>
         <MessageIn {...props}/>
     </div>
 }
 
 const MessageOutContainer = (props) => {
-    return <div className={"w-full prevent-select"} onTouchEnd={props.clearTouchTimer} onTouchCancel={props.clearTouchTimer} onTouchMove={props.clearTouchTimer} onTouchStart={props.onContextMenuIos} onContextMenu={props.onContextMenu}>
+    return <div className={"w-full prevent-select"} style={{wordWrap: "break-word"}} onTouchEnd={props.clearTouchTimer} onTouchCancel={props.clearTouchTimer} onTouchMove={props.clearTouchTimer} onTouchStart={props.onContextMenuIos} onContextMenu={props.onContextMenu}>
         <MessageOut {...props}/>
     </div>
 }
